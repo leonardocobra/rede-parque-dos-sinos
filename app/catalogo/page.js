@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Nav from "../components/Nav";
@@ -9,7 +9,7 @@ import { CATS, catIcon } from "../config";
 
 function normalize(s) { return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
 
-export default function Catalogo() {
+function CatalogoContent() {
   const searchParams = useSearchParams();
   const [profs, setProfs] = useState([]);
   const [avals, setAvals] = useState([]);
@@ -136,4 +136,8 @@ export default function Catalogo() {
       <Footer />
     </>
   );
+}
+
+export default function Catalogo() {
+  return <Suspense><CatalogoContent /></Suspense>;
 }
