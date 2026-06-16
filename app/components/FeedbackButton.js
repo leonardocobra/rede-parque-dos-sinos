@@ -33,12 +33,13 @@ export default function FeedbackButton() {
       return;
     }
     setStatus("success");
-    setTimeout(() => {
-      setOpen(false);
-      setStatus(null);
-      setTipo("");
-      setMensagem("");
-    }, 2000);
+    setSubmitting(false);
+  }
+
+  function novoFeedback() {
+    setStatus(null);
+    setTipo("");
+    setMensagem("");
   }
 
   return (
@@ -73,7 +74,21 @@ export default function FeedbackButton() {
               <div className="text-center py-8">
                 <div className="text-[36px] mb-3">✅</div>
                 <p className="font-display text-lg">Obrigado pelo feedback!</p>
-                <p className="text-[13px] text-brand-grey mt-1.5">Sua mensagem foi registrada.</p>
+                <p className="text-[13px] text-brand-grey mt-1.5 mb-6">
+                  Sua mensagem foi registrada.
+                </p>
+                <button
+                  onClick={novoFeedback}
+                  className="w-full bg-brand-black text-white border-none rounded-lg py-3.5 text-[15px] font-bold"
+                >
+                  Enviar outro feedback
+                </button>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="w-full mt-2.5 bg-white text-brand-grey border border-brand-border rounded-lg py-3 text-sm font-bold"
+                >
+                  Fechar
+                </button>
               </div>
             ) : (
               <>
