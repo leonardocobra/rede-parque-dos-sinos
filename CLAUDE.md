@@ -8,44 +8,44 @@ NUNCA faça alterações diretamente na branch `main`. Toda mudança deve ser fe
 
 ### 1. Antes de codar
 
-* Pergunte em qual melhoria/feature vou trabalhar
-* Crie (ou mude para) uma branch com nome descritivo: `melhoria/nome-curto`
-* Confirme a branch ativa antes de qualquer alteração
+- Pergunte em qual melhoria/feature vou trabalhar
+- Crie (ou mude para) uma branch com nome descritivo: `melhoria/nome-curto`
+- Confirme a branch ativa antes de qualquer alteração
 
 ### 2. Durante o desenvolvimento
 
-* Faça commits pequenos e frequentes com mensagens claras em português
-* Formato do commit: `tipo: descrição curta` (ex: `feat: adiciona filtro de busca`, `fix: corrige cálculo de frete`)
-* Rode os testes após cada mudança significativa
-* Se não existirem testes para o código alterado, crie antes de prosseguir
+- Faça commits pequenos e frequentes com mensagens claras em português
+- Formato do commit: `tipo: descrição curta` (ex: `feat: adiciona filtro de busca`, `fix: corrige cálculo de frete`)
+- Rode os testes após cada mudança significativa
+- Se não existirem testes para o código alterado, crie antes de prosseguir
 
 ### 3. Antes de abrir PR
 
-* Rode a suite completa de testes
-* Verifique se não há erros de lint
-* Faça um self-review das mudanças (`git diff main`)
-* Garanta que a branch está atualizada com a main
+- Rode a suite completa de testes
+- Verifique se não há erros de lint
+- Faça um self-review das mudanças (`git diff main`)
+- Garanta que a branch está atualizada com a main
 
 ### 4. Pull Request
 
-* Abra o PR via `gh pr create`
-* Título claro e descrição explicando: o que mudou, por que mudou, como testar
-* Não faça merge automático — espere minha aprovação
+- Abra o PR via `gh pr create`
+- Título claro e descrição explicando: o que mudou, por que mudou, como testar
+- Não faça merge automático — espere minha aprovação
 
 ## Testes
 
-* Comando para rodar testes: `npm test` (⚠️ ainda não configurado — configurar Vitest ou Jest como primeira tarefa)
-* Comando para lint: `npm run lint` (⚠️ ainda não configurado — adicionar ESLint ao projeto)
-* Cobertura mínima esperada: 80%
+- Comando para rodar testes: `npm test` (⚠️ ainda não configurado — configurar Vitest ou Jest como primeira tarefa)
+- Comando para lint: `npm run lint` (⚠️ ainda não configurado — adicionar ESLint ao projeto)
+- Cobertura mínima esperada: 80%
 
 ## Stack do Projeto
 
-* **Linguagem:** JavaScript (ES Modules)
-* **Framework:** Next.js 14 (App Router)
-* **Banco de dados:** Supabase (PostgreSQL com RLS)
-* **Deploy:** Vercel
-* **Estilização:** CSS puro (globals.css)
-* **Dependências principais:** React 18, @supabase/supabase-js
+- **Linguagem:** JavaScript (ES Modules)
+- **Framework:** Next.js 14 (App Router)
+- **Banco de dados:** Supabase (PostgreSQL com RLS)
+- **Deploy:** Vercel
+- **Estilização:** CSS puro (globals.css)
+- **Dependências principais:** React 18, @supabase/supabase-js
 
 ## Estrutura do Projeto
 
@@ -76,9 +76,9 @@ rede-parque-dos-sinos/
 
 Tabelas principais:
 
-* **profissionais** — cadastro dos prestadores de serviço (nome, telefone, servico, categoria, bairro, regioes, instagram, experiencia, descricao)
-* **avaliacoes** — avaliações dos profissionais (pontual, novamente, conforme, nota 1-5, comentario)
-* **feedback** — bugs e sugestões dos usuários (tipo, mensagem, pagina)
+- **profissionais** — cadastro dos prestadores de serviço (nome, telefone, servico, categoria, bairro, regioes, instagram, experiencia, descricao)
+- **avaliacoes** — avaliações dos profissionais (pontual, novamente, conforme, nota 1-5, comentario)
+- **feedback** — bugs e sugestões dos usuários (tipo, mensagem, pagina)
 
 Todas com RLS habilitado e políticas de leitura/inserção pública.
 
@@ -93,14 +93,14 @@ Copiar `.env.local.example` para `.env.local` e preencher com as credenciais do 
 
 ## Convenções
 
-* Idioma do código: português (nomes de variáveis, tabelas, componentes)
-* Idioma dos commits e PRs: português
-* Quando houver dúvida sobre a abordagem, apresente as opções antes de implementar
-* Categorias de serviço definidas em `app/config.js`
+- Idioma do código: português (nomes de variáveis, tabelas, componentes)
+- Idioma dos commits e PRs: português
+- Quando houver dúvida sobre a abordagem, apresente as opções antes de implementar
+- Categorias de serviço definidas em `app/config.js`
 
 ## Pendências Técnicas Conhecidas
 
-* [ ] Configurar ESLint + Prettier
-* [ ] Configurar framework de testes (Vitest recomendado para Next.js)
-* [ ] Configurar repositório Git remoto (GitHub)
-* [ ] Adicionar Tailwind CSS (considerar migração do CSS puro)
+- [ ] Configurar ESLint + Prettier
+- [ ] Configurar framework de testes (Vitest recomendado para Next.js)
+- [ ] Configurar repositório Git remoto (GitHub)
+- [ ] Adicionar Tailwind CSS (considerar migração do CSS puro)
