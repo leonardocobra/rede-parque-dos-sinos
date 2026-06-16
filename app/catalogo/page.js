@@ -6,6 +6,7 @@ import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import { supabase } from "../../lib/supabase";
 import { CATS, catIcon } from "../config";
+import { instagramUrl } from "../../lib/instagram";
 
 function normalize(s) {
   return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -148,6 +149,7 @@ function CatalogoContent() {
               const st = stats(p.id);
               const open = openId === p.id;
               const wn = (p.telefone || "").replace(/\D/g, "");
+              const ig = instagramUrl(p.instagram);
               const ini = p.nome
                 .split(" ")
                 .filter(Boolean)
@@ -219,11 +221,6 @@ function CatalogoContent() {
                           Atende: {p.regioes}
                         </div>
                       )}
-                      {p.instagram && (
-                        <div className="text-xs text-brand-grey-light mb-1.5">
-                          Instagram: {p.instagram}
-                        </div>
-                      )}
                       {st && st.count > 0 && (
                         <div className="flex gap-2 mb-3.5 flex-wrap">
                           {[
@@ -252,6 +249,16 @@ function CatalogoContent() {
                             className="bg-[#25D366] text-white rounded-lg px-5 py-2.5 text-[13px] font-bold flex-1 flex items-center justify-center gap-1.5"
                           >
                             📞 WhatsApp
+                          </a>
+                        )}
+                        {ig && (
+                          <a
+                            href={ig}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white rounded-lg px-5 py-2.5 text-[13px] font-bold flex-1 flex items-center justify-center gap-1.5"
+                          >
+                            📷 Instagram
                           </a>
                         )}
                         <Link
