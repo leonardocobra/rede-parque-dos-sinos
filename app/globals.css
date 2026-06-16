@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Source+Sans+3:wght@400;500;600;700;800&display=swap');
+:root{--red:#C41E24;--red-light:#C41E2410;--black:#111;--grey:#555;--grey-light:#999;--border:#E5E5E5;--bg:#FAFAFA;--font:'Source Sans 3',sans-serif;--display:'Instrument Serif',serif}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font);background:#fff;color:var(--black);-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{font-family:var(--font);cursor:pointer}
+button:active,a:active{transform:scale(0.97)}
+input,textarea,select{font-family:var(--font)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade-up{animation:fadeUp .4s ease both}
