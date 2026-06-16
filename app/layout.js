@@ -5,5 +5,12 @@ export const metadata = {
   description: "Encontre profissionais confiáveis no Parque dos Sinos, Jacareí-SP.",
 };
 export default function RootLayout({ children }) {
-  return <html lang="pt-BR"><body>{children}<FeedbackButton /></body></html>;
+  return (
+    <html lang="pt-BR">
+      <body>
+        {children}
+        <FeedbackButton />
+      </body>
+    </html>
+  );
 }

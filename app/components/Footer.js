@@ -1,9 +1,11 @@
 export default function Footer() {
   return (
-    <footer style={{ borderTop: "1px solid var(--border)", padding: "24px 20px", textAlign: "center", background: "var(--bg)" }}>
-      <div style={{ fontFamily: "var(--display)", fontSize: 16, marginBottom: 4 }}>Rede de Profissionais do Parque dos Sinos</div>
-      <div style={{ fontSize: 11, color: "var(--grey-light)" }}>Jacareí – SP · Uma iniciativa comunitária</div>
-      <div style={{ width: 40, height: 3, background: "var(--red)", margin: "12px auto 0", borderRadius: 2 }} />
+    <footer className="border-t border-brand-border py-6 px-5 text-center bg-brand-surface">
+      <div className="font-display text-base mb-1">Rede de Profissionais do Parque dos Sinos</div>
+      <div className="text-[11px] text-brand-grey-light">
+        Jacareí – SP · Uma iniciativa comunitária
+      </div>
+      <div className="w-10 h-[3px] bg-brand-red mx-auto mt-3 rounded-sm" />
     </footer>
   );
 }

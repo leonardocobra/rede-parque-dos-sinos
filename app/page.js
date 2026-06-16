@@ -7,85 +7,158 @@ export default function Home() {
   return (
     <>
       <Nav />
-      <div style={{ padding: "56px 24px 48px", textAlign: "center", position: "relative", borderBottom: "1px solid var(--border)" }}>
-        <div style={{ position: "absolute", top: 20, left: "50%", transform: "translateX(-50%)", width: 240, height: 240, borderRadius: "50%", background: "var(--red-light)", filter: "blur(60px)", opacity: 0.6, pointerEvents: "none" }} />
-        <div style={{ position: "relative", zIndex: 2, maxWidth: 480, margin: "0 auto" }}>
-          <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", color: "var(--red)", marginBottom: 16 }}>Parque dos Sinos · Jacareí – SP</div>
-          <h1 style={{ fontFamily: "var(--display)", fontSize: 38, fontWeight: 400, lineHeight: 1.15, marginBottom: 16 }}>Rede de Profissionais<br/>do Parque dos Sinos</h1>
-          <p style={{ fontSize: 15, color: "var(--grey)", lineHeight: 1.6, maxWidth: 400, margin: "0 auto 32px" }}>Conectando moradores e prestadores de serviço do bairro. Gratuito, organizado e feito pela comunidade.</p>
-          <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/catalogo" style={{ background: "var(--black)", color: "#fff", borderRadius: 8, padding: "13px 28px", fontSize: 15, fontWeight: 700 }}>Ver Catálogo</Link>
-            <Link href="/cadastro" style={{ background: "var(--red)", color: "#fff", borderRadius: 8, padding: "13px 28px", fontSize: 15, fontWeight: 700 }}>Cadastrar Serviço</Link>
+
+      {/* Hero */}
+      <div className="px-6 pt-14 pb-12 text-center relative border-b border-brand-border">
+        <div className="absolute top-5 left-1/2 -translate-x-1/2 w-60 h-60 rounded-full bg-brand-red-light blur-[60px] opacity-60 pointer-events-none" />
+        <div className="relative z-[2] max-w-[480px] mx-auto">
+          <div className="text-[11px] font-extrabold tracking-[3px] uppercase text-brand-red mb-4">
+            Parque dos Sinos · Jacareí – SP
+          </div>
+          <h1 className="font-display text-[38px] font-normal leading-[1.15] mb-4">
+            Rede de Profissionais
+            <br />
+            do Parque dos Sinos
+          </h1>
+          <p className="text-[15px] text-brand-grey leading-relaxed max-w-[400px] mx-auto mb-8">
+            Conectando moradores e prestadores de serviço do bairro. Gratuito, organizado e feito
+            pela comunidade.
+          </p>
+          <div className="flex gap-2.5 justify-center flex-wrap">
+            <Link
+              href="/catalogo"
+              className="bg-brand-black text-white rounded-lg px-7 py-[13px] text-[15px] font-bold"
+            >
+              Ver Catálogo
+            </Link>
+            <Link
+              href="/cadastro"
+              className="bg-brand-red text-white rounded-lg px-7 py-[13px] text-[15px] font-bold"
+            >
+              Cadastrar Serviço
+            </Link>
           </div>
         </div>
       </div>
 
-      <div style={{ padding: "32px 20px 8px", maxWidth: 560, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+      {/* Ações rápidas */}
+      <div className="px-5 pt-8 pb-2 max-w-[560px] mx-auto">
+        <div className="grid grid-cols-3 gap-2.5">
           {[
-            { label: "Cadastrar\nServiço", icon: "📝", href: "/cadastro", bg: "var(--red)" },
-            { label: "Ver\nCatálogo", icon: "📋", href: "/catalogo", bg: "var(--black)" },
-            { label: "Avaliar\nProfissional", icon: "⭐", href: "/avaliar", bg: "#333" },
+            { label: "Cadastrar\nServiço", icon: "📝", href: "/cadastro", bg: "bg-brand-red" },
+            { label: "Ver\nCatálogo", icon: "📋", href: "/catalogo", bg: "bg-brand-black" },
+            { label: "Avaliar\nProfissional", icon: "⭐", href: "/avaliar", bg: "bg-[#333]" },
           ].map((a, i) => (
-            <Link key={i} href={a.href} style={{ background: a.bg, borderRadius: 12, padding: "20px 12px", textAlign: "center", display: "block" }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>{a.icon}</div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#fff", lineHeight: 1.4, whiteSpace: "pre-line" }}>{a.label}</div>
+            <Link
+              key={i}
+              href={a.href}
+              className={`${a.bg} rounded-xl py-5 px-3 text-center block`}
+            >
+              <div className="text-[28px] mb-2">{a.icon}</div>
+              <div className="text-xs font-bold text-white leading-[1.4] whitespace-pre-line">
+                {a.label}
+              </div>
             </Link>
           ))}
         </div>
       </div>
 
-      <div style={{ padding: "32px 20px 8px", maxWidth: 560, margin: "0 auto" }}>
-        <h2 style={{ fontFamily: "var(--display)", fontSize: 26, marginBottom: 24, textAlign: "center" }}>Como Funciona</h2>
-        <div style={{ display: "grid", gap: 12 }}>
+      {/* Como Funciona */}
+      <div className="px-5 pt-8 pb-2 max-w-[560px] mx-auto">
+        <h2 className="font-display text-[26px] mb-6 text-center">Como Funciona</h2>
+        <div className="grid gap-3">
           {[
-            { n: "1", t: "Cadastre seu serviço", d: "Preencha o formulário com seu nome, serviço, contato e região. Gratuito, menos de 2 minutos.", icon: "📝" },
-            { n: "2", t: "Vizinhos encontram você", d: "Moradores consultam o catálogo e entram em contato direto pelo WhatsApp.", icon: "🤝" },
-            { n: "3", t: "Comunidade avalia", d: "Após o serviço, 3 perguntas rápidas. Boas avaliações geram mais indicações.", icon: "⭐" },
+            {
+              n: "1",
+              t: "Cadastre seu serviço",
+              d: "Preencha o formulário com seu nome, serviço, contato e região. Gratuito, menos de 2 minutos.",
+              icon: "📝",
+            },
+            {
+              n: "2",
+              t: "Vizinhos encontram você",
+              d: "Moradores consultam o catálogo e entram em contato direto pelo WhatsApp.",
+              icon: "🤝",
+            },
+            {
+              n: "3",
+              t: "Comunidade avalia",
+              d: "Após o serviço, 3 perguntas rápidas. Boas avaliações geram mais indicações.",
+              icon: "⭐",
+            },
           ].map((s, i) => (
-            <div key={i} style={{ background: "#fff", borderRadius: 12, padding: "20px", display: "flex", gap: 16, border: "1px solid var(--border)", alignItems: "flex-start" }}>
-              <div style={{ width: 44, height: 44, borderRadius: 10, background: "var(--bg)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{s.icon}</div>
+            <div
+              key={i}
+              className="bg-white rounded-xl p-5 flex gap-4 border border-brand-border items-start"
+            >
+              <div className="w-11 h-11 rounded-[10px] bg-brand-surface border border-brand-border flex items-center justify-center text-[22px] shrink-0">
+                {s.icon}
+              </div>
               <div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <span style={{ background: "var(--red)", color: "#fff", borderRadius: 4, width: 20, height: 20, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800 }}>{s.n}</span>
-                  <span style={{ fontWeight: 700, fontSize: 15 }}>{s.t}</span>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="bg-brand-red text-white rounded-[4px] w-5 h-5 inline-flex items-center justify-center text-[11px] font-extrabold">
+                    {s.n}
+                  </span>
+                  <span className="font-bold text-[15px]">{s.t}</span>
                 </div>
-                <p style={{ fontSize: 13, color: "var(--grey)", lineHeight: 1.55 }}>{s.d}</p>
+                <p className="text-[13px] text-brand-grey leading-[1.55]">{s.d}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <div style={{ padding: "36px 20px 8px", maxWidth: 560, margin: "0 auto" }}>
-        <h2 style={{ fontFamily: "var(--display)", fontSize: 26, marginBottom: 6, textAlign: "center" }}>Categorias</h2>
-        <p style={{ fontSize: 13, color: "var(--grey-light)", textAlign: "center", marginBottom: 20 }}>Tipos de serviço que você pode cadastrar</p>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+      {/* Categorias */}
+      <div className="px-5 pt-9 pb-2 max-w-[560px] mx-auto">
+        <h2 className="font-display text-[26px] mb-1.5 text-center">Categorias</h2>
+        <p className="text-[13px] text-brand-grey-light text-center mb-5">
+          Tipos de serviço que você pode cadastrar
+        </p>
+        <div className="grid grid-cols-2 gap-2">
           {CATS.map((c, i) => (
-            <Link key={i} href={"/catalogo?cat=" + encodeURIComponent(c.value)} style={{ background: "#fff", border: "1px solid var(--border)", borderRadius: 10, padding: "14px", display: "block" }}>
-              <span style={{ fontSize: 22 }}>{c.icon}</span>
-              <div style={{ fontSize: 13, fontWeight: 700, marginTop: 6, marginBottom: 3 }}>{c.value}</div>
-              <div style={{ fontSize: 11, color: "var(--grey-light)", lineHeight: 1.4 }}>{c.ex}</div>
+            <Link
+              key={i}
+              href={"/catalogo?cat=" + encodeURIComponent(c.value)}
+              className="bg-white border border-brand-border rounded-[10px] p-3.5 block"
+            >
+              <span className="text-[22px]">{c.icon}</span>
+              <div className="text-[13px] font-bold mt-1.5 mb-[3px]">{c.value}</div>
+              <div className="text-[11px] text-brand-grey-light leading-[1.4]">{c.ex}</div>
             </Link>
           ))}
         </div>
       </div>
 
-      <div style={{ padding: "36px 20px 8px", maxWidth: 560, margin: "0 auto" }}>
-        <div style={{ background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 12, padding: "28px 24px", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: "var(--red)" }} />
-          <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>Manifesto</div>
-          <p style={{ fontFamily: "var(--display)", fontStyle: "italic", fontSize: 18, lineHeight: 1.55 }}>Acreditamos que o Parque dos Sinos é construído por pessoas que se ajudam. Queremos manter nossas ruas organizadas e apoiar trabalhadores honestos.</p>
+      {/* Manifesto */}
+      <div className="px-5 pt-9 pb-2 max-w-[560px] mx-auto">
+        <div className="bg-brand-surface border border-brand-border rounded-xl py-7 px-6 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-1 h-full bg-brand-red" />
+          <div className="text-[10px] font-extrabold tracking-[2px] uppercase text-brand-red mb-3">
+            Manifesto
+          </div>
+          <p className="font-display italic text-lg leading-[1.55]">
+            Acreditamos que o Parque dos Sinos é construído por pessoas que se ajudam. Queremos
+            manter nossas ruas organizadas e apoiar trabalhadores honestos.
+          </p>
         </div>
       </div>
 
-      <div style={{ padding: "36px 20px 40px", maxWidth: 560, margin: "0 auto" }}>
-        <div style={{ background: "var(--black)", borderRadius: 14, padding: "32px 24px", textAlign: "center" }}>
-          <h3 style={{ fontFamily: "var(--display)", fontSize: 22, color: "#fff", marginBottom: 8 }}>Faça parte da rede</h3>
-          <p style={{ fontSize: 13, color: "#aaa", lineHeight: 1.5, maxWidth: 340, margin: "0 auto 20px" }}>Cadastre seu serviço gratuitamente e seja encontrado pelos vizinhos.</p>
-          <Link href="/cadastro" style={{ background: "var(--red)", color: "#fff", borderRadius: 8, padding: "13px 32px", fontSize: 15, fontWeight: 700, display: "inline-block" }}>Cadastrar Agora</Link>
+      {/* CTA */}
+      <div className="px-5 pt-9 pb-10 max-w-[560px] mx-auto">
+        <div className="bg-brand-black rounded-2xl py-8 px-6 text-center">
+          <h3 className="font-display text-[22px] text-white mb-2">Faça parte da rede</h3>
+          <p className="text-[13px] text-[#aaa] leading-[1.5] max-w-[340px] mx-auto mb-5">
+            Cadastre seu serviço gratuitamente e seja encontrado pelos vizinhos.
+          </p>
+          <Link
+            href="/cadastro"
+            className="bg-brand-red text-white rounded-lg py-[13px] px-8 text-[15px] font-bold inline-block"
+          >
+            Cadastrar Agora
+          </Link>
         </div>
       </div>
+
       <Footer />
     </>
   );
