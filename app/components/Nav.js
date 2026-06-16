@@ -12,53 +12,21 @@ const links = [
 export default function Nav() {
   const path = usePathname();
   return (
-    <nav
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-        background: "rgba(255,255,255,0.95)",
-        backdropFilter: "blur(16px)",
-        borderBottom: "1px solid var(--border)",
-        padding: "0 16px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        height: 52,
-      }}
-    >
-      <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <div
-          style={{
-            width: 28,
-            height: 28,
-            borderRadius: 6,
-            background: "var(--red)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 11,
-            color: "#fff",
-            fontWeight: 800,
-          }}
-        >
+    <nav className="sticky top-0 z-[100] bg-white/95 backdrop-blur-md border-b border-brand-border px-4 flex items-center justify-between h-[52px]">
+      <Link href="/" className="flex items-center gap-2.5">
+        <div className="w-7 h-7 rounded-[6px] bg-brand-red flex items-center justify-center text-[11px] text-white font-extrabold">
           PS
         </div>
-        <span style={{ fontFamily: "var(--display)", fontSize: 17 }}>Parque dos Sinos</span>
+        <span className="font-display text-[17px]">Parque dos Sinos</span>
       </Link>
-      <div style={{ display: "flex", gap: 2 }}>
+      <div className="flex gap-0.5">
         {links.map((l) => (
           <Link
             key={l.href}
             href={l.href}
-            style={{
-              background: path === l.href ? "var(--black)" : "transparent",
-              color: path === l.href ? "#fff" : "var(--grey)",
-              borderRadius: 6,
-              padding: "6px 10px",
-              fontSize: 11,
-              fontWeight: 700,
-            }}
+            className={`rounded-[6px] px-2.5 py-1.5 text-[11px] font-bold ${
+              path === l.href ? "bg-brand-black text-white" : "bg-transparent text-brand-grey"
+            }`}
           >
             {l.label}
           </Link>

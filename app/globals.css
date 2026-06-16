@@ -1,44 +1,35 @@
 @import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Source+Sans+3:wght@400;500;600;700;800&display=swap");
-:root {
-  --red: #c41e24;
-  --red-light: #c41e2410;
-  --black: #111;
-  --grey: #555;
-  --grey-light: #999;
-  --border: #e5e5e5;
-  --bg: #fafafa;
-  --font: "Source Sans 3", sans-serif;
-  --display: "Instrument Serif", serif;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  button,
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+  }
+  button:active,
+  a:active {
+    transform: scale(0.97);
+  }
 }
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+
+@layer utilities {
+  .fade-up {
+    animation: fadeUp 0.4s ease both;
+  }
 }
-body {
-  font-family: var(--font);
-  background: #fff;
-  color: var(--black);
-  -webkit-font-smoothing: antialiased;
-}
-a {
-  text-decoration: none;
-  color: inherit;
-}
-button {
-  font-family: var(--font);
-  cursor: pointer;
-}
-button:active,
-a:active {
-  transform: scale(0.97);
-}
-input,
-textarea,
-select {
-  font-family: var(--font);
-}
+
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -48,12 +39,4 @@ select {
     opacity: 1;
     transform: translateY(0);
   }
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-.fade-up {
-  animation: fadeUp 0.4s ease both;
 }

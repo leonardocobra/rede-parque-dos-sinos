@@ -8,10 +8,7 @@ import { supabase } from "../../lib/supabase";
 import { CATS, catIcon } from "../config";
 
 function normalize(s) {
-  return (s || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+  return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
 function CatalogoContent() {
@@ -69,48 +66,24 @@ function CatalogoContent() {
   return (
     <>
       <Nav />
-      <div style={{ padding: "20px", maxWidth: 560, margin: "0 auto" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 16,
-          }}
-        >
-          <h2 style={{ fontFamily: "var(--display)", fontSize: 26 }}>Catálogo</h2>
+      <div className="px-5 max-w-[560px] mx-auto">
+        <div className="flex items-center justify-between mb-4 pt-5">
+          <h2 className="font-display text-[26px]">Catálogo</h2>
           <button
             onClick={load}
             disabled={loading}
-            style={{
-              background: "var(--bg)",
-              border: "1px solid var(--border)",
-              borderRadius: 6,
-              padding: "6px 12px",
-              fontSize: 11,
-              fontWeight: 700,
-              color: "var(--grey)",
-              opacity: loading ? 0.5 : 1,
-            }}
+            className={`bg-brand-surface border border-brand-border rounded-[6px] px-3 py-1.5 text-[11px] font-bold text-brand-grey ${
+              loading ? "opacity-50" : ""
+            }`}
           >
             ↻ Atualizar
           </button>
         </div>
 
         {loading ? (
-          <div style={{ textAlign: "center", padding: "48px 20px" }}>
-            <div
-              style={{
-                width: 36,
-                height: 36,
-                border: "3px solid var(--border)",
-                borderTopColor: "var(--red)",
-                borderRadius: "50%",
-                animation: "spin .8s linear infinite",
-                margin: "0 auto 14px",
-              }}
-            />
-            <p style={{ color: "var(--grey-light)", fontSize: 13 }}>Carregando...</p>
+          <div className="text-center py-12 px-5">
+            <div className="w-9 h-9 border-[3px] border-brand-border border-t-brand-red rounded-full animate-spin mx-auto mb-3.5" />
+            <p className="text-brand-grey-light text-[13px]">Carregando...</p>
           </div>
         ) : (
           <>
@@ -119,39 +92,17 @@ function CatalogoContent() {
               placeholder="Buscar por nome, serviço ou bairro..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "11px 14px",
-                borderRadius: 8,
-                border: "1.5px solid var(--border)",
-                fontSize: 14,
-                background: "#fff",
-                outline: "none",
-                marginBottom: 10,
-              }}
+              className="w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-white outline-none mb-2.5"
             />
 
-            <div
-              style={{
-                display: "flex",
-                gap: 5,
-                overflowX: "auto",
-                paddingBottom: 6,
-                marginBottom: 12,
-              }}
-            >
+            <div className="flex gap-[5px] overflow-x-auto pb-1.5 mb-3">
               <button
                 onClick={() => setCatFilter(null)}
-                style={{
-                  background: !catFilter ? "var(--black)" : "var(--bg)",
-                  color: !catFilter ? "#fff" : "var(--grey)",
-                  border: "1px solid " + (!catFilter ? "var(--black)" : "var(--border)"),
-                  borderRadius: 6,
-                  padding: "5px 12px",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  whiteSpace: "nowrap",
-                }}
+                className={`rounded-[6px] px-3 py-[5px] text-[11px] font-bold whitespace-nowrap border ${
+                  !catFilter
+                    ? "bg-brand-black text-white border-brand-black"
+                    : "bg-brand-surface text-brand-grey border-brand-border"
+                }`}
               >
                 Todos
               </button>
@@ -159,47 +110,33 @@ function CatalogoContent() {
                 <button
                   key={c.value}
                   onClick={() => setCatFilter(catFilter === c.value ? null : c.value)}
-                  style={{
-                    background: catFilter === c.value ? "var(--red)" : "var(--bg)",
-                    color: catFilter === c.value ? "#fff" : "var(--grey)",
-                    border: "1px solid " + (catFilter === c.value ? "var(--red)" : "var(--border)"),
-                    borderRadius: 6,
-                    padding: "5px 12px",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    whiteSpace: "nowrap",
-                  }}
+                  className={`rounded-[6px] px-3 py-[5px] text-[11px] font-bold whitespace-nowrap border ${
+                    catFilter === c.value
+                      ? "bg-brand-red text-white border-brand-red"
+                      : "bg-brand-surface text-brand-grey border-brand-border"
+                  }`}
                 >
                   {c.icon} {c.value}
                 </button>
               ))}
             </div>
 
-            <div style={{ fontSize: 11, color: "var(--grey-light)", marginBottom: 12 }}>
+            <div className="text-[11px] text-brand-grey-light mb-3">
               {filtered.length} profissional{filtered.length !== 1 ? "is" : ""}
             </div>
 
             {filtered.length === 0 && (
-              <div style={{ textAlign: "center", padding: "48px 20px" }}>
-                <div style={{ fontSize: 32, marginBottom: 8, opacity: 0.4 }}>
+              <div className="text-center py-12 px-5">
+                <div className="text-[32px] mb-2 opacity-40">
                   {profs.length === 0 ? "📋" : "🔍"}
                 </div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "var(--grey)" }}>
+                <div className="text-sm font-bold text-brand-grey">
                   {profs.length === 0 ? "Nenhum profissional cadastrado ainda" : "Nenhum resultado"}
                 </div>
                 {profs.length === 0 && (
                   <Link
                     href="/cadastro"
-                    style={{
-                      display: "inline-block",
-                      marginTop: 14,
-                      background: "var(--red)",
-                      color: "#fff",
-                      borderRadius: 8,
-                      padding: "10px 24px",
-                      fontSize: 13,
-                      fontWeight: 700,
-                    }}
+                    className="inline-block mt-3.5 bg-brand-red text-white rounded-lg px-6 py-2.5 text-[13px] font-bold"
                   >
                     Seja o primeiro
                   </Link>
@@ -221,154 +158,74 @@ function CatalogoContent() {
               return (
                 <div
                   key={p.id}
-                  className="fade-up"
-                  style={{
-                    background: "#fff",
-                    borderRadius: 10,
-                    marginBottom: 10,
-                    border: "1px solid " + (open ? "var(--red)" : "var(--border)"),
-                    animationDelay: Math.min(i, 10) * 0.03 + "s",
-                    transition: "border .2s",
-                  }}
+                  className={`fade-up bg-white rounded-[10px] mb-2.5 border transition-colors duration-200 ${
+                    open ? "border-brand-red" : "border-brand-border"
+                  }`}
+                  style={{ animationDelay: Math.min(i, 10) * 0.03 + "s" }}
                 >
                   <div
                     onClick={() => setOpenId(open ? null : p.id)}
-                    style={{
-                      padding: 16,
-                      cursor: "pointer",
-                      display: "flex",
-                      gap: 14,
-                      alignItems: "flex-start",
-                    }}
+                    className="p-4 cursor-pointer flex gap-3.5 items-start"
                   >
-                    <div
-                      style={{
-                        width: 46,
-                        height: 46,
-                        borderRadius: 8,
-                        background: "var(--bg)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 13,
-                        fontWeight: 800,
-                        color: "var(--red)",
-                        flexShrink: 0,
-                        border: "1px solid var(--border)",
-                      }}
-                    >
+                    <div className="w-[46px] h-[46px] rounded-lg bg-brand-surface flex items-center justify-center text-[13px] font-extrabold text-brand-red shrink-0 border border-brand-border">
                       {ini}
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 8,
-                          flexWrap: "wrap",
-                          marginBottom: 2,
-                        }}
-                      >
-                        <span style={{ fontWeight: 700, fontSize: 15 }}>{p.nome}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                        <span className="font-bold text-[15px]">{p.nome}</span>
                         {st?.recomendado && (
-                          <span
-                            style={{
-                              background: "var(--red-light)",
-                              color: "var(--red)",
-                              fontWeight: 700,
-                              fontSize: 10,
-                              padding: "3px 10px",
-                              borderRadius: 4,
-                              textTransform: "uppercase",
-                              letterSpacing: 0.6,
-                            }}
-                          >
+                          <span className="bg-brand-red-light text-brand-red font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px]">
                             Recomendado
                           </span>
                         )}
                       </div>
-                      <div style={{ fontSize: 13, color: "var(--red)", fontWeight: 700 }}>
+                      <div className="text-[13px] text-brand-red font-bold">
                         {catIcon(p.categoria)} {p.servico}
                       </div>
-                      <div style={{ fontSize: 12, color: "var(--grey-light)", marginTop: 2 }}>
+                      <div className="text-xs text-brand-grey-light mt-0.5">
                         {p.bairro && "📍 " + p.bairro}
                         {p.experiencia ? " · " + p.experiencia : ""}
                       </div>
                       {st && (
-                        <div
-                          style={{
-                            marginTop: 6,
-                            color: "var(--red)",
-                            fontSize: 13,
-                            letterSpacing: 1,
-                          }}
-                        >
+                        <div className="mt-1.5 text-brand-red text-[13px] tracking-[1px]">
                           {"★".repeat(Math.round(st.avg))}
                           {"☆".repeat(5 - Math.round(st.avg))}
-                          <span
-                            style={{
-                              color: "var(--black)",
-                              marginLeft: 6,
-                              fontSize: 12,
-                              fontWeight: 600,
-                            }}
-                          >
+                          <span className="text-brand-black ml-1.5 text-xs font-semibold">
                             {st.avg.toFixed(1)}
                           </span>
-                          <span style={{ fontSize: 10, color: "var(--grey-light)", marginLeft: 6 }}>
+                          <span className="text-[10px] text-brand-grey-light ml-1.5">
                             ({st.count})
                           </span>
                         </div>
                       )}
                     </div>
                     <span
-                      style={{
-                        fontSize: 16,
-                        color: "var(--grey-light)",
-                        flexShrink: 0,
-                        marginTop: 4,
-                        transform: open ? "rotate(180deg)" : "none",
-                        transition: "transform .2s",
-                      }}
+                      className={`text-base text-brand-grey-light shrink-0 mt-1 transition-transform duration-200 ${
+                        open ? "rotate-180" : ""
+                      }`}
                     >
                       ▾
                     </span>
                   </div>
                   {open && (
-                    <div
-                      style={{
-                        padding: "0 16px 16px",
-                        borderTop: "1px solid var(--border)",
-                        marginTop: -2,
-                        paddingTop: 14,
-                      }}
-                    >
+                    <div className="px-4 pb-4 border-t border-brand-border pt-3.5">
                       {p.descricao && (
-                        <p
-                          style={{
-                            fontSize: 13,
-                            color: "var(--grey)",
-                            lineHeight: 1.6,
-                            marginBottom: 12,
-                          }}
-                        >
+                        <p className="text-[13px] text-brand-grey leading-relaxed mb-3">
                           {p.descricao}
                         </p>
                       )}
                       {p.regioes && (
-                        <div style={{ fontSize: 12, color: "var(--grey-light)", marginBottom: 6 }}>
+                        <div className="text-xs text-brand-grey-light mb-1.5">
                           Atende: {p.regioes}
                         </div>
                       )}
                       {p.instagram && (
-                        <div style={{ fontSize: 12, color: "var(--grey-light)", marginBottom: 6 }}>
+                        <div className="text-xs text-brand-grey-light mb-1.5">
                           Instagram: {p.instagram}
                         </div>
                       )}
                       {st && st.count > 0 && (
-                        <div
-                          style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}
-                        >
+                        <div className="flex gap-2 mb-3.5 flex-wrap">
                           {[
                             { l: "Pontual", v: st.pontual },
                             { l: "Contrataria", v: st.novamente },
@@ -376,68 +233,30 @@ function CatalogoContent() {
                           ].map((s, j) => (
                             <div
                               key={j}
-                              style={{
-                                background: "var(--bg)",
-                                borderRadius: 6,
-                                padding: "8px 12px",
-                                flex: 1,
-                                minWidth: 70,
-                                textAlign: "center",
-                                border: "1px solid var(--border)",
-                              }}
+                              className="bg-brand-surface rounded-[6px] px-3 py-2 flex-1 min-w-[70px] text-center border border-brand-border"
                             >
-                              <div style={{ fontSize: 18, fontWeight: 800 }}>{s.v}%</div>
-                              <div
-                                style={{
-                                  fontSize: 9,
-                                  color: "var(--grey-light)",
-                                  fontWeight: 700,
-                                  textTransform: "uppercase",
-                                  letterSpacing: 0.5,
-                                }}
-                              >
+                              <div className="text-[18px] font-extrabold">{s.v}%</div>
+                              <div className="text-[9px] text-brand-grey-light font-bold uppercase tracking-[0.5px]">
                                 {s.l}
                               </div>
                             </div>
                           ))}
                         </div>
                       )}
-                      <div style={{ display: "flex", gap: 8 }}>
+                      <div className="flex gap-2">
                         {wn && (
                           <a
                             href={"https://wa.me/55" + wn}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{
-                              background: "#25D366",
-                              color: "#fff",
-                              borderRadius: 8,
-                              padding: "10px 20px",
-                              fontSize: 13,
-                              fontWeight: 700,
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 6,
-                              flex: 1,
-                              justifyContent: "center",
-                            }}
+                            className="bg-[#25D366] text-white rounded-lg px-5 py-2.5 text-[13px] font-bold flex-1 flex items-center justify-center gap-1.5"
                           >
                             📞 WhatsApp
                           </a>
                         )}
                         <Link
                           href={"/avaliar?id=" + p.id + "&nome=" + encodeURIComponent(p.nome)}
-                          style={{
-                            background: "#fff",
-                            color: "var(--black)",
-                            border: "1.5px solid var(--border)",
-                            borderRadius: 8,
-                            padding: "10px 20px",
-                            fontSize: 13,
-                            fontWeight: 700,
-                            flex: 1,
-                            textAlign: "center",
-                          }}
+                          className="bg-white text-brand-black border-[1.5px] border-brand-border rounded-lg px-5 py-2.5 text-[13px] font-bold flex-1 text-center"
                         >
                           Avaliar
                         </Link>
@@ -448,18 +267,10 @@ function CatalogoContent() {
               );
             })}
 
-            <div style={{ textAlign: "center", marginTop: 20, paddingBottom: 20 }}>
+            <div className="text-center mt-5 pb-5">
               <Link
                 href="/cadastro"
-                style={{
-                  background: "var(--red)",
-                  color: "#fff",
-                  borderRadius: 8,
-                  padding: "12px 32px",
-                  fontSize: 14,
-                  fontWeight: 700,
-                  display: "inline-block",
-                }}
+                className="bg-brand-red text-white rounded-lg px-8 py-3 text-sm font-bold inline-block"
               >
                 + Cadastrar Meu Serviço
               </Link>
