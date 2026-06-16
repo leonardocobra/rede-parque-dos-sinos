@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
@@ -24,6 +24,10 @@ function Toggle({ label, value, onChange }) {
 }
 
 export default function Avaliar() {
+  return <Suspense><AvaliarContent /></Suspense>;
+}
+
+function AvaliarContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const preId = searchParams.get("id");
