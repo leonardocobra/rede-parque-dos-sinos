@@ -103,6 +103,12 @@ function EditarCadastro({ cadastro }) {
       setStatus("erro");
       return;
     }
+    // Revalida o perfil público (ISR) para refletir a edição na hora.
+    await fetch("/api/revalidar-perfil", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: cadastro.id }),
+    }).catch(() => {});
     setStatus("ok");
     setFoto(null);
     router.refresh();
