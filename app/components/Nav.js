@@ -1,8 +1,10 @@
 "use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
 import { BRAND } from "../brand";
+import { getBrowserSupabase } from "../../lib/supabase/client";
 
 const links = [
   { href: "/", label: "Início" },
@@ -13,6 +15,18 @@ const links = [
 
 export default function Nav() {
   const path = usePathname();
+  const [logado, setLogado] = useState(false);
+
+  useEffect(() => {
+    const supabase = getBrowserSupabase();
+    supabase.auth.getSession().then(({ data }) => setLogado(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => setLogado(!!session));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  const authLink = logado
+    ? { href: "/painel", label: "Painel" }
+    : { href: "/entrar", label: "Entrar" };
   return (
     <nav className="sticky top-0 z-[100] bg-brand-card border-b border-brand-border px-3 flex items-center justify-between h-[52px] gap-1">
       <Link href="/" className="flex items-center gap-2 shrink-0">
@@ -24,7 +38,7 @@ export default function Nav() {
         </span>
       </Link>
       <div className="flex items-center gap-0.5 shrink-0">
-        {links.map((l) => (
+        {[...links, authLink].map((l) => (
           <Link
             key={l.href}
             href={l.href}
