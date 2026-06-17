@@ -15,6 +15,7 @@ CREATE TABLE profissionais (
   instagram TEXT,
   experiencia TEXT,
   descricao TEXT,
+  foto_url TEXT,
   criado_em TIMESTAMPTZ DEFAULT now()
 );
 

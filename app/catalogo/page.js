@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import { supabase } from "../../lib/supabase";
 import { CATS, catIcon } from "../config";
 import { instagramUrl } from "../../lib/instagram";
+import { iniciais } from "../../lib/avatar";
 import { computeStats, sortProfissionais, ORDENACOES, ORDENACAO_PADRAO } from "../../lib/catalogo";
 
 function normalize(s) {
@@ -174,13 +175,7 @@ function CatalogoContent() {
               const open = openId === p.id;
               const wn = (p.telefone || "").replace(/\D/g, "");
               const ig = instagramUrl(p.instagram);
-              const ini = p.nome
-                .split(" ")
-                .filter(Boolean)
-                .map((n) => n[0])
-                .slice(0, 2)
-                .join("")
-                .toUpperCase();
+              const ini = iniciais(p.nome);
               return (
                 <div
                   key={p.id}
@@ -193,9 +188,19 @@ function CatalogoContent() {
                     onClick={() => setOpenId(open ? null : p.id)}
                     className="p-4 cursor-pointer flex gap-3.5 items-start"
                   >
-                    <div className="w-[46px] h-[46px] rounded-lg bg-brand-surface flex items-center justify-center text-[13px] font-extrabold text-brand-red shrink-0 border border-brand-border">
-                      {ini}
-                    </div>
+                    {p.foto_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={p.foto_url}
+                        alt={"Foto de " + p.nome}
+                        loading="lazy"
+                        className="w-[46px] h-[46px] rounded-lg object-cover shrink-0 border border-brand-border"
+                      />
+                    ) : (
+                      <div className="w-[46px] h-[46px] rounded-lg bg-brand-surface flex items-center justify-center text-[13px] font-extrabold text-brand-red shrink-0 border border-brand-border">
+                        {ini}
+                      </div>
+                    )}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-0.5">
                         <span className="font-bold text-[15px]">{p.nome}</span>
