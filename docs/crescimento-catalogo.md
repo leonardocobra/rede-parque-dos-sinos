@@ -104,9 +104,9 @@ Instrumentar o mínimo para saber o que funciona:
 **Sequência sugerida:** medição (6) primeiro, para ter linha de base; depois 2 e 3 (rápidos);
 depois 1 e 4 (o grande motor de SEO); 5 e 7 em seguida.
 
-## 9. Decisões em aberto (para o Leonardo)
+## 9. Decisões tomadas (2026-06-17)
 
-- [ ] Topo da fila: **perfil público + SEO** (recomendado) ou prova social/compartilhamento rápido primeiro?
-- [ ] Qual ferramenta de analytics? (sugiro Vercel Analytics — já está na Vercel)
-- [ ] Recuperar os **contadores** da home (branch teal descartada) num PR simples?
-- [ ] Registrar um **domínio neutro** (decisão também listada no doc de marca)?
+- [x] **Começar pelo perfil público + SEO** (item 1 da priorização) como maior alavanca.
+- [x] **Analytics: Vercel Analytics** (já está na Vercel) — instrumentar visualizações de perfil e cliques de contato como métricas-norte.
+- [x] **Recuperar os contadores** de prova social na home num PR simples.
+- [x] **Registrar um domínio neutro** (alinhado ao `docs/posicionamento-marca.md`).
