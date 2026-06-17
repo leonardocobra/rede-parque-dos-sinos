@@ -17,8 +17,8 @@ function Toggle({ label, value, onChange }) {
             className={`flex-1 py-2.5 rounded-[6px] text-[13px] font-bold transition-all duration-150 border-[1.5px] ${
               value === v
                 ? v
-                  ? "bg-[#E8F5E9] text-[#2E7D32] border-[#A5D6A7]"
-                  : "bg-[#FFEBEE] text-brand-red border-[#EF9A9A]"
+                  ? "bg-brand-black text-white border-brand-black"
+                  : "bg-brand-red text-white border-brand-red"
                 : "bg-brand-card text-brand-grey border-brand-border"
             }`}
           >
@@ -141,8 +141,8 @@ function AvaliarContent() {
                     onClick={() => setNota(n)}
                     className={`flex-1 py-3 rounded-[6px] text-[20px] transition-all duration-150 border-[1.5px] ${
                       nota >= n
-                        ? "bg-[#FFF8E1] border-[#FFD54F]"
-                        : "bg-brand-card border-brand-border"
+                        ? "bg-brand-red-light border-brand-red text-brand-red"
+                        : "bg-brand-card border-brand-border text-brand-grey-light"
                     }`}
                   >
                     ★
