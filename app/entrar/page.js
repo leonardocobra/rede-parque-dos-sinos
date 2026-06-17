@@ -43,7 +43,7 @@ function EntrarForm() {
     <div className="px-5 py-6 max-w-[440px] mx-auto">
       <h2 className="font-display text-[26px] mb-1">Entrar</h2>
       <p className="text-[13px] text-brand-grey-light mb-6">
-        Para gerenciar seu cadastro. Enviamos um link de acesso ao seu e-mail — sem senha.
+        Para gerenciar seu cadastro. Enviamos um link de acesso ao seu e-mail.
       </p>
 
       {status === "enviado" ? (
