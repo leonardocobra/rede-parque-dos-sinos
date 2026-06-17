@@ -196,6 +196,14 @@ function CatalogoContent() {
                             Recomendado
                           </span>
                         )}
+                        {p.verificado && (
+                          <span
+                            title="Identidade confirmada pela Rede"
+                            className="bg-brand-black text-white font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px] inline-flex items-center gap-1"
+                          >
+                            ✓ Verificado
+                          </span>
+                        )}
                       </div>
                       <div className="text-[13px] text-brand-red font-bold">
                         {catIcon(p.categoria)} {p.servico}
