@@ -22,14 +22,14 @@ describe("Home", () => {
     REGRAS.forEach((r) => expect(screen.getByText(r)).toBeInTheDocument());
   });
 
-  it("mantém a ação rápida de avaliar (ausente no Hero)", () => {
+  it("mantém a ação rápida de avaliar profissional", () => {
     render(<Home />);
     expect(screen.getByText("Avaliar Profissional")).toBeInTheDocument();
   });
 
   it("não repete o CTA de ver catálogo (apenas o do Hero)", () => {
     render(<Home />);
-    expect(screen.getAllByText("Ver Catálogo")).toHaveLength(1);
+    expect(screen.getAllByText("Ver Catálogo →")).toHaveLength(1);
   });
 
   it("oferece botões de navegação em cada passo de Como Funciona", () => {
