@@ -9,8 +9,8 @@ export const BRAND = {
   nome: "A Rede",
   // Nome por extenso, usado em hero e rodapé.
   nomeCompleto: "A Rede de Profissionais",
-  // Sigla do "logo" quadrado da navbar.
-  sigla: "AR",
+  // Sigla do "logo" quadrado da navbar (minúscula, ecoa o wordmark a_rede).
+  sigla: "ar",
   // Bairro onde a rede nasceu — aparece como origem/contexto, nunca como nome.
   origem: "Parque dos Sinos",
   cidade: "Jacareí – SP",

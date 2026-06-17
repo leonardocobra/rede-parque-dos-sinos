@@ -85,3 +85,23 @@
     transform: translateY(0);
   }
 }
+
+/* Cursor/ponto piscando estilo terminal (usado no wordmark "a_rede") */
+@keyframes terminalBlink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+.terminal-blink {
+  animation: terminalBlink 1s step-end infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .terminal-blink {
+    animation: none;
+  }
+}
