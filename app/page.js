@@ -158,26 +158,11 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Manifesto */}
-      <div className="px-5 pt-9 pb-2 max-w-[560px] mx-auto">
-        <div className="bg-brand-surface border border-brand-border rounded-xl py-7 px-6 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-1 h-full bg-brand-red" />
-          <div className="text-[10px] font-extrabold tracking-[2px] uppercase text-brand-red mb-3">
-            Manifesto
-          </div>
-          <p className="text-[17px] font-medium italic leading-[1.6]">
-            Acreditamos que uma vizinhança é construída por pessoas que se ajudam. Começamos no
-            Parque dos Sinos para manter nossas ruas organizadas e apoiar trabalhadores honestos — e
-            queremos levar isso a cada bairro vizinho.
-          </p>
-        </div>
-      </div>
-
       {/* CTA */}
       <div className="px-5 pt-9 pb-10 max-w-[560px] mx-auto">
-        <div className="bg-brand-black rounded-2xl py-8 px-6 text-center">
+        <div className="bg-brand-black rounded-2xl py-8 px-6 text-right">
           <h3 className="font-display text-[22px] text-white mb-2">Faça parte da rede</h3>
-          <p className="text-[13px] text-brand-onink-muted leading-[1.5] max-w-[340px] mx-auto mb-5">
+          <p className="text-[13px] text-brand-onink-muted leading-[1.5] max-w-[340px] ml-auto mb-5">
             Cadastre seu serviço gratuitamente e seja encontrado pelos vizinhos.
           </p>
           <Link

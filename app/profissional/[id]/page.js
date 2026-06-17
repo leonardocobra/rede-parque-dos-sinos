@@ -207,7 +207,7 @@ export default async function PerfilPage({ params }) {
                 </Link>
               ))}
             </div>
-            <div className="text-center mt-4">
+            <div className="text-right mt-4">
               <Link
                 href={"/catalogo?cat=" + encodeURIComponent(prof.categoria)}
                 className="text-[12px] font-bold text-brand-grey"

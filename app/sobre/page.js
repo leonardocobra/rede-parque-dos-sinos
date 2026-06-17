@@ -107,7 +107,7 @@ export default function Sobre() {
           ))}
         </Section>
 
-        <div className="text-center my-5">
+        <div className="text-right my-5">
           <Link
             href="/cadastro"
             className="bg-brand-red text-white rounded-lg py-3 px-7 text-sm font-bold inline-block"

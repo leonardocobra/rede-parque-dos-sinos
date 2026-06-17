@@ -19,8 +19,8 @@ export default function Nav() {
         <div className="w-7 h-7 rounded-[6px] bg-brand-red flex items-center justify-center text-[11px] text-white font-extrabold">
           {BRAND.sigla}
         </div>
-        <span className="font-display text-[15px] whitespace-nowrap hidden min-[400px]:inline">
-          {BRAND.nome}
+        <span className="font-mono font-extrabold text-[15px] whitespace-nowrap hidden min-[400px]:inline">
+          a_rede.
         </span>
       </Link>
       <div className="flex items-center gap-0.5 shrink-0">
