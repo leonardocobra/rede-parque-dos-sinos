@@ -109,7 +109,7 @@ function CatalogoContent() {
               placeholder="Buscar por nome, serviço ou bairro..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-white outline-none mb-2.5"
+              className="w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-brand-card outline-none mb-2.5"
             />
 
             <div className="flex gap-[5px] overflow-x-auto pb-1.5 mb-3">
@@ -139,7 +139,7 @@ function CatalogoContent() {
             </div>
 
             <div className="text-[11px] text-brand-grey-light mb-3">
-              {filtered.length} profissional{filtered.length !== 1 ? "is" : ""}
+              {filtered.length} {filtered.length === 1 ? "profissional" : "profissionais"}
             </div>
 
             {filtered.length === 0 && (
@@ -176,7 +176,7 @@ function CatalogoContent() {
               return (
                 <div
                   key={p.id}
-                  className={`fade-up bg-white rounded-[10px] mb-2.5 border transition-colors duration-200 ${
+                  className={`fade-up bg-brand-card rounded-[10px] mb-2.5 border transition-colors duration-200 ${
                     open ? "border-brand-red" : "border-brand-border"
                   }`}
                   style={{ animationDelay: Math.min(i, 10) * 0.03 + "s" }}
@@ -208,7 +208,7 @@ function CatalogoContent() {
                         <div className="mt-1.5 text-brand-red text-[13px] tracking-[1px]">
                           {"★".repeat(Math.round(st.avg))}
                           {"☆".repeat(5 - Math.round(st.avg))}
-                          <span className="text-brand-black ml-1.5 text-xs font-semibold">
+                          <span className="text-brand-text ml-1.5 text-xs font-semibold">
                             {st.avg.toFixed(1)}
                           </span>
                           <span className="text-[10px] text-brand-grey-light ml-1.5">
@@ -281,7 +281,7 @@ function CatalogoContent() {
                         )}
                         <Link
                           href={"/avaliar?id=" + p.id + "&nome=" + encodeURIComponent(p.nome)}
-                          className="bg-white text-brand-black border-[1.5px] border-brand-border rounded-lg px-5 py-2.5 text-[13px] font-bold flex-1 text-center"
+                          className="bg-brand-card text-brand-text border-[1.5px] border-brand-border rounded-lg px-5 py-2.5 text-[13px] font-bold flex-1 text-center"
                         >
                           Avaliar
                         </Link>

@@ -19,7 +19,7 @@ function Toggle({ label, value, onChange }) {
                 ? v
                   ? "bg-[#E8F5E9] text-[#2E7D32] border-[#A5D6A7]"
                   : "bg-[#FFEBEE] text-brand-red border-[#EF9A9A]"
-                : "bg-white text-brand-grey border-brand-border"
+                : "bg-brand-card text-brand-grey border-brand-border"
             }`}
           >
             {v ? "Sim" : "Não"}
@@ -112,8 +112,8 @@ function AvaliarContent() {
               <select
                 value={profId}
                 onChange={(e) => setProfId(e.target.value)}
-                className={`w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-white outline-none ${
-                  profId ? "text-brand-black" : "text-brand-grey-light"
+                className={`w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-brand-card outline-none ${
+                  profId ? "text-brand-text" : "text-brand-grey-light"
                 }`}
               >
                 <option value="">Selecione o profissional...</option>
@@ -140,7 +140,9 @@ function AvaliarContent() {
                     key={n}
                     onClick={() => setNota(n)}
                     className={`flex-1 py-3 rounded-[6px] text-[20px] transition-all duration-150 border-[1.5px] ${
-                      nota >= n ? "bg-[#FFF8E1] border-[#FFD54F]" : "bg-white border-brand-border"
+                      nota >= n
+                        ? "bg-[#FFF8E1] border-[#FFD54F]"
+                        : "bg-brand-card border-brand-border"
                     }`}
                   >
                     ★
@@ -158,7 +160,7 @@ function AvaliarContent() {
                 value={comentario}
                 onChange={(e) => setComentario(e.target.value)}
                 rows={3}
-                className="w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-white outline-none resize-y"
+                className="w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-brand-card outline-none resize-y"
               />
             </div>
 

@@ -20,7 +20,7 @@ function Field({ label, required, children }) {
 }
 
 const inputClass =
-  "w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-white outline-none text-brand-black";
+  "w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-brand-card outline-none text-brand-text";
 
 export default function Cadastro() {
   const router = useRouter();

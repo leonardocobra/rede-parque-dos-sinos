@@ -59,7 +59,7 @@ export default function FeedbackButton() {
           }}
           className="fixed inset-0 bg-black/40 z-[200] flex items-end justify-center backdrop-blur-sm"
         >
-          <div className="bg-white rounded-t-[20px] px-5 py-6 max-w-[440px] w-full max-h-[85vh] overflow-y-auto">
+          <div className="bg-brand-card rounded-t-[20px] px-5 py-6 max-w-[440px] w-full max-h-[85vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-5">
               <h3 className="font-display text-[22px] m-0">Feedback</h3>
               <button
@@ -85,7 +85,7 @@ export default function FeedbackButton() {
                 </button>
                 <button
                   onClick={() => setOpen(false)}
-                  className="w-full mt-2.5 bg-white text-brand-grey border border-brand-border rounded-lg py-3 text-sm font-bold"
+                  className="w-full mt-2.5 bg-brand-card text-brand-grey border border-brand-border rounded-lg py-3 text-sm font-bold"
                 >
                   Fechar
                 </button>
@@ -101,13 +101,13 @@ export default function FeedbackButton() {
                       className={`border-[1.5px] rounded-[10px] py-3.5 px-2 text-center cursor-pointer transition-all duration-150 ${
                         tipo === t.value
                           ? "bg-brand-red-light border-brand-red"
-                          : "bg-white border-brand-border"
+                          : "bg-brand-card border-brand-border"
                       }`}
                     >
                       <div className="text-[22px] mb-1">{t.icon}</div>
                       <div
                         className={`text-xs font-bold ${
-                          tipo === t.value ? "text-brand-red" : "text-brand-black"
+                          tipo === t.value ? "text-brand-red" : "text-brand-text"
                         }`}
                       >
                         {t.label}
@@ -126,7 +126,7 @@ export default function FeedbackButton() {
                     value={mensagem}
                     onChange={(e) => setMensagem(e.target.value)}
                     rows={4}
-                    className="w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-white outline-none resize-y box-border"
+                    className="w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-brand-card outline-none resize-y box-border"
                   />
                   <div className="text-[10px] text-brand-grey-light mt-1 text-right">
                     {mensagem.trim().length < 5 ? "Mínimo 5 caracteres" : "✓"}

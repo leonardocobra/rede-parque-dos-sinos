@@ -5,7 +5,7 @@ import { REGRAS } from "../config";
 
 function Section({ title, children }) {
   return (
-    <div className="bg-white rounded-[10px] p-5 border border-brand-border mb-3.5">
+    <div className="bg-brand-card rounded-[10px] p-5 border border-brand-border mb-3.5">
       <div className="text-[10px] font-extrabold tracking-[2px] uppercase text-brand-red mb-3.5">
         {title}
       </div>
@@ -102,7 +102,7 @@ export default function Sobre() {
             ["Lista de Transmissão", "Envio semanal com novos profissionais e destaques"],
           ].map((c, i) => (
             <div key={i} className={`${i < 4 ? "mb-3" : ""} text-[13px] text-brand-grey`}>
-              <div className="font-extrabold text-brand-black mb-0.5">{c[0]}</div>
+              <div className="font-extrabold text-brand-text mb-0.5">{c[0]}</div>
               <div className="leading-[1.5]">{c[1]}</div>
             </div>
           ))}
