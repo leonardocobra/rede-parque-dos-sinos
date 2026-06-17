@@ -5,6 +5,7 @@ import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import { supabase } from "../../lib/supabase";
 import { CATS } from "../config";
+import { instagramHandle } from "../../lib/instagram";
 
 function Field({ label, required, children }) {
   return (
@@ -50,7 +51,7 @@ export default function Cadastro() {
       categoria: form.categoria,
       bairro: form.bairro.trim(),
       regioes: form.regioes.trim(),
-      instagram: form.instagram.trim(),
+      instagram: instagramHandle(form.instagram) || "",
       experiencia: form.experiencia.trim(),
       descricao: form.descricao.trim(),
     });
