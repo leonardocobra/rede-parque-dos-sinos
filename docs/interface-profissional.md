@@ -98,8 +98,10 @@ Sim, mas **depende da Frente 2 (login)**. É o que transforma um cadastro estát
 > Liga com: `docs/crescimento-catalogo.md` (perfil público = peça de SEO/compartilhamento) e
 > `docs/autenticacao-e-selo.md` (painel exige o login leve).
 
-## 6. Decisões em aberto (para o Leonardo)
+## 6. Decisões tomadas (2026-06-17)
 
-- [ ] Topo da fila: **perfil público** primeiro (recomendado) ou painel?
-- [ ] Exibir **comentários** das avaliações no perfil público desde já? (aumenta confiança, mas exige moderação leve)
-- [ ] Mostrar **contagem de visualizações** ao profissional — vale instrumentar isso já no perfil público?
+- [x] **Começar pelo perfil público** `/profissional/[id]` — o painel privado fica para depois (depende da auth, Frente 2 fase 2).
+- [x] **Exibir comentários** das avaliações no perfil público desde já (com moderação leve).
+- [x] **Mostrar contadores** (ex.: visualizações) — instrumentar já no perfil público via Vercel Analytics (ver `docs/crescimento-catalogo.md`).
+
+Próximo passo concreto: implementar o perfil público server-rendered como um PR próprio.
