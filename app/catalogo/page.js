@@ -9,10 +9,20 @@ import { CATS, catIcon } from "../config";
 import { instagramUrl } from "../../lib/instagram";
 import { iniciais } from "../../lib/avatar";
 import { computeStats, sortProfissionais, ORDENACOES, ORDENACAO_PADRAO } from "../../lib/catalogo";
-import { WhatsAppIcon, InstagramIcon } from "../components/SocialIcons";
+import { WhatsAppIcon, InstagramIcon, ShareIcon } from "../components/SocialIcons";
+import { track } from "@vercel/analytics";
 
 function normalize(s) {
   return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
+
+// Compartilha o link do perfil público no WhatsApp. Monta a URL absoluta no
+// clique (evita mismatch de hidratação) e registra a métrica de compartilhamento.
+function compartilharPerfil(p) {
+  const url = `${window.location.origin}/profissional/${p.id}`;
+  const texto = `Encontrei ${p.nome} na Rede: ${url}`;
+  track("perfil_share", { canal: "whatsapp", id: p.id });
+  window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, "_blank", "noopener,noreferrer");
 }
 
 function CatalogoContent() {
@@ -262,12 +272,23 @@ function CatalogoContent() {
                           ))}
                         </div>
                       )}
-                      <Link
-                        href={"/profissional/" + p.id}
-                        className="block text-center text-[12px] font-bold text-brand-red mb-3"
-                      >
-                        Ver perfil completo →
-                      </Link>
+                      <div className="flex items-center justify-end gap-3 mb-3">
+                        <button
+                          type="button"
+                          onClick={() => compartilharPerfil(p)}
+                          aria-label="Compartilhar perfil no WhatsApp"
+                          className="inline-flex items-center gap-1.5 text-[12px] font-bold text-brand-grey"
+                        >
+                          <ShareIcon />
+                          Compartilhar
+                        </button>
+                        <Link
+                          href={"/profissional/" + p.id}
+                          className="text-[12px] font-bold text-brand-red"
+                        >
+                          Ver perfil completo →
+                        </Link>
+                      </div>
                       <div className="flex gap-2">
                         {wn && (
                           <a
