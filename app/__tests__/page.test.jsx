@@ -31,4 +31,17 @@ describe("Home", () => {
     render(<Home />);
     expect(screen.getAllByText("Ver Catálogo")).toHaveLength(1);
   });
+
+  it("oferece botões de navegação em cada passo de Como Funciona", () => {
+    render(<Home />);
+    expect(screen.getByText("Cadastrar serviço →").closest("a")).toHaveAttribute(
+      "href",
+      "/cadastro"
+    );
+    expect(screen.getByText("Ver catálogo →").closest("a")).toHaveAttribute("href", "/catalogo");
+    expect(screen.getByText("Avaliar profissional →").closest("a")).toHaveAttribute(
+      "href",
+      "/avaliar"
+    );
+  });
 });

@@ -67,18 +67,24 @@ export default function Home() {
               t: "Cadastre seu serviço",
               d: "Preencha o formulário com seu nome, serviço, contato e região. Gratuito, menos de 2 minutos.",
               icon: "📝",
+              href: "/cadastro",
+              cta: "Cadastrar serviço",
             },
             {
               n: "2",
               t: "Vizinhos encontram você",
               d: "Moradores consultam o catálogo e entram em contato direto pelo WhatsApp.",
               icon: "🤝",
+              href: "/catalogo",
+              cta: "Ver catálogo",
             },
             {
               n: "3",
               t: "Comunidade avalia",
               d: "Após o serviço, 3 perguntas rápidas. Boas avaliações geram mais indicações.",
               icon: "⭐",
+              href: "/avaliar",
+              cta: "Avaliar profissional",
             },
           ].map((s, i) => (
             <div
@@ -96,6 +102,12 @@ export default function Home() {
                   <span className="font-bold text-[15px]">{s.t}</span>
                 </div>
                 <p className="text-[13px] text-brand-grey leading-[1.55]">{s.d}</p>
+                <Link
+                  href={s.href}
+                  className="inline-flex items-center gap-1 mt-2.5 text-[13px] font-bold text-brand-red"
+                >
+                  {s.cta} →
+                </Link>
               </div>
             </div>
           ))}
