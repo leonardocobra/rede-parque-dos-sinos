@@ -1,12 +1,49 @@
-@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Source+Sans+3:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  /* Tema claro (padrão) — minimalista preto / branco / vermelho */
+  :root {
+    color-scheme: light;
+    --bg: #ffffff;
+    --surface: #f6f6f7;
+    --card: #ffffff;
+    --text: #0a0a0a;
+    --grey: #5a5a5e;
+    --grey-light: #8e8e93;
+    --border: #e8e8ea;
+    --ink: #0a0a0a;
+    --onink-muted: #b4b4ba;
+    --red: #d11525;
+    --red-light: #fbe9eb;
+  }
+
+  /* Tema escuro — alternável via classe .dark no <html> */
+  .dark {
+    color-scheme: dark;
+    --bg: #0b0b0d;
+    --surface: #151517;
+    --card: #161618;
+    --text: #f2f2f3;
+    --grey: #a1a1a6;
+    --grey-light: #6e6e73;
+    --border: #2a2a2e;
+    --ink: #1e1e22;
+    --onink-muted: #b4b4ba;
+    --red: #ff5a60;
+    --red-light: #2a1618;
+  }
+
   * {
     -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: "Plus Jakarta Sans", sans-serif;
   }
   a {
     text-decoration: none;
@@ -21,6 +58,14 @@
   button:active,
   a:active {
     transform: scale(0.97);
+  }
+}
+
+@layer components {
+  /* Títulos: Plus Jakarta Sans pesada e justa (look moderno e minimalista) */
+  .font-display {
+    font-weight: 800;
+    letter-spacing: -0.025em;
   }
 }
 
