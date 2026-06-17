@@ -15,7 +15,7 @@ export default function Home() {
           <div className="text-[11px] font-extrabold tracking-[3px] uppercase text-brand-red mb-4">
             Parque dos Sinos · Jacareí – SP
           </div>
-          <h1 className="font-display text-[38px] font-normal leading-[1.15] mb-4">
+          <h1 className="font-display text-[40px] leading-[1.05] mb-4">
             Rede de Profissionais
             <br />
             do Parque dos Sinos
@@ -45,12 +45,12 @@ export default function Home() {
       <div className="px-5 pt-8 pb-2 max-w-[560px] mx-auto">
         <Link
           href="/avaliar"
-          className="bg-[#333] rounded-xl py-4 px-5 flex items-center gap-4 block"
+          className="bg-brand-black rounded-xl py-4 px-5 flex items-center gap-4 block"
         >
           <div className="text-[28px]">⭐</div>
           <div>
             <div className="text-sm font-bold text-white leading-tight">Avaliar Profissional</div>
-            <div className="text-xs text-[#aaa] leading-snug mt-0.5">
+            <div className="text-xs text-brand-onink-muted leading-snug mt-0.5">
               Já contratou alguém pela rede? Deixe sua avaliação.
             </div>
           </div>
@@ -89,7 +89,7 @@ export default function Home() {
           ].map((s, i) => (
             <div
               key={i}
-              className="bg-white rounded-xl p-5 flex gap-4 border border-brand-border items-start"
+              className="bg-brand-card rounded-xl p-5 flex gap-4 border border-brand-border items-start"
             >
               <div className="w-11 h-11 rounded-[10px] bg-brand-surface border border-brand-border flex items-center justify-center text-[22px] shrink-0">
                 {s.icon}
@@ -125,7 +125,7 @@ export default function Home() {
             <Link
               key={i}
               href={"/catalogo?cat=" + encodeURIComponent(c.value)}
-              className="bg-white border border-brand-border rounded-[10px] p-3.5 block"
+              className="bg-brand-card border border-brand-border rounded-[10px] p-3.5 block"
             >
               <span className="text-[22px]">{c.icon}</span>
               <div className="text-[13px] font-bold mt-1.5 mb-[3px]">{c.value}</div>
@@ -141,7 +141,7 @@ export default function Home() {
         <p className="text-[13px] text-brand-grey-light text-center mb-5">
           Como a rede funciona para todos
         </p>
-        <div className="bg-white border border-brand-border rounded-xl p-5">
+        <div className="bg-brand-card border border-brand-border rounded-xl p-5">
           {REGRAS.map((r, i) => (
             <div
               key={i}
@@ -165,7 +165,7 @@ export default function Home() {
           <div className="text-[10px] font-extrabold tracking-[2px] uppercase text-brand-red mb-3">
             Manifesto
           </div>
-          <p className="font-display italic text-lg leading-[1.55]">
+          <p className="text-[17px] font-medium italic leading-[1.6]">
             Acreditamos que o Parque dos Sinos é construído por pessoas que se ajudam. Queremos
             manter nossas ruas organizadas e apoiar trabalhadores honestos.
           </p>
@@ -176,7 +176,7 @@ export default function Home() {
       <div className="px-5 pt-9 pb-10 max-w-[560px] mx-auto">
         <div className="bg-brand-black rounded-2xl py-8 px-6 text-center">
           <h3 className="font-display text-[22px] text-white mb-2">Faça parte da rede</h3>
-          <p className="text-[13px] text-[#aaa] leading-[1.5] max-w-[340px] mx-auto mb-5">
+          <p className="text-[13px] text-brand-onink-muted leading-[1.5] max-w-[340px] mx-auto mb-5">
             Cadastre seu serviço gratuitamente e seja encontrado pelos vizinhos.
           </p>
           <Link
