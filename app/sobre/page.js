@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
+import { REGRAS } from "../config";
 
 function Section({ title, children }) {
   return (
@@ -21,14 +22,7 @@ export default function Sobre() {
         <h2 className="font-display text-[26px] mb-5">Sobre a Rede</h2>
 
         <Section title="Regras Básicas">
-          {[
-            "Divulgação gratuita.",
-            "Respeito entre todos os participantes.",
-            "Não são permitidos conteúdos ilegais.",
-            "A contratação é de responsabilidade das partes.",
-            "O grupo apenas facilita o contato.",
-            "Avaliações devem ser respeitosas e baseadas em experiências reais.",
-          ].map((r, i) => (
+          {REGRAS.map((r, i) => (
             <div
               key={i}
               className="flex gap-3 items-start mb-2.5 text-[13px] text-brand-grey leading-[1.5]"

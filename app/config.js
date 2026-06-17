@@ -14,3 +14,13 @@ export const CATS = [
 export function catIcon(name) {
   return (CATS.find((c) => c.value === name) || {}).icon || "⚡";
 }
+
+// Regras básicas da rede — compartilhadas entre a home e a página "Sobre".
+export const REGRAS = [
+  "Divulgação gratuita.",
+  "Respeito entre todos os participantes.",
+  "Não são permitidos conteúdos ilegais.",
+  "A contratação é de responsabilidade das partes.",
+  "O grupo apenas facilita o contato.",
+  "Avaliações devem ser respeitosas e baseadas em experiências reais.",
+];
