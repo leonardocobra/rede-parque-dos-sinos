@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import Nav from "../Nav";
+import { BRAND } from "../../brand";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/",
@@ -15,9 +16,10 @@ vi.mock("next/link", () => ({
 }));
 
 describe("Nav", () => {
-  it("renderiza o logo com o texto correto", () => {
+  it("renderiza o logo com o nome da marca", () => {
     render(<Nav />);
-    expect(screen.getByText("Parque dos Sinos")).toBeInTheDocument();
+    expect(screen.getByText(BRAND.nome)).toBeInTheDocument();
+    expect(screen.getByText(BRAND.sigla)).toBeInTheDocument();
   });
 
   it("renderiza todos os links de navegação", () => {

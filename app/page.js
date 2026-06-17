@@ -2,6 +2,7 @@ import Link from "next/link";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import { CATS, REGRAS } from "./config";
+import { BRAND } from "./brand";
 
 export default function Home() {
   return (
@@ -13,16 +14,16 @@ export default function Home() {
         <div className="absolute top-5 left-1/2 -translate-x-1/2 w-60 h-60 rounded-full bg-brand-red-light blur-[60px] opacity-60 pointer-events-none" />
         <div className="relative z-[2] max-w-[480px] mx-auto">
           <div className="text-[11px] font-extrabold tracking-[3px] uppercase text-brand-red mb-4">
-            Parque dos Sinos · Jacareí – SP
+            {BRAND.origemLonga}
           </div>
           <h1 className="font-display text-[40px] leading-[1.05] mb-4">
-            Rede de Profissionais
+            {BRAND.nome}
             <br />
-            do Parque dos Sinos
+            de Profissionais
           </h1>
           <p className="text-[15px] text-brand-grey leading-relaxed max-w-[400px] mx-auto mb-8">
-            Conectando moradores e prestadores de serviço do bairro. Gratuito, organizado e feito
-            pela comunidade.
+            {BRAND.tagline} Gratuito, organizado e feito pela comunidade — começou no Parque dos
+            Sinos e cresce por Jacareí.
           </p>
           <div className="flex gap-2.5 justify-center flex-wrap">
             <Link
@@ -166,8 +167,9 @@ export default function Home() {
             Manifesto
           </div>
           <p className="text-[17px] font-medium italic leading-[1.6]">
-            Acreditamos que o Parque dos Sinos é construído por pessoas que se ajudam. Queremos
-            manter nossas ruas organizadas e apoiar trabalhadores honestos.
+            Acreditamos que uma vizinhança é construída por pessoas que se ajudam. Começamos no
+            Parque dos Sinos para manter nossas ruas organizadas e apoiar trabalhadores honestos — e
+            queremos levar isso a cada bairro vizinho.
           </p>
         </div>
       </div>
