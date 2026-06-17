@@ -325,7 +325,7 @@ function CatalogoContent() {
               );
             })}
 
-            <div className="text-center mt-5 pb-5">
+            <div className="text-right mt-5 pb-5">
               <Link
                 href="/cadastro"
                 className="bg-brand-red text-white rounded-lg px-8 py-3 text-sm font-bold inline-block"
