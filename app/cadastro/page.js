@@ -6,6 +6,10 @@ import Footer from "../components/Footer";
 import { supabase } from "../../lib/supabase";
 import { CATS } from "../config";
 import { instagramHandle } from "../../lib/instagram";
+import { validarFoto } from "../../lib/avatar";
+
+// Bucket público no Supabase Storage onde ficam as fotos dos profissionais.
+const FOTO_BUCKET = "fotos-profissionais";
 
 function Field({ label, required, children }) {
   return (
@@ -35,15 +39,38 @@ export default function Cadastro() {
     experiencia: "",
     descricao: "",
   });
+  const [foto, setFoto] = useState(null);
+  const [fotoErro, setFotoErro] = useState(null);
   const [status, setStatus] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const valid = form.nome && form.telefone && form.servico && form.categoria;
 
+  function onFoto(e) {
+    const file = e.target.files?.[0] || null;
+    const { ok, erro } = validarFoto(file);
+    setFotoErro(ok ? null : erro);
+    setFoto(ok ? file : null);
+  }
+
+  // Envia a foto para o Storage e devolve a URL pública (ou "" em caso de falha).
+  async function uploadFoto() {
+    if (!foto) return "";
+    const ext = (foto.name.split(".").pop() || "jpg").toLowerCase();
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from(FOTO_BUCKET).upload(path, foto, {
+      cacheControl: "3600",
+      upsert: false,
+    });
+    if (error) return "";
+    return supabase.storage.from(FOTO_BUCKET).getPublicUrl(path).data.publicUrl;
+  }
+
   async function submit() {
-    if (!valid || submitting) return;
+    if (!valid || submitting || fotoErro) return;
     setSubmitting(true);
+    const foto_url = await uploadFoto();
     const { error } = await supabase.from("profissionais").insert({
       nome: form.nome.trim(),
       telefone: form.telefone.trim(),
@@ -54,6 +81,7 @@ export default function Cadastro() {
       instagram: instagramHandle(form.instagram) || "",
       experiencia: form.experiencia.trim(),
       descricao: form.descricao.trim(),
+      foto_url,
     });
     if (error) {
       setStatus("error");
@@ -168,13 +196,29 @@ export default function Cadastro() {
               />
             </Field>
 
+            <Field label="Foto (opcional)">
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={onFoto}
+                className="w-full text-[13px] text-brand-grey file:mr-3 file:rounded-md file:border-0 file:bg-brand-surface file:px-3 file:py-2 file:text-[12px] file:font-bold file:text-brand-text"
+              />
+              {foto && !fotoErro && (
+                <p className="text-[11px] text-brand-grey-light mt-1.5">Selecionada: {foto.name}</p>
+              )}
+              {fotoErro && <p className="text-brand-red text-[12px] mt-1.5">{fotoErro}</p>}
+              <p className="text-[11px] text-brand-grey-light mt-1.5">
+                Uma foto sua ou do seu trabalho gera mais confiança. JPG, PNG ou WebP, até 2 MB.
+              </p>
+            </Field>
+
             {status === "error" && (
               <p className="text-brand-red text-[13px] mb-3">Erro ao cadastrar. Tente novamente.</p>
             )}
 
             <button
               onClick={submit}
-              disabled={!valid || submitting}
+              disabled={!valid || submitting || !!fotoErro}
               className={`w-full ${
                 valid ? "bg-brand-red" : "bg-brand-border"
               } text-white border-none rounded-lg py-3.5 text-[15px] font-bold mt-1 ${

@@ -37,8 +37,7 @@ export default function Sobre() {
 
         <Section title="Quem Pode Participar">
           <p className="text-[13px] text-brand-grey leading-relaxed mb-3">
-            Qualquer morador do Parque dos Sinos que preste serviços pode se cadastrar
-            gratuitamente:
+            Qualquer morador da região que preste serviços pode se cadastrar gratuitamente:
           </p>
           <div className="flex flex-wrap gap-[5px]">
             {[

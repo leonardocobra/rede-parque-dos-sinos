@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
+import { BRAND } from "../brand";
 
 const links = [
   { href: "/", label: "Início" },
@@ -16,10 +17,10 @@ export default function Nav() {
     <nav className="sticky top-0 z-[100] bg-brand-card border-b border-brand-border px-3 flex items-center justify-between h-[52px] gap-1">
       <Link href="/" className="flex items-center gap-2 shrink-0">
         <div className="w-7 h-7 rounded-[6px] bg-brand-red flex items-center justify-center text-[11px] text-white font-extrabold">
-          PS
+          {BRAND.sigla}
         </div>
         <span className="font-display text-[15px] whitespace-nowrap hidden min-[400px]:inline">
-          Parque dos Sinos
+          {BRAND.nome}
         </span>
       </Link>
       <div className="flex items-center gap-0.5 shrink-0">

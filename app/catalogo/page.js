@@ -7,6 +7,8 @@ import Footer from "../components/Footer";
 import { supabase } from "../../lib/supabase";
 import { CATS, catIcon } from "../config";
 import { instagramUrl } from "../../lib/instagram";
+import { iniciais } from "../../lib/avatar";
+import { computeStats, sortProfissionais, ORDENACOES, ORDENACAO_PADRAO } from "../../lib/catalogo";
 
 function normalize(s) {
   return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -35,6 +37,7 @@ function CatalogoContent() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState(searchParams.get("cat") || null);
+  const [ordenacao, setOrdenacao] = useState(ORDENACAO_PADRAO);
   const [openId, setOpenId] = useState(null);
 
   async function load() {
@@ -53,20 +56,7 @@ function CatalogoContent() {
   }, []);
 
   function stats(profId) {
-    const m = avals.filter((a) => a.profissional_id === profId);
-    if (!m.length) return null;
-    const avg = m.reduce((s, a) => s + a.nota, 0) / m.length;
-    const pontual = Math.round((m.filter((a) => a.pontual).length / m.length) * 100);
-    const novamente = Math.round((m.filter((a) => a.novamente).length / m.length) * 100);
-    const conforme = Math.round((m.filter((a) => a.conforme).length / m.length) * 100);
-    return {
-      avg: Math.round(avg * 10) / 10,
-      count: m.length,
-      pontual,
-      novamente,
-      conforme,
-      recomendado: novamente >= 80 && m.length >= 3,
-    };
+    return computeStats(profId, avals);
   }
 
   const filtered = profs.filter((p) => {
@@ -79,6 +69,8 @@ function CatalogoContent() {
       (!catFilter || p.categoria === catFilter)
     );
   });
+
+  const ordenados = sortProfissionais(filtered, avals, ordenacao);
 
   return (
     <>
@@ -138,8 +130,25 @@ function CatalogoContent() {
               ))}
             </div>
 
-            <div className="text-[11px] text-brand-grey-light mb-3">
-              {filtered.length} {filtered.length === 1 ? "profissional" : "profissionais"}
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <div className="text-[11px] text-brand-grey-light">
+                {filtered.length} {filtered.length === 1 ? "profissional" : "profissionais"}
+              </div>
+              <label className="flex items-center gap-1.5 text-[11px] text-brand-grey-light">
+                <span className="font-bold uppercase tracking-[0.5px]">Ordenar</span>
+                <select
+                  value={ordenacao}
+                  onChange={(e) => setOrdenacao(e.target.value)}
+                  aria-label="Ordenar profissionais"
+                  className="bg-brand-surface border border-brand-border rounded-[6px] px-2 py-1 text-[11px] font-bold text-brand-grey outline-none"
+                >
+                  {ORDENACOES.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
 
             {filtered.length === 0 && (
@@ -161,18 +170,12 @@ function CatalogoContent() {
               </div>
             )}
 
-            {filtered.map((p, i) => {
+            {ordenados.map((p, i) => {
               const st = stats(p.id);
               const open = openId === p.id;
               const wn = (p.telefone || "").replace(/\D/g, "");
               const ig = instagramUrl(p.instagram);
-              const ini = p.nome
-                .split(" ")
-                .filter(Boolean)
-                .map((n) => n[0])
-                .slice(0, 2)
-                .join("")
-                .toUpperCase();
+              const ini = iniciais(p.nome);
               return (
                 <div
                   key={p.id}
@@ -185,9 +188,19 @@ function CatalogoContent() {
                     onClick={() => setOpenId(open ? null : p.id)}
                     className="p-4 cursor-pointer flex gap-3.5 items-start"
                   >
-                    <div className="w-[46px] h-[46px] rounded-lg bg-brand-surface flex items-center justify-center text-[13px] font-extrabold text-brand-red shrink-0 border border-brand-border">
-                      {ini}
-                    </div>
+                    {p.foto_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={p.foto_url}
+                        alt={"Foto de " + p.nome}
+                        loading="lazy"
+                        className="w-[46px] h-[46px] rounded-lg object-cover shrink-0 border border-brand-border"
+                      />
+                    ) : (
+                      <div className="w-[46px] h-[46px] rounded-lg bg-brand-surface flex items-center justify-center text-[13px] font-extrabold text-brand-red shrink-0 border border-brand-border">
+                        {ini}
+                      </div>
+                    )}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-0.5">
                         <span className="font-bold text-[15px]">{p.nome}</span>

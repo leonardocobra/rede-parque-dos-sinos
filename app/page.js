@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
+import TypedBrand from "./components/TypedBrand";
 import { CATS, REGRAS } from "./config";
 
 export default function Home() {
@@ -8,53 +9,52 @@ export default function Home() {
     <>
       <Nav />
 
-      {/* Hero */}
-      <div className="px-6 pt-14 pb-12 text-center relative border-b border-brand-border">
-        <div className="absolute top-5 left-1/2 -translate-x-1/2 w-60 h-60 rounded-full bg-brand-red-light blur-[60px] opacity-60 pointer-events-none" />
-        <div className="relative z-[2] max-w-[480px] mx-auto">
-          <div className="text-[11px] font-extrabold tracking-[3px] uppercase text-brand-red mb-4">
-            Parque dos Sinos · Jacareí – SP
+      {/* Hero — ocupa a primeira tela inteira (Como Funciona fica abaixo da dobra) */}
+      <div className="px-6 py-12 text-center relative border-b border-brand-border flex flex-col justify-center min-h-[calc(100dvh-52px)]">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-60 h-60 rounded-full bg-brand-red-light blur-[60px] opacity-60 pointer-events-none" />
+        <div className="relative z-[2] max-w-[560px] mx-auto w-full">
+          <div className="text-[11px] font-extrabold tracking-[3px] uppercase text-brand-red mb-4 text-left">
+            Parque dos Sinos · Jacareí
           </div>
-          <h1 className="font-display text-[40px] leading-[1.05] mb-4">
-            Rede de Profissionais
-            <br />
-            do Parque dos Sinos
+          <h1 className="font-mono font-extrabold text-[clamp(48px,16vw,72px)] leading-[1.05] mb-4 flex justify-start text-brand-text">
+            <TypedBrand />
           </h1>
-          <p className="text-[15px] text-brand-grey leading-relaxed max-w-[400px] mx-auto mb-8">
-            Conectando moradores e prestadores de serviço do bairro. Gratuito, organizado e feito
-            pela comunidade.
+          <p className="text-[15px] text-brand-grey leading-relaxed max-w-[420px] mb-10 text-left">
+            A rede de profissionais de confiança da sua região. Gratuita, organizada e feita pela
+            comunidade.
           </p>
-          <div className="flex gap-2.5 justify-center flex-wrap">
+          <div className="flex flex-col gap-3">
             <Link
               href="/catalogo"
-              className="bg-brand-black text-white rounded-lg px-7 py-[13px] text-[15px] font-bold"
+              className="bg-brand-black text-white rounded-xl py-4 px-5 block text-right"
             >
-              Ver Catálogo
+              <div className="text-[17px] font-bold leading-tight">Ver Catálogo →</div>
+              <div className="text-xs text-brand-onink-muted mt-0.5">
+                Encontre profissionais perto de você
+              </div>
             </Link>
             <Link
               href="/cadastro"
-              className="bg-brand-red text-white rounded-lg px-7 py-[13px] text-[15px] font-bold"
+              className="bg-brand-red text-white rounded-xl py-4 px-5 block text-right"
             >
-              Cadastrar Serviço
+              <div className="text-[17px] font-bold leading-tight">Cadastrar Serviço →</div>
+              <div className="text-xs text-white/75 mt-0.5">
+                Divulgue seu trabalho gratuitamente
+              </div>
+            </Link>
+            <Link
+              href="/avaliar"
+              className="bg-brand-black rounded-xl py-4 px-5 block text-left mt-2"
+            >
+              <div className="text-sm font-bold text-white leading-tight">Avaliar Profissional</div>
+              <div className="text-xs text-brand-onink-muted leading-snug mt-0.5">
+                Já contratou alguém pela rede?
+                <br />
+                Deixe sua avaliação.
+              </div>
             </Link>
           </div>
         </div>
-      </div>
-
-      {/* Ação rápida — Avaliar (ausente no Hero) */}
-      <div className="px-5 pt-8 pb-2 max-w-[560px] mx-auto">
-        <Link
-          href="/avaliar"
-          className="bg-brand-black rounded-xl py-4 px-5 flex items-center gap-4 block"
-        >
-          <div className="text-[28px]">⭐</div>
-          <div>
-            <div className="text-sm font-bold text-white leading-tight">Avaliar Profissional</div>
-            <div className="text-xs text-brand-onink-muted leading-snug mt-0.5">
-              Já contratou alguém pela rede? Deixe sua avaliação.
-            </div>
-          </div>
-        </Link>
       </div>
 
       {/* Como Funciona */}
@@ -166,8 +166,9 @@ export default function Home() {
             Manifesto
           </div>
           <p className="text-[17px] font-medium italic leading-[1.6]">
-            Acreditamos que o Parque dos Sinos é construído por pessoas que se ajudam. Queremos
-            manter nossas ruas organizadas e apoiar trabalhadores honestos.
+            Acreditamos que uma vizinhança é construída por pessoas que se ajudam. Começamos no
+            Parque dos Sinos para manter nossas ruas organizadas e apoiar trabalhadores honestos — e
+            queremos levar isso a cada bairro vizinho.
           </p>
         </div>
       </div>
