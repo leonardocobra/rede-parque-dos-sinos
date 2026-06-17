@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
-import { CATS } from "./config";
+import { CATS, REGRAS } from "./config";
 
 export default function Home() {
   return (
@@ -41,26 +41,20 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Ações rápidas */}
+      {/* Ação rápida — Avaliar (ausente no Hero) */}
       <div className="px-5 pt-8 pb-2 max-w-[560px] mx-auto">
-        <div className="grid grid-cols-3 gap-2.5">
-          {[
-            { label: "Cadastrar\nServiço", icon: "📝", href: "/cadastro", bg: "bg-brand-red" },
-            { label: "Ver\nCatálogo", icon: "📋", href: "/catalogo", bg: "bg-brand-black" },
-            { label: "Avaliar\nProfissional", icon: "⭐", href: "/avaliar", bg: "bg-[#333]" },
-          ].map((a, i) => (
-            <Link
-              key={i}
-              href={a.href}
-              className={`${a.bg} rounded-xl py-5 px-3 text-center block`}
-            >
-              <div className="text-[28px] mb-2">{a.icon}</div>
-              <div className="text-xs font-bold text-white leading-[1.4] whitespace-pre-line">
-                {a.label}
-              </div>
-            </Link>
-          ))}
-        </div>
+        <Link
+          href="/avaliar"
+          className="bg-[#333] rounded-xl py-4 px-5 flex items-center gap-4 block"
+        >
+          <div className="text-[28px]">⭐</div>
+          <div>
+            <div className="text-sm font-bold text-white leading-tight">Avaliar Profissional</div>
+            <div className="text-xs text-[#aaa] leading-snug mt-0.5">
+              Já contratou alguém pela rede? Deixe sua avaliação.
+            </div>
+          </div>
+        </Link>
       </div>
 
       {/* Como Funciona */}
@@ -125,6 +119,29 @@ export default function Home() {
               <div className="text-[13px] font-bold mt-1.5 mb-[3px]">{c.value}</div>
               <div className="text-[11px] text-brand-grey-light leading-[1.4]">{c.ex}</div>
             </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Regras Básicas */}
+      <div className="px-5 pt-9 pb-2 max-w-[560px] mx-auto">
+        <h2 className="font-display text-[26px] mb-1.5 text-center">Regras Básicas</h2>
+        <p className="text-[13px] text-brand-grey-light text-center mb-5">
+          Como a rede funciona para todos
+        </p>
+        <div className="bg-white border border-brand-border rounded-xl p-5">
+          {REGRAS.map((r, i) => (
+            <div
+              key={i}
+              className={`flex gap-3 items-start text-[13px] text-brand-grey leading-[1.5] ${
+                i < REGRAS.length - 1 ? "mb-2.5" : ""
+              }`}
+            >
+              <span className="bg-brand-black text-white rounded-[4px] min-w-[22px] h-[22px] flex items-center justify-center text-[11px] font-extrabold shrink-0">
+                {i + 1}
+              </span>
+              <span>{r}</span>
+            </div>
           ))}
         </div>
       </div>
