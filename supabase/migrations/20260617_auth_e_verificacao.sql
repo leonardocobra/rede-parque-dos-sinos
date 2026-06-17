@@ -54,16 +54,34 @@ CREATE POLICY "Reivindicar cadastro sem dono" ON profissionais
 --    que ignora RLS e grants. REVOKE é idempotente.
 -- ------------------------------------------------------------
 
--- anon não atualiza nada (não há fluxo de edição anônima).
-REVOKE UPDATE ON profissionais FROM anon;
+-- ATENÇÃO (gotcha do Postgres): `REVOKE UPDATE (coluna)` NÃO subtrai de um grant
+-- de nível de tabela. Como anon/authenticated têm GRANT na tabela inteira, é
+-- preciso REVOGAR o grant de tabela e REGRANTEAR só as colunas permitidas.
 
--- Nem authenticated nem anon escrevem o selo — em UPDATE ou em INSERT.
-REVOKE UPDATE (verificado, verificado_em) ON profissionais FROM authenticated;
-REVOKE INSERT (verificado, verificado_em) ON profissionais FROM anon, authenticated;
+-- UPDATE: anon não atualiza nada; authenticated atualiza só campos editáveis
+-- (exclui verificado/verificado_em; inclui user_id para o claim).
+REVOKE UPDATE ON profissionais FROM anon;
+REVOKE UPDATE ON profissionais FROM authenticated;
+GRANT UPDATE (
+  nome, telefone, servico, categoria, bairro, regioes,
+  instagram, experiencia, descricao, foto_url, user_id
+) ON profissionais TO authenticated;
+
+-- INSERT: sem o selo para ninguém público. anon (cadastro do formulário) não
+-- pode nem setar user_id (evita forjar dono); authenticated pode setar o próprio.
+REVOKE INSERT ON profissionais FROM anon, authenticated;
+GRANT INSERT (
+  nome, telefone, servico, categoria, bairro, regioes,
+  instagram, experiencia, descricao, foto_url
+) ON profissionais TO anon;
+GRANT INSERT (
+  nome, telefone, servico, categoria, bairro, regioes,
+  instagram, experiencia, descricao, foto_url, user_id
+) ON profissionais TO authenticated;
 
 -- Observações:
 -- • SELECT em `verificado` permanece (o card/perfil mostra o selo publicamente).
--- • authenticated mantém UPDATE nas demais colunas (edição do cadastro) e em
---   user_id (necessário para o claim).
+-- • `verificado`/`verificado_em` só são graváveis por service_role (admin) — que
+--   ignora RLS e grants. É assim que o selo é concedido (ver runbook).
 -- • Risco conhecido aceito nesta fase: um usuário pode reivindicar um cadastro
 --   órfão de outra pessoa. Mitigação prevista é a fase 3 (OTP de WhatsApp).
