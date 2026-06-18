@@ -13,6 +13,7 @@ import { WhatsAppIcon, InstagramIcon } from "../components/SocialIcons";
 import { track } from "@vercel/analytics";
 import { categoriaParaSlug } from "../../lib/categorias";
 import BotoesCompartilhar from "../components/BotoesCompartilhar";
+import ServicosInterativos from "../profissional/[id]/ServicosInterativos";
 
 function normalize(s) {
   return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -258,6 +259,11 @@ function CatalogoContent() {
                   </div>
                   {open && (
                     <div className="px-4 pb-4 border-t border-brand-border pt-3.5">
+                      {servicos.length > 0 && (
+                        <div className="mb-3">
+                          <ServicosInterativos servicos={servicos} />
+                        </div>
+                      )}
                       {p.descricao && (
                         <p className="text-[13px] text-brand-grey leading-relaxed mb-3">
                           {p.descricao}
