@@ -61,4 +61,16 @@ describe("ServicosInterativos", () => {
     expect(screen.getByText("R$ 30/m²")).toBeInTheDocument();
     expect(screen.getByText("Textura")).toBeInTheDocument();
   });
+
+  it("usa bioFallback como descrição quando o serviço não tem a própria", () => {
+    const semDescricao = servico({ descricao: "" });
+    render(<ServicosInterativos servicos={[semDescricao]} bioFallback="Bio geral do profissional." />);
+    expect(screen.getByText("Bio geral do profissional.")).toBeInTheDocument();
+  });
+
+  it("prioriza a descrição do serviço sobre o bioFallback", () => {
+    render(<ServicosInterativos servicos={[servico()]} bioFallback="Bio geral do profissional." />);
+    expect(screen.getByText("Pinturas residenciais.")).toBeInTheDocument();
+    expect(screen.queryByText("Bio geral do profissional.")).not.toBeInTheDocument();
+  });
 });

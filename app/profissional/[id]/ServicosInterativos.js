@@ -4,7 +4,11 @@ import { instagramUrl } from "../../../lib/instagram";
 import { catIcon } from "../../config";
 import { InstagramIcon } from "../../components/SocialIcons";
 
-export default function ServicosInterativos({ servicos }) {
+// `bioFallback` é exibido como descrição quando o serviço ativo não tem
+// descrição própria. Usado no catálogo (que não mostra a bio geral em outro
+// lugar) para não deixar o card expandido vazio. O perfil não passa essa prop:
+// lá a bio já vive na seção "Sobre", então evitamos duplicação.
+export default function ServicosInterativos({ servicos, bioFallback }) {
   const [ativoId, setAtivoId] = useState(servicos[0]?.id || null);
 
   if (!servicos || servicos.length === 0) return null;
@@ -12,6 +16,7 @@ export default function ServicosInterativos({ servicos }) {
   const ativo = servicos.find((s) => s.id === ativoId) || servicos[0];
   const multiplos = servicos.length > 1;
   const igUrl = ativo.instagram ? instagramUrl(ativo.instagram) : null;
+  const descricaoExibida = ativo.descricao || bioFallback || "";
 
   return (
     <div className="mt-1">
@@ -37,10 +42,10 @@ export default function ServicosInterativos({ servicos }) {
         </div>
       )}
 
-      {(ativo.descricao || igUrl || ativo.itens?.length > 0) && (
+      {(descricaoExibida || igUrl || ativo.itens?.length > 0) && (
         <div className={`${multiplos ? "mt-2.5 pt-2.5 border-t border-brand-border" : "mt-1.5"}`}>
-          {ativo.descricao && (
-            <p className="text-[13px] text-brand-grey leading-relaxed">{ativo.descricao}</p>
+          {descricaoExibida && (
+            <p className="text-[13px] text-brand-grey leading-relaxed">{descricaoExibida}</p>
           )}
 
           {/* Itens/produtos do serviço — pronto para evoluir o perfil público.
