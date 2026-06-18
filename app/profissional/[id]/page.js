@@ -169,7 +169,13 @@ export default async function PerfilPage({ params }) {
 
         {/* CTAs */}
         <div className="mt-4">
-          <ContatoBotoes id={id} nome={prof.nome} whatsapp={wa} instagram={ig} />
+          <ContatoBotoes
+            id={id}
+            nome={prof.nome}
+            servico={prof.servico}
+            whatsapp={wa}
+            instagram={ig}
+          />
         </div>
 
         {/* Comentários das avaliações */}
