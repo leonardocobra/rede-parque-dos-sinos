@@ -4,7 +4,7 @@ import Nav from "../../components/Nav";
 import Footer from "../../components/Footer";
 import PerfilView from "./PerfilView";
 import ContatoBotoes from "./ContatoBotoes";
-import { getProfissional, getAvaliacoesDe, getOutrosDaCategoria } from "../../../lib/profissionais";
+import { getProfissional, getAvaliacoesDe, getOutrosPorCategoria } from "../../../lib/profissionais";
 import { computeStats } from "../../../lib/catalogo";
 import { iniciais } from "../../../lib/avatar";
 import { instagramUrl } from "../../../lib/instagram";
@@ -14,11 +14,10 @@ import {
   whatsappLink,
   perfilJsonLd,
   servicoPrimario,
-  categoriaPrimaria,
   CIDADE,
 } from "../../../lib/perfil";
 import { absUrl } from "../../../lib/site";
-import ServicosInterativos from "./ServicosInterativos";
+import PerfilInterativo from "./PerfilInterativo";
 
 export const revalidate = 60;
 
@@ -52,10 +51,11 @@ export default async function PerfilPage({ params }) {
   const prof = await getProfissional(id);
   if (!prof) notFound();
 
-  const categoriaPrincipal = categoriaPrimaria(prof);
-  const [avals, outros] = await Promise.all([
+  const servicos = prof.profissional_servicos || [];
+  const categorias = [...new Set(servicos.map((s) => s.categoria))];
+  const [avals, outrosPorCategoria] = await Promise.all([
     getAvaliacoesDe(id),
-    getOutrosDaCategoria(categoriaPrincipal, id),
+    getOutrosPorCategoria(categorias, id),
   ]);
 
   const st = computeStats(id, avals);
@@ -64,7 +64,6 @@ export default async function PerfilPage({ params }) {
   const ig = instagramUrl(prof.instagram);
   const comentarios = avals.filter((a) => (a.comentario || "").trim());
   const jsonLd = perfilJsonLd(prof, st, absUrl(`/profissional/${id}`));
-  const servicos = prof.profissional_servicos || [];
 
   const percentuais = st
     ? [
@@ -154,15 +153,15 @@ export default async function PerfilPage({ params }) {
           </section>
         )}
 
-        {/* Serviços — bloco interativo reutilizado do catálogo. É aqui que vivem
-            as descrições (e, no futuro, os itens/produtos) de cada serviço. */}
-        {servicos.length > 0 && (
-          <section className="bg-brand-card rounded-[10px] border border-brand-border p-4 mt-3">
-            <h2 className="font-display text-[16px] mb-2">Serviços</h2>
-            <ServicosInterativos servicos={servicos} />
-          </section>
-        )}
-
+        {/* Serviços + "Outros da categoria" sob um único estado client-side:
+            ao trocar o serviço ativo nos chips, a seção "Outros" (no fim) passa a
+            refletir a categoria daquele serviço. O miolo (bio, CTAs, comentários)
+            vai como children e permanece server-rendered. */}
+        <PerfilInterativo
+          servicos={servicos}
+          outrosPorCategoria={outrosPorCategoria}
+          cidade={CIDADE}
+        >
         {/* Sobre o profissional — apresentação geral (bio), separada dos serviços. */}
         {(prof.descricao || prof.experiencia || prof.regioes || prof.bairro) && (
           <section className="bg-brand-card rounded-[10px] border border-brand-border p-4 mt-3">
@@ -212,53 +211,7 @@ export default async function PerfilPage({ params }) {
             </div>
           </section>
         )}
-
-        {/* Outros profissionais da categoria */}
-        {outros.length > 0 && (
-          <section className="mt-7">
-            <h2 className="font-display text-[18px] mb-2">Outros de {categoriaPrincipal}</h2>
-            <div className="space-y-2">
-              {outros.map((o) => {
-                const oServicos = o.profissional_servicos || [];
-                return (
-                  <Link
-                    key={o.id}
-                    href={"/profissional/" + o.id}
-                    className="bg-brand-card rounded-[10px] border border-brand-border p-3 flex gap-3 items-center"
-                  >
-                    {o.foto_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={o.foto_url}
-                        alt={"Foto de " + o.nome}
-                        className="w-[40px] h-[40px] rounded-lg object-cover shrink-0 border border-brand-border"
-                      />
-                    ) : (
-                      <div className="w-[40px] h-[40px] rounded-lg bg-brand-surface flex items-center justify-center text-[12px] font-extrabold text-brand-red shrink-0 border border-brand-border">
-                        {iniciais(o.nome)}
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="font-bold text-[14px] truncate">{o.nome}</div>
-                      <div className="text-[12px] text-brand-red font-bold truncate">
-                        {oServicos[0]?.servico || ""}
-                      </div>
-                    </div>
-                    <span className="text-brand-grey-light text-[13px]">→</span>
-                  </Link>
-                );
-              })}
-            </div>
-            <div className="text-right mt-4">
-              <Link
-                href={"/catalogo?cat=" + encodeURIComponent(categoriaPrincipal)}
-                className="text-[12px] font-bold text-brand-grey"
-              >
-                Ver todos em {CIDADE} →
-              </Link>
-            </div>
-          </section>
-        )}
+        </PerfilInterativo>
       </div>
       <Footer />
     </>
