@@ -191,73 +191,77 @@ function CatalogoContent() {
                   }`}
                   style={{ animationDelay: Math.min(i, 10) * 0.03 + "s" }}
                 >
-                  <div
-                    onClick={() => setOpenId(open ? null : p.id)}
-                    className="p-4 cursor-pointer flex gap-3.5 items-start"
-                  >
-                    {p.foto_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={p.foto_url}
-                        alt={"Foto de " + p.nome}
-                        loading="lazy"
-                        className="w-[46px] h-[46px] rounded-lg object-cover shrink-0 border border-brand-border"
-                      />
-                    ) : (
-                      <div className="w-[46px] h-[46px] rounded-lg bg-brand-surface flex items-center justify-center text-[13px] font-extrabold text-brand-red shrink-0 border border-brand-border">
-                        {ini}
+                  <div onClick={() => setOpenId(open ? null : p.id)} className="p-4 cursor-pointer">
+                    <div className="flex gap-3.5 items-start">
+                      {p.foto_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={p.foto_url}
+                          alt={"Foto de " + p.nome}
+                          loading="lazy"
+                          className="w-[46px] h-[46px] rounded-lg object-cover shrink-0 border border-brand-border"
+                        />
+                      ) : (
+                        <div className="w-[46px] h-[46px] rounded-lg bg-brand-surface flex items-center justify-center text-[13px] font-extrabold text-brand-red shrink-0 border border-brand-border">
+                          {ini}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                          <span className="font-bold text-[15px]">{p.nome}</span>
+                          {st?.recomendado && (
+                            <span className="bg-brand-red-light text-brand-red font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px]">
+                              Recomendado
+                            </span>
+                          )}
+                          {p.verificado && (
+                            <span
+                              title="Identidade confirmada pela Rede"
+                              className="bg-brand-black text-white font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px] inline-flex items-center gap-1"
+                            >
+                              ✓ Verificado
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs text-brand-grey-light mt-0.5">
+                          {p.bairro && "📍 " + p.bairro}
+                          {p.experiencia ? " · " + p.experiencia : ""}
+                        </div>
+                        {st && (
+                          <div className="mt-1.5 text-brand-red text-[13px] tracking-[1px]">
+                            {"★".repeat(Math.round(st.avg))}
+                            {"☆".repeat(5 - Math.round(st.avg))}
+                            <span className="text-brand-text ml-1.5 text-xs font-semibold">
+                              {st.avg.toFixed(1)}
+                            </span>
+                            <span className="text-[10px] text-brand-grey-light ml-1.5">
+                              ({st.count})
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <span
+                        className={`text-base text-brand-grey-light shrink-0 mt-1 transition-transform duration-200 ${
+                          open ? "rotate-180" : ""
+                        }`}
+                      >
+                        ▾
+                      </span>
+                    </div>
+                    {/* Serviços sempre abaixo da foto (full-width) para não quebrar
+                        a simetria da lateral quando há vários serviços. */}
+                    {!open && servicos.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-3">
+                        {servicos.map((sv) => (
+                          <span
+                            key={sv.id}
+                            className="bg-brand-surface border border-brand-border rounded-[6px] px-2.5 py-[5px] text-[13px] text-brand-red font-bold"
+                          >
+                            {catIcon(sv.categoria)} {sv.servico}
+                          </span>
+                        ))}
                       </div>
                     )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <span className="font-bold text-[15px]">{p.nome}</span>
-                        {st?.recomendado && (
-                          <span className="bg-brand-red-light text-brand-red font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px]">
-                            Recomendado
-                          </span>
-                        )}
-                        {p.verificado && (
-                          <span
-                            title="Identidade confirmada pela Rede"
-                            className="bg-brand-black text-white font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px] inline-flex items-center gap-1"
-                          >
-                            ✓ Verificado
-                          </span>
-                        )}
-                      </div>
-                      {!open && (
-                        <div className="space-y-0.5">
-                          {servicos.map((sv) => (
-                            <div key={sv.id} className="text-[13px] text-brand-red font-bold">
-                              {catIcon(sv.categoria)} {sv.servico}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      <div className="text-xs text-brand-grey-light mt-0.5">
-                        {p.bairro && "📍 " + p.bairro}
-                        {p.experiencia ? " · " + p.experiencia : ""}
-                      </div>
-                      {st && (
-                        <div className="mt-1.5 text-brand-red text-[13px] tracking-[1px]">
-                          {"★".repeat(Math.round(st.avg))}
-                          {"☆".repeat(5 - Math.round(st.avg))}
-                          <span className="text-brand-text ml-1.5 text-xs font-semibold">
-                            {st.avg.toFixed(1)}
-                          </span>
-                          <span className="text-[10px] text-brand-grey-light ml-1.5">
-                            ({st.count})
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    <span
-                      className={`text-base text-brand-grey-light shrink-0 mt-1 transition-transform duration-200 ${
-                        open ? "rotate-180" : ""
-                      }`}
-                    >
-                      ▾
-                    </span>
                   </div>
                   {open && (
                     <div className="px-4 pb-4 border-t border-brand-border pt-3.5">
@@ -265,11 +269,6 @@ function CatalogoContent() {
                         <div className="mb-3">
                           <ServicosInterativos servicos={servicos} />
                         </div>
-                      )}
-                      {p.descricao && (
-                        <p className="text-[13px] text-brand-grey leading-relaxed mb-3">
-                          {p.descricao}
-                        </p>
                       )}
                       {p.regioes && (
                         <div className="text-xs text-brand-grey-light mb-1.5">

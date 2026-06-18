@@ -37,11 +37,29 @@ export default function ServicosInterativos({ servicos }) {
         </div>
       )}
 
-      {(ativo.descricao || igUrl) && (
+      {(ativo.descricao || igUrl || ativo.itens?.length > 0) && (
         <div className={`${multiplos ? "mt-2.5 pt-2.5 border-t border-brand-border" : "mt-1.5"}`}>
           {ativo.descricao && (
             <p className="text-[13px] text-brand-grey leading-relaxed">{ativo.descricao}</p>
           )}
+
+          {/* Itens/produtos do serviço — pronto para evoluir o perfil público.
+              Renderiza só quando o serviço já tem itens cadastrados. */}
+          {ativo.itens?.length > 0 && (
+            <ul className="mt-2 space-y-1">
+              {ativo.itens.map((item) => (
+                <li key={item.id} className="flex items-baseline justify-between gap-3 text-[13px]">
+                  <span className="text-brand-text">{item.nome}</span>
+                  {item.preco && (
+                    <span className="text-brand-grey-light font-bold whitespace-nowrap">
+                      {item.preco}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+
           {igUrl && (
             <a
               href={igUrl}
