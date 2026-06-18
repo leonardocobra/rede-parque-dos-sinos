@@ -13,17 +13,9 @@ const FOTO_BUCKET = "fotos-profissionais";
 const inputClass =
   "w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-brand-card outline-none text-brand-text";
 
-// Apenas os campos que o dono pode editar (espelha os grants do banco — nunca verificado).
+// Campos do profissional editáveis pelo dono (servico/categoria foram para profissional_servicos).
 const CAMPOS = [
-  "nome",
-  "telefone",
-  "servico",
-  "categoria",
-  "bairro",
-  "regioes",
-  "instagram",
-  "experiencia",
-  "descricao",
+  "nome", "telefone", "bairro", "regioes", "instagram", "experiencia", "descricao",
 ];
 
 function Field({ label, children }) {
@@ -35,6 +27,14 @@ function Field({ label, children }) {
       {children}
     </div>
   );
+}
+
+async function revalidarPerfil(id) {
+  await fetch("/api/revalidar-perfil", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id }),
+  }).catch(() => {});
 }
 
 export default function PainelClient({ cadastros, stats = {} }) {
@@ -50,8 +50,6 @@ export default function PainelClient({ cadastros, stats = {} }) {
   );
 }
 
-// Bloco de métricas do cadastro: visualizações, nº de avaliações, nota média e
-// o status dos selos (Recomendado calculado / Verificado manual).
 function Metricas({ cadastro, stats }) {
   const visualizacoes = cadastro.visualizacoes || 0;
   const totalAvaliacoes = stats?.count || 0;
@@ -64,13 +62,12 @@ function Metricas({ cadastro, stats }) {
         <Stat valor={totalAvaliacoes} rotulo="Avaliações" />
         <Stat valor={notaMedia} rotulo="Nota média" />
       </div>
-
       <div className="space-y-1.5">
         {stats?.recomendado ? (
           <p className="text-[12px] font-bold text-brand-red">Você é Recomendado ✓</p>
         ) : (
           <p className="text-[12px] text-brand-grey-light">
-            Recomendado: a partir de 3 avaliações com 80% de “contrataria novamente”.
+            Recomendado: a partir de 3 avaliações com 80% de &ldquo;contrataria novamente&rdquo;.
           </p>
         )}
         {cadastro.verificado ? (
@@ -96,20 +93,273 @@ function Stat({ valor, rotulo }) {
   );
 }
 
+function GerenciarServicos({ cadastro }) {
+  const [servicos, setServicos] = useState(
+    (cadastro.profissional_servicos || []).sort((a, b) => a.ordem - b.ordem)
+  );
+  const [editandoId, setEditandoId] = useState(null);
+  const [editForm, setEditForm] = useState({ servico: "", categoria: "", descricao: "", instagram: "" });
+  const [novoForm, setNovoForm] = useState({ servico: "", categoria: "", descricao: "", instagram: "" });
+  const [mostraAdicionar, setMostraAdicionar] = useState(false);
+  const [statusOp, setStatusOp] = useState({});
+
+  function iniciarEdicao(s) {
+    setEditandoId(s.id);
+    setEditForm({ servico: s.servico, categoria: s.categoria, descricao: s.descricao || "", instagram: s.instagram || "" });
+  }
+
+  async function salvarEdicao(id) {
+    if (!editForm.servico || !editForm.categoria) return;
+    setStatusOp((prev) => ({ ...prev, [id]: "salvando" }));
+    const supabase = getBrowserSupabase();
+    const { error } = await supabase
+      .from("profissional_servicos")
+      .update({
+        servico: editForm.servico.trim(),
+        categoria: editForm.categoria,
+        descricao: editForm.descricao.trim() || null,
+        instagram: instagramHandle(editForm.instagram) || null,
+      })
+      .eq("id", id);
+    if (error) {
+      setStatusOp((prev) => ({ ...prev, [id]: "erro" }));
+      return;
+    }
+    setServicos((prev) =>
+      prev.map((sv) =>
+        sv.id === id
+          ? { ...sv, ...editForm, servico: editForm.servico.trim(), descricao: editForm.descricao.trim() || null, instagram: instagramHandle(editForm.instagram) || null }
+          : sv
+      )
+    );
+    setEditandoId(null);
+    setStatusOp((prev) => ({ ...prev, [id]: null }));
+    revalidarPerfil(cadastro.id);
+  }
+
+  async function remover(id) {
+    const supabase = getBrowserSupabase();
+    const { count } = await supabase
+      .from("avaliacoes")
+      .select("id", { count: "exact", head: true })
+      .eq("servico_id", id);
+    const aviso =
+      count > 0
+        ? `Este serviço tem ${count} avaliação(ões). Ao remover, elas serão exibidas como "Geral".\n\nDeseja remover mesmo assim?`
+        : "Remover este serviço?";
+    if (!window.confirm(aviso)) return;
+    setStatusOp((prev) => ({ ...prev, [id]: "removendo" }));
+    const { error } = await supabase.from("profissional_servicos").delete().eq("id", id);
+    if (error) {
+      setStatusOp((prev) => ({ ...prev, [id]: "erro" }));
+      return;
+    }
+    setServicos((prev) => prev.filter((sv) => sv.id !== id));
+    setStatusOp((prev) => ({ ...prev, [id]: null }));
+    revalidarPerfil(cadastro.id);
+  }
+
+  async function adicionar() {
+    if (!novoForm.servico || !novoForm.categoria) return;
+    setStatusOp((prev) => ({ ...prev, novo: "salvando" }));
+    const supabase = getBrowserSupabase();
+    const { data, error } = await supabase
+      .from("profissional_servicos")
+      .insert({
+        profissional_id: cadastro.id,
+        servico: novoForm.servico.trim(),
+        categoria: novoForm.categoria,
+        ordem: servicos.length,
+        descricao: novoForm.descricao.trim() || null,
+        instagram: instagramHandle(novoForm.instagram) || null,
+      })
+      .select()
+      .single();
+    if (error) {
+      setStatusOp((prev) => ({ ...prev, novo: "erro" }));
+      return;
+    }
+    setServicos((prev) => [...prev, data]);
+    setNovoForm({ servico: "", categoria: "" });
+    setMostraAdicionar(false);
+    setStatusOp((prev) => ({ ...prev, novo: null }));
+    revalidarPerfil(cadastro.id);
+  }
+
+  return (
+    <div className="mb-4">
+      <div className="flex items-center justify-between mb-2">
+        <h4 className="font-display text-[15px]">Meus Serviços</h4>
+        {servicos.length < 3 && !mostraAdicionar && (
+          <button
+            onClick={() => setMostraAdicionar(true)}
+            className="text-[12px] text-brand-red font-bold"
+          >
+            + Adicionar
+          </button>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        {servicos.map((s) => (
+          <div key={s.id} className="border border-brand-border rounded-lg p-3">
+            {editandoId === s.id ? (
+              <div className="space-y-2">
+                <input
+                  className={inputClass}
+                  value={editForm.servico}
+                  onChange={(e) => setEditForm((f) => ({ ...f, servico: e.target.value }))}
+                  placeholder="Serviço"
+                />
+                <select
+                  className={inputClass}
+                  value={editForm.categoria}
+                  onChange={(e) => setEditForm((f) => ({ ...f, categoria: e.target.value }))}
+                >
+                  <option value="">Selecione a categoria...</option>
+                  {CATS.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.icon} {c.value}
+                    </option>
+                  ))}
+                </select>
+                <textarea
+                  className={`${inputClass} resize-y`}
+                  rows={2}
+                  placeholder="Descrição do serviço (opcional)"
+                  value={editForm.descricao}
+                  onChange={(e) => setEditForm((f) => ({ ...f, descricao: e.target.value }))}
+                />
+                <input
+                  className={inputClass}
+                  placeholder="@seuperfil Instagram (opcional)"
+                  value={editForm.instagram}
+                  onChange={(e) => setEditForm((f) => ({ ...f, instagram: e.target.value }))}
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => salvarEdicao(s.id)}
+                    disabled={
+                      !editForm.servico ||
+                      !editForm.categoria ||
+                      statusOp[s.id] === "salvando"
+                    }
+                    className="bg-brand-red text-white rounded-lg px-3 py-1.5 text-[12px] font-bold disabled:bg-brand-border"
+                  >
+                    {statusOp[s.id] === "salvando" ? "Salvando..." : "Salvar"}
+                  </button>
+                  <button
+                    onClick={() => setEditandoId(null)}
+                    className="text-[12px] text-brand-grey font-bold"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+                {statusOp[s.id] === "erro" && (
+                  <p className="text-brand-red text-[12px]">Erro ao salvar. Tente novamente.</p>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <div className="text-[14px] font-bold">{s.servico}</div>
+                  <div className="text-[12px] text-brand-grey-light">{s.categoria}</div>
+                </div>
+                <div className="flex gap-3 shrink-0">
+                  <button
+                    onClick={() => iniciarEdicao(s)}
+                    className="text-[12px] text-brand-grey font-bold"
+                  >
+                    Editar
+                  </button>
+                  {servicos.length > 1 && (
+                    <button
+                      onClick={() => remover(s.id)}
+                      disabled={statusOp[s.id] === "removendo"}
+                      className="text-[12px] text-brand-red font-bold disabled:opacity-50"
+                    >
+                      {statusOp[s.id] === "removendo" ? "..." : "Remover"}
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {mostraAdicionar && (
+        <div className="mt-2 border border-brand-border rounded-lg p-3 space-y-2">
+          <input
+            className={inputClass}
+            value={novoForm.servico}
+            onChange={(e) => setNovoForm((f) => ({ ...f, servico: e.target.value }))}
+            placeholder="Ex: Pintor, Diarista..."
+          />
+          <select
+            className={inputClass}
+            value={novoForm.categoria}
+            onChange={(e) => setNovoForm((f) => ({ ...f, categoria: e.target.value }))}
+          >
+            <option value="">Selecione a categoria...</option>
+            {CATS.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.icon} {c.value}
+              </option>
+            ))}
+          </select>
+          <textarea
+            className={`${inputClass} resize-y`}
+            rows={2}
+            placeholder="Descrição do serviço (opcional)"
+            value={novoForm.descricao}
+            onChange={(e) => setNovoForm((f) => ({ ...f, descricao: e.target.value }))}
+          />
+          <input
+            className={inputClass}
+            placeholder="@seuperfil Instagram (opcional)"
+            value={novoForm.instagram}
+            onChange={(e) => setNovoForm((f) => ({ ...f, instagram: e.target.value }))}
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={adicionar}
+              disabled={!novoForm.servico || !novoForm.categoria || statusOp.novo === "salvando"}
+              className="bg-brand-red text-white rounded-lg px-3 py-1.5 text-[12px] font-bold disabled:bg-brand-border"
+            >
+              {statusOp.novo === "salvando" ? "Adicionando..." : "Adicionar"}
+            </button>
+            <button
+              onClick={() => {
+                setMostraAdicionar(false);
+                setNovoForm({ servico: "", categoria: "", descricao: "", instagram: "" });
+              }}
+              className="text-[12px] text-brand-grey font-bold"
+            >
+              Cancelar
+            </button>
+          </div>
+          {statusOp.novo === "erro" && (
+            <p className="text-brand-red text-[12px]">Erro ao adicionar. Tente novamente.</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function EditarCadastro({ cadastro, stats }) {
   const router = useRouter();
   const init = Object.fromEntries(CAMPOS.map((k) => [k, cadastro[k] || ""]));
   const [form, setForm] = useState(init);
-  const [foto, setFoto] = useState(null); // Blob recortado, pronto para upload
-  const [fotoPreview, setFotoPreview] = useState(null); // object URL da prévia
-  const [cropFile, setCropFile] = useState(null); // arquivo aberto no modal de recorte
+  const [foto, setFoto] = useState(null);
+  const [fotoPreview, setFotoPreview] = useState(null);
+  const [cropFile, setCropFile] = useState(null);
   const [fotoErro, setFotoErro] = useState(null);
-  const [status, setStatus] = useState("idle"); // idle | salvando | ok | erro
+  const [status, setStatus] = useState("idle");
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
-  const valido = form.nome && form.telefone && form.servico && form.categoria;
+  const valido = form.nome && form.telefone;
 
-  // Valida o arquivo e, se ok, abre o modal de recorte. Reseta o input para
-  // permitir reescolher o mesmo arquivo.
   function onFoto(e) {
     const file = e.target.files?.[0] || null;
     e.target.value = "";
@@ -151,8 +401,6 @@ function EditarCadastro({ cadastro, stats }) {
     const payload = {
       nome: form.nome.trim(),
       telefone: form.telefone.trim(),
-      servico: form.servico.trim(),
-      categoria: form.categoria,
       bairro: form.bairro.trim(),
       regioes: form.regioes.trim(),
       instagram: instagramHandle(form.instagram) || "",
@@ -168,12 +416,7 @@ function EditarCadastro({ cadastro, stats }) {
       setStatus("erro");
       return;
     }
-    // Revalida o perfil público (ISR) para refletir a edição na hora.
-    await fetch("/api/revalidar-perfil", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: cadastro.id }),
-    }).catch(() => {});
+    await revalidarPerfil(cadastro.id);
     setStatus("ok");
     removerFoto();
     router.refresh();
@@ -192,6 +435,8 @@ function EditarCadastro({ cadastro, stats }) {
 
       <Metricas cadastro={cadastro} stats={stats} />
 
+      <GerenciarServicos cadastro={cadastro} />
+
       <h4 className="font-display text-[15px] mb-2">Editar cadastro</h4>
 
       <Field label="Nome completo">
@@ -199,19 +444,6 @@ function EditarCadastro({ cadastro, stats }) {
       </Field>
       <Field label="Telefone / WhatsApp">
         <input className={inputClass} value={form.telefone} onChange={set("telefone")} />
-      </Field>
-      <Field label="Serviço prestado">
-        <input className={inputClass} value={form.servico} onChange={set("servico")} />
-      </Field>
-      <Field label="Categoria">
-        <select className={inputClass} value={form.categoria} onChange={set("categoria")}>
-          <option value="">Selecione...</option>
-          {CATS.map((c) => (
-            <option key={c.value} value={c.value}>
-              {c.icon} {c.value}
-            </option>
-          ))}
-        </select>
       </Field>
       <Field label="Bairro">
         <input className={inputClass} value={form.bairro} onChange={set("bairro")} />
@@ -299,8 +531,8 @@ function EditarCadastro({ cadastro, stats }) {
 function Reivindicar() {
   const router = useRouter();
   const [telefone, setTelefone] = useState("");
-  const [resultados, setResultados] = useState(null); // null = não buscou ainda
-  const [status, setStatus] = useState("idle"); // idle | buscando | reivindicando | erro
+  const [resultados, setResultados] = useState(null);
+  const [status, setStatus] = useState("idle");
 
   async function buscar() {
     const termo = telefone.trim();
@@ -308,7 +540,7 @@ function Reivindicar() {
     setStatus("buscando");
     const { data, error } = await getBrowserSupabase()
       .from("profissionais")
-      .select("id, nome, telefone, servico, bairro")
+      .select("id, nome, telefone, bairro, profissional_servicos(servico)")
       .is("user_id", null)
       .ilike("telefone", `%${termo}%`)
       .limit(10);
@@ -371,26 +603,31 @@ function Reivindicar() {
 
       {resultados && resultados.length > 0 && (
         <div className="space-y-2 mt-4">
-          {resultados.map((r) => (
-            <div
-              key={r.id}
-              className="flex items-center justify-between gap-3 border border-brand-border rounded-lg p-3"
-            >
-              <div className="min-w-0">
-                <div className="font-bold text-[14px] truncate">{r.nome}</div>
-                <div className="text-[12px] text-brand-grey-light truncate">
-                  {r.servico} · {r.telefone}
-                </div>
-              </div>
-              <button
-                onClick={() => reivindicar(r.id)}
-                disabled={status === "reivindicando"}
-                className="bg-brand-black text-white rounded-lg px-3 py-2 text-[12px] font-bold shrink-0"
+          {resultados.map((r) => {
+            const nomeServicos = (r.profissional_servicos || [])
+              .map((s) => s.servico)
+              .join(", ");
+            return (
+              <div
+                key={r.id}
+                className="flex items-center justify-between gap-3 border border-brand-border rounded-lg p-3"
               >
-                É meu
-              </button>
-            </div>
-          ))}
+                <div className="min-w-0">
+                  <div className="font-bold text-[14px] truncate">{r.nome}</div>
+                  <div className="text-[12px] text-brand-grey-light truncate">
+                    {nomeServicos} · {r.telefone}
+                  </div>
+                </div>
+                <button
+                  onClick={() => reivindicar(r.id)}
+                  disabled={status === "reivindicando"}
+                  className="bg-brand-black text-white rounded-lg px-3 py-2 text-[12px] font-bold shrink-0"
+                >
+                  É meu
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
 

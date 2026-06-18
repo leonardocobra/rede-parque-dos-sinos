@@ -75,6 +75,8 @@ export default async function PaginaCategoria({ params }) {
               const ini = iniciais(p.nome);
               const wn = (p.telefone || "").replace(/\D/g, "");
               const ig = instagramUrl(p.instagram);
+              const servicos = p.profissional_servicos || [];
+              const servicoPrimario = servicos[0]?.servico || "";
               return (
                 <div
                   key={p.id}
@@ -106,8 +108,12 @@ export default async function PaginaCategoria({ params }) {
                           </span>
                         )}
                       </div>
-                      <div className="text-[13px] text-brand-red font-bold">
-                        {catIcon(p.categoria)} {p.servico}
+                      <div className="space-y-0.5">
+                        {servicos.map((sv) => (
+                          <div key={sv.id} className="text-[13px] text-brand-red font-bold">
+                            {catIcon(sv.categoria)} {sv.servico}
+                          </div>
+                        ))}
                       </div>
                       <div className="text-xs text-brand-grey-light mt-0.5">
                         {p.bairro && "📍 " + p.bairro}
@@ -147,7 +153,7 @@ export default async function PaginaCategoria({ params }) {
                         Avaliar
                       </Link>
                     </div>
-                    <BotoesCompartilhar id={p.id} nome={p.nome} servico={p.servico} />
+                    <BotoesCompartilhar id={p.id} nome={p.nome} servico={servicoPrimario} />
                   </div>
                 </div>
               );

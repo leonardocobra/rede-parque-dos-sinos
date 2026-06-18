@@ -46,6 +46,7 @@ function AvaliarContent() {
 
   const [profs, setProfs] = useState([]);
   const [profId, setProfId] = useState(preId || "");
+  const [servicoId, setServicoId] = useState("");
   const [pontual, setPontual] = useState(null);
   const [novamente, setNovamente] = useState(null);
   const [conforme, setConforme] = useState(null);
@@ -57,18 +58,45 @@ function AvaliarContent() {
   useEffect(() => {
     supabase
       .from("profissionais")
-      .select("id, nome, servico")
+      .select("id, nome, profissional_servicos(id, servico, ordem)")
       .order("nome")
-      .then(({ data }) => setProfs(data || []));
+      .then(({ data }) => {
+        const sorted = (data || []).map((p) => ({
+          ...p,
+          profissional_servicos: (p.profissional_servicos || []).sort((a, b) => a.ordem - b.ordem),
+        }));
+        setProfs(sorted);
+      });
   }, []);
 
-  const valid = profId && pontual !== null && novamente !== null && conforme !== null;
+  // Serviços do profissional selecionado
+  const servicosDoProf = profId
+    ? (profs.find((p) => p.id === profId)?.profissional_servicos || [])
+    : [];
+
+  // Auto-seleciona o serviço quando há apenas um
+  useEffect(() => {
+    if (servicosDoProf.length === 1) {
+      setServicoId(servicosDoProf[0].id);
+    } else {
+      setServicoId("");
+    }
+  }, [profId]);
+
+  const precisaEscolherServico = servicosDoProf.length > 1;
+  const valid =
+    profId &&
+    pontual !== null &&
+    novamente !== null &&
+    conforme !== null &&
+    (!precisaEscolherServico || servicoId);
 
   async function submit() {
     if (!valid || submitting) return;
     setSubmitting(true);
     const { error } = await supabase.from("avaliacoes").insert({
       profissional_id: profId,
+      servico_id: servicoId || null,
       pontual,
       novamente,
       conforme,
@@ -119,7 +147,7 @@ function AvaliarContent() {
                 <option value="">Selecione o profissional...</option>
                 {profs.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.nome} – {p.servico}
+                    {p.nome}
                   </option>
                 ))}
               </select>
@@ -127,6 +155,29 @@ function AvaliarContent() {
                 <div className="text-xs text-brand-grey-light mt-1">Pré-selecionado: {preNome}</div>
               )}
             </div>
+
+            {/* Seleção de serviço — exibida apenas quando o profissional tem mais de um */}
+            {precisaEscolherServico && (
+              <div className="mb-4">
+                <label className="block text-[11px] font-bold text-brand-grey uppercase tracking-[0.8px] mb-[5px]">
+                  Qual serviço você utilizou? *
+                </label>
+                <select
+                  value={servicoId}
+                  onChange={(e) => setServicoId(e.target.value)}
+                  className={`w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-brand-card outline-none ${
+                    servicoId ? "text-brand-text" : "text-brand-grey-light"
+                  }`}
+                >
+                  <option value="">Selecione o serviço...</option>
+                  {servicosDoProf.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.servico}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <Toggle label="Foi pontual?" value={pontual} onChange={setPontual} />
             <Toggle label="Contrataria novamente?" value={novamente} onChange={setNovamente} />
