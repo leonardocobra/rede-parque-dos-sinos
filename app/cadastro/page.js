@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import { supabase } from "../../lib/supabase";
@@ -27,7 +27,6 @@ const inputClass =
   "w-full py-[11px] px-[14px] rounded-lg border-[1.5px] border-brand-border text-sm bg-brand-card outline-none text-brand-text";
 
 export default function Cadastro() {
-  const router = useRouter();
   const [form, setForm] = useState({
     nome: "",
     telefone: "",
@@ -43,6 +42,8 @@ export default function Cadastro() {
   const [fotoErro, setFotoErro] = useState(null);
   const [status, setStatus] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  // Id do cadastro recém-criado, usado para oferecer vínculo de conta (P0.3).
+  const [novoId, setNovoId] = useState(null);
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const valid = form.nome && form.telefone && form.servico && form.categoria;
@@ -71,25 +72,30 @@ export default function Cadastro() {
     if (!valid || submitting || fotoErro) return;
     setSubmitting(true);
     const foto_url = await uploadFoto();
-    const { error } = await supabase.from("profissionais").insert({
-      nome: form.nome.trim(),
-      telefone: form.telefone.trim(),
-      servico: form.servico.trim(),
-      categoria: form.categoria,
-      bairro: form.bairro.trim(),
-      regioes: form.regioes.trim(),
-      instagram: instagramHandle(form.instagram) || "",
-      experiencia: form.experiencia.trim(),
-      descricao: form.descricao.trim(),
-      foto_url,
-    });
+    const { data, error } = await supabase
+      .from("profissionais")
+      .insert({
+        nome: form.nome.trim(),
+        telefone: form.telefone.trim(),
+        servico: form.servico.trim(),
+        categoria: form.categoria,
+        bairro: form.bairro.trim(),
+        regioes: form.regioes.trim(),
+        instagram: instagramHandle(form.instagram) || "",
+        experiencia: form.experiencia.trim(),
+        descricao: form.descricao.trim(),
+        foto_url,
+      })
+      .select("id")
+      .single();
     if (error) {
       setStatus("error");
       setSubmitting(false);
       return;
     }
+    // Guarda o id para o passo opcional de criar conta e vincular o cadastro.
+    setNovoId(data?.id || null);
     setStatus("success");
-    setTimeout(() => router.push("/catalogo"), 2000);
   }
 
   return (
@@ -100,12 +106,20 @@ export default function Cadastro() {
         <p className="text-[13px] text-brand-grey-light mb-6">Gratuito e leva menos de 2 minutos</p>
 
         {status === "success" ? (
-          <div className="text-center py-12">
-            <div className="w-14 h-14 rounded-full bg-brand-red-light flex items-center justify-center mx-auto mb-4 text-[28px]">
-              ✓
+          <div className="py-8">
+            <div className="text-center mb-6">
+              <div className="w-14 h-14 rounded-full bg-brand-red-light flex items-center justify-center mx-auto mb-4 text-[28px]">
+                ✓
+              </div>
+              <h3 className="font-display text-[22px]">Cadastro Enviado!</h3>
+              <p className="text-[13px] text-brand-grey mt-2">Seu serviço já está no catálogo.</p>
             </div>
-            <h3 className="font-display text-[22px]">Cadastro Enviado!</h3>
-            <p className="text-[13px] text-brand-grey mt-2">Redirecionando para o catálogo...</p>
+            <CriarConta novoId={novoId} />
+            <p className="text-center mt-5">
+              <Link href="/catalogo" className="text-[13px] font-bold text-brand-grey">
+                Ir para o catálogo →
+              </Link>
+            </p>
           </div>
         ) : (
           <div>
@@ -232,5 +246,83 @@ export default function Cadastro() {
       </div>
       <Footer />
     </>
+  );
+}
+
+// Oferta opcional pós-cadastro (P0.3): cria uma conta por magic link e guarda o
+// id do cadastro recém-criado no localStorage. Após o login (/auth/callback →
+// /painel), o cadastro é reivindicado automaticamente (ver ClaimPendente).
+// Quem não quiser conta simplesmente ignora — o cadastro anônimo já está feito.
+function CriarConta({ novoId }) {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("idle"); // idle | enviando | enviado | erro
+  const valido = /\S+@\S+\.\S+/.test(email);
+
+  async function enviar() {
+    if (!valido || status === "enviando") return;
+    setStatus("enviando");
+    // Guarda o cadastro a vincular antes de sair para o e-mail. O magic link
+    // volta no mesmo navegador, então o localStorage sobrevive ao round-trip.
+    if (novoId) {
+      try {
+        localStorage.setItem("cadastro_pendente", novoId);
+      } catch {
+        // localStorage indisponível (ex.: modo privado) — segue sem o vínculo
+        // automático; o dono ainda pode reivindicar por telefone no painel.
+      }
+    }
+    const origin = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+    const { error } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: { emailRedirectTo: `${origin}/auth/callback` },
+    });
+    setStatus(error ? "erro" : "enviado");
+  }
+
+  if (status === "enviado") {
+    return (
+      <div className="bg-brand-card border border-brand-border rounded-[10px] p-4 text-center">
+        <div className="text-[28px] mb-2">✉️</div>
+        <h4 className="font-display text-[18px]">Verifique seu e-mail</h4>
+        <p className="text-[13px] text-brand-grey mt-1">
+          Enviamos um link de acesso para <strong>{email}</strong>. Abra no mesmo dispositivo para
+          vincular este cadastro à sua conta.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-brand-card border border-brand-border rounded-[10px] p-4">
+      <h4 className="font-display text-[18px] mb-1">Quer poder editar depois?</h4>
+      <p className="text-[13px] text-brand-grey-light mb-3">
+        Crie uma conta por e-mail (sem senha) e este cadastro fica vinculado a você — dá para
+        corrigir telefone, foto e descrição quando quiser.
+      </p>
+      <div className="flex gap-2">
+        <input
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          placeholder="voce@exemplo.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && enviar()}
+          className={inputClass}
+        />
+        <button
+          onClick={enviar}
+          disabled={!valido || status === "enviando"}
+          className="bg-brand-red text-white rounded-lg px-4 text-[14px] font-bold shrink-0 disabled:bg-brand-border"
+        >
+          {status === "enviando" ? "..." : "Criar conta"}
+        </button>
+      </div>
+      {status === "erro" && (
+        <p className="text-brand-red text-[13px] mt-2">
+          Não foi possível enviar o link. Tente novamente.
+        </p>
+      )}
+    </div>
   );
 }

@@ -5,6 +5,7 @@ import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import SairButton from "./SairButton";
 import PainelClient from "./PainelClient";
+import ClaimPendente from "./ClaimPendente";
 import { getServerSupabase } from "../../lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -36,6 +37,7 @@ export default async function Painel() {
           Conectado como <strong>{user.email}</strong>
         </p>
 
+        <ClaimPendente />
         <PainelClient cadastros={meus || []} />
       </div>
       <Footer />
