@@ -36,20 +36,66 @@ function Field({ label, children }) {
   );
 }
 
-export default function PainelClient({ cadastros }) {
+export default function PainelClient({ cadastros, stats = {} }) {
   if (cadastros.length === 0) {
     return <Reivindicar />;
   }
   return (
     <div className="space-y-6">
       {cadastros.map((c) => (
-        <EditarCadastro key={c.id} cadastro={c} />
+        <EditarCadastro key={c.id} cadastro={c} stats={stats[c.id]} />
       ))}
     </div>
   );
 }
 
-function EditarCadastro({ cadastro }) {
+// Bloco de métricas do cadastro: visualizações, nº de avaliações, nota média e
+// o status dos selos (Recomendado calculado / Verificado manual).
+function Metricas({ cadastro, stats }) {
+  const visualizacoes = cadastro.visualizacoes || 0;
+  const totalAvaliacoes = stats?.count || 0;
+  const notaMedia = stats ? stats.avg.toFixed(1).replace(".", ",") : "—";
+
+  return (
+    <div className="mb-4">
+      <div className="grid grid-cols-3 gap-2 mb-3">
+        <Stat valor={visualizacoes} rotulo="Visualizações" />
+        <Stat valor={totalAvaliacoes} rotulo="Avaliações" />
+        <Stat valor={notaMedia} rotulo="Nota média" />
+      </div>
+
+      <div className="space-y-1.5">
+        {stats?.recomendado ? (
+          <p className="text-[12px] font-bold text-brand-red">Você é Recomendado ✓</p>
+        ) : (
+          <p className="text-[12px] text-brand-grey-light">
+            Recomendado: a partir de 3 avaliações com 80% de “contrataria novamente”.
+          </p>
+        )}
+        {cadastro.verificado ? (
+          <p className="text-[12px] font-bold text-brand-text">Identidade verificada ✓</p>
+        ) : (
+          <p className="text-[12px] text-brand-grey-light">
+            Verificação: pendente — fale com a Rede.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Stat({ valor, rotulo }) {
+  return (
+    <div className="bg-brand-surface rounded-lg py-2.5 px-2 text-center">
+      <div className="font-display text-[20px] leading-none text-brand-text">{valor}</div>
+      <div className="text-[10px] text-brand-grey-light uppercase tracking-[0.5px] mt-1">
+        {rotulo}
+      </div>
+    </div>
+  );
+}
+
+function EditarCadastro({ cadastro, stats }) {
   const router = useRouter();
   const init = Object.fromEntries(CAMPOS.map((k) => [k, cadastro[k] || ""]));
   const [form, setForm] = useState(init);
@@ -117,19 +163,17 @@ function EditarCadastro({ cadastro }) {
   return (
     <div className="bg-brand-card rounded-[10px] border border-brand-border p-4">
       <div className="flex items-center justify-between gap-2 mb-3">
-        <h3 className="font-display text-[18px]">Editar cadastro</h3>
-        <div className="flex items-center gap-1.5">
-          {cadastro.verificado ? (
-            <span className="bg-brand-black text-white font-bold text-[10px] px-2 py-[3px] rounded-[4px] uppercase tracking-[0.6px]">
-              ✓ Verificado
-            </span>
-          ) : (
-            <span className="text-[10px] text-brand-grey-light font-bold uppercase tracking-[0.6px]">
-              Verificação: fale com a Rede
-            </span>
-          )}
-        </div>
+        <h3 className="font-display text-[18px]">{cadastro.nome || "Seu cadastro"}</h3>
+        {cadastro.verificado && (
+          <span className="bg-brand-black text-white font-bold text-[10px] px-2 py-[3px] rounded-[4px] uppercase tracking-[0.6px]">
+            ✓ Verificado
+          </span>
+        )}
       </div>
+
+      <Metricas cadastro={cadastro} stats={stats} />
+
+      <h4 className="font-display text-[15px] mb-2">Editar cadastro</h4>
 
       <Field label="Nome completo">
         <input className={inputClass} value={form.nome} onChange={set("nome")} />
