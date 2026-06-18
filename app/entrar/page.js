@@ -25,7 +25,7 @@ function EntrarForm() {
   const linkErro = searchParams.get("erro") === "link";
 
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("idle"); // idle | enviando | enviado | erro
+  const [status, setStatus] = useState("idle"); // idle | enviando | enviado | erro | limite
   const valido = /\S+@\S+\.\S+/.test(email);
 
   async function enviar() {
@@ -36,7 +36,13 @@ function EntrarForm() {
       email: email.trim(),
       options: { emailRedirectTo: `${origin}/auth/callback` },
     });
-    setStatus(error ? "erro" : "enviado");
+    if (!error) {
+      setStatus("enviado");
+    } else if (error.status === 429 || error.code === "over_email_send_rate_limit") {
+      setStatus("limite");
+    } else {
+      setStatus("erro");
+    }
   }
 
   return (
@@ -80,6 +86,13 @@ function EntrarForm() {
           {status === "erro" && (
             <p className="text-brand-red text-[13px] mt-3">
               Não foi possível enviar o link. Tente novamente.
+            </p>
+          )}
+
+          {status === "limite" && (
+            <p className="text-brand-red text-[13px] mt-3">
+              Você pediu muitos links em pouco tempo. Aguarde alguns minutos e tente novamente —
+              verifique também sua caixa de spam.
             </p>
           )}
 
