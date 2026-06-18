@@ -9,7 +9,14 @@ import { computeStats } from "../../../lib/catalogo";
 import { iniciais } from "../../../lib/avatar";
 import { instagramUrl } from "../../../lib/instagram";
 import { catIcon } from "../../config";
-import { tituloPerfil, descricaoPerfil, whatsappLink, CIDADE } from "../../../lib/perfil";
+import {
+  tituloPerfil,
+  descricaoPerfil,
+  whatsappLink,
+  perfilJsonLd,
+  CIDADE,
+} from "../../../lib/perfil";
+import { absUrl } from "../../../lib/site";
 
 // ISR: HTML estático e rápido para indexação, revalidado a cada minuto para
 // refletir novas avaliações sem ficar totalmente dinâmico.
@@ -22,10 +29,12 @@ export async function generateMetadata({ params }) {
   if (!prof) return { title: "Profissional não encontrado · A Rede" };
   const title = tituloPerfil(prof);
   const description = descricaoPerfil(prof);
+  const url = `/profissional/${params.id}`;
   return {
     title,
     description,
-    openGraph: { title, description, type: "profile" },
+    alternates: { canonical: url },
+    openGraph: { title, description, type: "profile", url },
     twitter: { card: "summary_large_image", title, description },
   };
 }
@@ -55,6 +64,7 @@ export default async function PerfilPage({ params }) {
   const wa = whatsappLink(prof.telefone);
   const ig = instagramUrl(prof.instagram);
   const comentarios = avals.filter((a) => (a.comentario || "").trim());
+  const jsonLd = perfilJsonLd(prof, st, absUrl(`/profissional/${id}`));
 
   const percentuais = st
     ? [
@@ -66,6 +76,12 @@ export default async function PerfilPage({ params }) {
 
   return (
     <>
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       <PerfilView id={id} nome={prof.nome} />
       <Nav />
       <div className="px-5 max-w-[560px] mx-auto pt-5 pb-8">
