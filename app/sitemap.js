@@ -1,5 +1,7 @@
 import { listProfissionaisIds } from "../lib/profissionais";
 import { absUrl } from "../lib/site";
+import { CATS } from "./config";
+import { categoriaParaSlug } from "../lib/categorias";
 
 // Sitemap dinâmico: páginas estáticas indexáveis + todos os perfis públicos.
 // Acelera a indexação dos perfis pelo Google em vez de depender só do crawl.
@@ -25,6 +27,13 @@ export default async function sitemap() {
     priority: p.priority,
   }));
 
+  const categorias = CATS.map((c) => ({
+    url: absUrl(`/catalogo/${categoriaParaSlug(c.value)}`),
+    lastModified: agora,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
   const profissionais = await listProfissionaisIds();
   const perfis = profissionais.map((p) => ({
     url: absUrl(`/profissional/${p.id}`),
@@ -33,5 +42,5 @@ export default async function sitemap() {
     priority: 0.8,
   }));
 
-  return [...estaticas, ...perfis];
+  return [...estaticas, ...categorias, ...perfis];
 }

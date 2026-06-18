@@ -11,6 +11,7 @@ import { iniciais } from "../../lib/avatar";
 import { computeStats, sortProfissionais, ORDENACOES, ORDENACAO_PADRAO } from "../../lib/catalogo";
 import { WhatsAppIcon, InstagramIcon, ShareIcon } from "../components/SocialIcons";
 import { track } from "@vercel/analytics";
+import { categoriaParaSlug } from "../../lib/categorias";
 
 function normalize(s) {
   return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -111,9 +112,13 @@ function CatalogoContent() {
                 Todos
               </button>
               {CATS.map((c) => (
-                <button
+                <Link
                   key={c.value}
-                  onClick={() => setCatFilter(catFilter === c.value ? null : c.value)}
+                  href={`/catalogo/${categoriaParaSlug(c.value)}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCatFilter(catFilter === c.value ? null : c.value);
+                  }}
                   className={`rounded-[6px] px-3 py-[5px] text-[11px] font-bold whitespace-nowrap border ${
                     catFilter === c.value
                       ? "bg-brand-red text-white border-brand-red"
@@ -121,7 +126,7 @@ function CatalogoContent() {
                   }`}
                 >
                   {c.icon} {c.value}
-                </button>
+                </Link>
               ))}
             </div>
 
