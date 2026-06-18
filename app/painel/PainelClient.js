@@ -457,10 +457,11 @@ function EditarCadastro({ cadastro, stats }) {
       <Field label="Tempo de experiência">
         <input className={inputClass} value={form.experiencia} onChange={set("experiencia")} />
       </Field>
-      <Field label="Descrição do serviço">
+      <Field label="Sobre você (apresentação geral)">
         <textarea
           className={`${inputClass} resize-y`}
           rows={3}
+          placeholder="Uma apresentação geral sua. A descrição de cada serviço fica em 'Meus Serviços' acima."
           value={form.descricao}
           onChange={set("descricao")}
         />

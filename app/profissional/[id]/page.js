@@ -105,9 +105,8 @@ export default async function PerfilPage({ params }) {
           )}
           <div className="flex-1 min-w-0">
             <h1 className="font-display text-[22px] leading-tight">{prof.nome}</h1>
-            <ServicosInterativos servicos={servicos} />
             {servicos.length > 0 && (
-              <div className="text-[12px] text-brand-grey-light mt-0.5">
+              <div className="text-[12px] text-brand-grey-light mt-1">
                 {[...new Set(servicos.map((s) => s.categoria))].join(" · ")}
               </div>
             )}
@@ -155,7 +154,16 @@ export default async function PerfilPage({ params }) {
           </section>
         )}
 
-        {/* Sobre */}
+        {/* Serviços — bloco interativo reutilizado do catálogo. É aqui que vivem
+            as descrições (e, no futuro, os itens/produtos) de cada serviço. */}
+        {servicos.length > 0 && (
+          <section className="bg-brand-card rounded-[10px] border border-brand-border p-4 mt-3">
+            <h2 className="font-display text-[16px] mb-2">Serviços</h2>
+            <ServicosInterativos servicos={servicos} />
+          </section>
+        )}
+
+        {/* Sobre o profissional — apresentação geral (bio), separada dos serviços. */}
         {(prof.descricao || prof.experiencia || prof.regioes || prof.bairro) && (
           <section className="bg-brand-card rounded-[10px] border border-brand-border p-4 mt-3">
             {prof.descricao && (
