@@ -2,7 +2,10 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import FeedbackButton from "./components/FeedbackButton";
 import { BRAND } from "./brand";
+import { siteUrl } from "../lib/site";
 export const metadata = {
+  // Base para resolver URLs relativas de OG image, canonical e twitter.
+  metadataBase: new URL(siteUrl()),
   title: `${BRAND.nome} – Profissionais de confiança em Jacareí`,
   description:
     "Encontre profissionais de confiança indicados por vizinhos. A Rede começou no Parque dos Sinos, Jacareí-SP, e cresce pela comunidade.",
