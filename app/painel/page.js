@@ -6,6 +6,8 @@ import Footer from "../components/Footer";
 import SairButton from "./SairButton";
 import PainelClient from "./PainelClient";
 import { getServerSupabase } from "../../lib/supabase/server";
+import { getAvaliacoesDe } from "../../lib/profissionais";
+import { computeStats } from "../../lib/catalogo";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +26,17 @@ export default async function Painel() {
     .eq("user_id", user.id)
     .order("criado_em", { ascending: false });
 
+  // Estatísticas de avaliação por cadastro (nº de avaliações, nota média e
+  // selo "Recomendado" calculado). A leitura de avaliacoes é pública (RLS).
+  const lista = meus || [];
+  const stats = {};
+  await Promise.all(
+    lista.map(async (c) => {
+      const avals = await getAvaliacoesDe(c.id);
+      stats[c.id] = computeStats(c.id, avals);
+    })
+  );
+
   return (
     <>
       <Nav />
@@ -36,7 +49,7 @@ export default async function Painel() {
           Conectado como <strong>{user.email}</strong>
         </p>
 
-        <PainelClient cadastros={meus || []} />
+        <PainelClient cadastros={lista} stats={stats} />
       </div>
       <Footer />
     </>
