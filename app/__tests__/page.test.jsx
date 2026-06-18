@@ -15,6 +15,19 @@ vi.mock("next/link", () => ({
   ),
 }));
 
+// Home renderiza o Nav, que consulta a sessão do Supabase no client. Sem
+// credenciais no ambiente de teste, o cliente real lança erro — então mockamos.
+vi.mock("../../lib/supabase/client", () => ({
+  getBrowserSupabase: () => ({
+    auth: {
+      getSession: () => Promise.resolve({ data: { session: null } }),
+      onAuthStateChange: () => ({
+        data: { subscription: { unsubscribe: () => {} } },
+      }),
+    },
+  }),
+}));
+
 describe("Home", () => {
   it("exibe as regras básicas completas na home", () => {
     render(<Home />);
