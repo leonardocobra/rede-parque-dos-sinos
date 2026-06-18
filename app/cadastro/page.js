@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
+import CropFotoModal from "../components/CropFotoModal";
 import { supabase } from "../../lib/supabase";
 import { CATS } from "../config";
 import { instagramHandle } from "../../lib/instagram";
@@ -38,7 +39,9 @@ export default function Cadastro() {
     experiencia: "",
     descricao: "",
   });
-  const [foto, setFoto] = useState(null);
+  const [foto, setFoto] = useState(null); // Blob recortado, pronto para upload
+  const [fotoPreview, setFotoPreview] = useState(null); // object URL da prévia
+  const [cropFile, setCropFile] = useState(null); // arquivo aberto no modal de recorte
   const [fotoErro, setFotoErro] = useState(null);
   const [status, setStatus] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -48,21 +51,38 @@ export default function Cadastro() {
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const valid = form.nome && form.telefone && form.servico && form.categoria;
 
+  // Valida o arquivo escolhido e, se ok, abre o modal de recorte. O input é
+  // resetado para permitir reescolher o mesmo arquivo depois.
   function onFoto(e) {
     const file = e.target.files?.[0] || null;
+    e.target.value = "";
     const { ok, erro } = validarFoto(file);
     setFotoErro(ok ? null : erro);
-    setFoto(ok ? file : null);
+    if (ok && file) setCropFile(file);
   }
 
-  // Envia a foto para o Storage e devolve a URL pública (ou "" em caso de falha).
+  // Recebe o recorte quadrado (Blob) do modal e atualiza a prévia.
+  function onCrop(blob, url) {
+    if (fotoPreview) URL.revokeObjectURL(fotoPreview);
+    setFoto(blob);
+    setFotoPreview(url);
+    setCropFile(null);
+  }
+
+  function removerFoto() {
+    if (fotoPreview) URL.revokeObjectURL(fotoPreview);
+    setFoto(null);
+    setFotoPreview(null);
+  }
+
+  // Envia a foto recortada (JPEG) para o Storage e devolve a URL pública.
   async function uploadFoto() {
     if (!foto) return "";
-    const ext = (foto.name.split(".").pop() || "jpg").toLowerCase();
-    const path = `${crypto.randomUUID()}.${ext}`;
+    const path = `${crypto.randomUUID()}.jpg`;
     const { error } = await supabase.storage.from(FOTO_BUCKET).upload(path, foto, {
       cacheControl: "3600",
       upsert: false,
+      contentType: "image/jpeg",
     });
     if (error) return "";
     return supabase.storage.from(FOTO_BUCKET).getPublicUrl(path).data.publicUrl;
@@ -211,14 +231,36 @@ export default function Cadastro() {
             </Field>
 
             <Field label="Foto (opcional)">
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={onFoto}
-                className="w-full text-[13px] text-brand-grey file:mr-3 file:rounded-md file:border-0 file:bg-brand-surface file:px-3 file:py-2 file:text-[12px] file:font-bold file:text-brand-text"
-              />
-              {foto && !fotoErro && (
-                <p className="text-[11px] text-brand-grey-light mt-1.5">Selecionada: {foto.name}</p>
+              {fotoPreview ? (
+                <div className="flex items-center gap-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={fotoPreview}
+                    alt="Prévia da foto"
+                    className="w-[56px] h-[56px] rounded-lg object-cover border border-brand-border shrink-0"
+                  />
+                  <div className="flex gap-3 text-[13px] font-bold">
+                    <label className="text-brand-red cursor-pointer">
+                      Trocar
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={onFoto}
+                        className="hidden"
+                      />
+                    </label>
+                    <button type="button" onClick={removerFoto} className="text-brand-grey">
+                      Remover
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={onFoto}
+                  className="w-full text-[13px] text-brand-grey file:mr-3 file:rounded-md file:border-0 file:bg-brand-surface file:px-3 file:py-2 file:text-[12px] file:font-bold file:text-brand-text"
+                />
               )}
               {fotoErro && <p className="text-brand-red text-[12px] mt-1.5">{fotoErro}</p>}
               <p className="text-[11px] text-brand-grey-light mt-1.5">
@@ -245,6 +287,7 @@ export default function Cadastro() {
         )}
       </div>
       <Footer />
+      <CropFotoModal file={cropFile} onCancel={() => setCropFile(null)} onConfirm={onCrop} />
     </>
   );
 }

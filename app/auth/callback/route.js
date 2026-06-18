@@ -6,9 +6,16 @@ import { getServerSupabase } from "../../../lib/supabase/server";
 export async function GET(request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  // Só permite redirecionos internos (evita open redirect).
+  // Só permite redirecionos internos (evita open redirect). `//evil.com` e
+  // `/\evil.com` começam com "/" mas o navegador os trata como URL absoluta —
+  // por isso são rejeitados explicitamente.
   const nextParam = searchParams.get("next") || "/painel";
-  const next = nextParam.startsWith("/") ? nextParam : "/painel";
+  const next =
+    nextParam.startsWith("/") &&
+    !nextParam.startsWith("//") &&
+    !nextParam.startsWith("/\\")
+      ? nextParam
+      : "/painel";
 
   if (code) {
     const supabase = getServerSupabase();

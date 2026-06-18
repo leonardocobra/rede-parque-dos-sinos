@@ -6,6 +6,7 @@ import { getBrowserSupabase } from "../../lib/supabase/client";
 import { CATS } from "../config";
 import { instagramHandle } from "../../lib/instagram";
 import { validarFoto } from "../../lib/avatar";
+import CropFotoModal from "../components/CropFotoModal";
 
 const FOTO_BUCKET = "fotos-profissionais";
 
@@ -99,26 +100,44 @@ function EditarCadastro({ cadastro, stats }) {
   const router = useRouter();
   const init = Object.fromEntries(CAMPOS.map((k) => [k, cadastro[k] || ""]));
   const [form, setForm] = useState(init);
-  const [foto, setFoto] = useState(null);
+  const [foto, setFoto] = useState(null); // Blob recortado, pronto para upload
+  const [fotoPreview, setFotoPreview] = useState(null); // object URL da prévia
+  const [cropFile, setCropFile] = useState(null); // arquivo aberto no modal de recorte
   const [fotoErro, setFotoErro] = useState(null);
   const [status, setStatus] = useState("idle"); // idle | salvando | ok | erro
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const valido = form.nome && form.telefone && form.servico && form.categoria;
 
+  // Valida o arquivo e, se ok, abre o modal de recorte. Reseta o input para
+  // permitir reescolher o mesmo arquivo.
   function onFoto(e) {
     const file = e.target.files?.[0] || null;
+    e.target.value = "";
     const { ok, erro } = validarFoto(file);
     setFotoErro(ok ? null : erro);
-    setFoto(ok ? file : null);
+    if (ok && file) setCropFile(file);
+  }
+
+  function onCrop(blob, url) {
+    if (fotoPreview) URL.revokeObjectURL(fotoPreview);
+    setFoto(blob);
+    setFotoPreview(url);
+    setCropFile(null);
+  }
+
+  function removerFoto() {
+    if (fotoPreview) URL.revokeObjectURL(fotoPreview);
+    setFoto(null);
+    setFotoPreview(null);
   }
 
   async function uploadFoto(supabase) {
     if (!foto) return null;
-    const ext = (foto.name.split(".").pop() || "jpg").toLowerCase();
-    const path = `${crypto.randomUUID()}.${ext}`;
+    const path = `${crypto.randomUUID()}.jpg`;
     const { error } = await supabase.storage.from(FOTO_BUCKET).upload(path, foto, {
       cacheControl: "3600",
       upsert: false,
+      contentType: "image/jpeg",
     });
     if (error) return null;
     return supabase.storage.from(FOTO_BUCKET).getPublicUrl(path).data.publicUrl;
@@ -156,7 +175,7 @@ function EditarCadastro({ cadastro, stats }) {
       body: JSON.stringify({ id: cadastro.id }),
     }).catch(() => {});
     setStatus("ok");
-    setFoto(null);
+    removerFoto();
     router.refresh();
   }
 
@@ -215,14 +234,36 @@ function EditarCadastro({ cadastro, stats }) {
         />
       </Field>
       <Field label="Trocar foto (opcional)">
-        <input
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          onChange={onFoto}
-          className="w-full text-[13px] text-brand-grey file:mr-3 file:rounded-md file:border-0 file:bg-brand-surface file:px-3 file:py-2 file:text-[12px] file:font-bold file:text-brand-text"
-        />
-        {foto && !fotoErro && (
-          <p className="text-[11px] text-brand-grey-light mt-1.5">Selecionada: {foto.name}</p>
+        {fotoPreview ? (
+          <div className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={fotoPreview}
+              alt="Prévia da nova foto"
+              className="w-[56px] h-[56px] rounded-lg object-cover border border-brand-border shrink-0"
+            />
+            <div className="flex gap-3 text-[13px] font-bold">
+              <label className="text-brand-red cursor-pointer">
+                Trocar
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={onFoto}
+                  className="hidden"
+                />
+              </label>
+              <button type="button" onClick={removerFoto} className="text-brand-grey">
+                Remover
+              </button>
+            </div>
+          </div>
+        ) : (
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={onFoto}
+            className="w-full text-[13px] text-brand-grey file:mr-3 file:rounded-md file:border-0 file:bg-brand-surface file:px-3 file:py-2 file:text-[12px] file:font-bold file:text-brand-text"
+          />
         )}
         {fotoErro && <p className="text-brand-red text-[12px] mt-1.5">{fotoErro}</p>}
       </Field>
@@ -250,6 +291,7 @@ function EditarCadastro({ cadastro, stats }) {
       {status === "erro" && (
         <p className="text-brand-red text-[13px] mt-3">Não foi possível salvar. Tente novamente.</p>
       )}
+      <CropFotoModal file={cropFile} onCancel={() => setCropFile(null)} onConfirm={onCrop} />
     </div>
   );
 }
