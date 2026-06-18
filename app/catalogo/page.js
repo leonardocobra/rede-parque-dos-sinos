@@ -13,6 +13,7 @@ import { WhatsAppIcon, InstagramIcon } from "../components/SocialIcons";
 import { track } from "@vercel/analytics";
 import { categoriaParaSlug } from "../../lib/categorias";
 import BotoesCompartilhar from "../components/BotoesCompartilhar";
+import ServicosInterativos from "../profissional/[id]/ServicosInterativos";
 
 function normalize(s) {
   return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -224,13 +225,15 @@ function CatalogoContent() {
                           </span>
                         )}
                       </div>
-                      <div className="space-y-0.5">
-                        {servicos.map((sv) => (
-                          <div key={sv.id} className="text-[13px] text-brand-red font-bold">
-                            {catIcon(sv.categoria)} {sv.servico}
-                          </div>
-                        ))}
-                      </div>
+                      {!open && (
+                        <div className="space-y-0.5">
+                          {servicos.map((sv) => (
+                            <div key={sv.id} className="text-[13px] text-brand-red font-bold">
+                              {catIcon(sv.categoria)} {sv.servico}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       <div className="text-xs text-brand-grey-light mt-0.5">
                         {p.bairro && "📍 " + p.bairro}
                         {p.experiencia ? " · " + p.experiencia : ""}
@@ -258,6 +261,11 @@ function CatalogoContent() {
                   </div>
                   {open && (
                     <div className="px-4 pb-4 border-t border-brand-border pt-3.5">
+                      {servicos.length > 0 && (
+                        <div className="mb-3">
+                          <ServicosInterativos servicos={servicos} />
+                        </div>
+                      )}
                       {p.descricao && (
                         <p className="text-[13px] text-brand-grey leading-relaxed mb-3">
                           {p.descricao}
