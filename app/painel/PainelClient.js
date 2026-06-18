@@ -6,6 +6,7 @@ import { getBrowserSupabase } from "../../lib/supabase/client";
 import { CATS } from "../config";
 import { instagramHandle } from "../../lib/instagram";
 import { validarFoto } from "../../lib/avatar";
+import { soDigitos, filtrarPorTelefone } from "../../lib/telefone";
 import CropFotoModal from "../components/CropFotoModal";
 
 const FOTO_BUCKET = "fotos-profissionais";
@@ -536,17 +537,18 @@ function Reivindicar() {
   const [status, setStatus] = useState("idle");
 
   async function buscar() {
-    const termo = telefone.trim();
-    if (termo.length < 4 || status === "buscando") return;
+    // Compara só os dígitos: o telefone é salvo cru no cadastro (com ou sem
+    // formatação), então um ilike literal falharia por diferença de máscara.
+    const digitos = soDigitos(telefone);
+    if (digitos.length < 4 || status === "buscando") return;
     setStatus("buscando");
     const { data, error } = await getBrowserSupabase()
       .from("profissionais")
       .select("id, nome, telefone, bairro, profissional_servicos(servico)")
       .is("user_id", null)
-      .ilike("telefone", `%${termo}%`)
-      .limit(10);
+      .limit(500);
     setStatus(error ? "erro" : "idle");
-    setResultados(data || []);
+    setResultados(filtrarPorTelefone(data, telefone).slice(0, 10));
   }
 
   async function reivindicar(id) {
@@ -589,7 +591,7 @@ function Reivindicar() {
         />
         <button
           onClick={buscar}
-          disabled={telefone.trim().length < 4 || status === "buscando"}
+          disabled={soDigitos(telefone).length < 4 || status === "buscando"}
           className="bg-brand-red text-white rounded-lg px-4 text-[14px] font-bold shrink-0 disabled:bg-brand-border"
         >
           {status === "buscando" ? "..." : "Buscar"}
