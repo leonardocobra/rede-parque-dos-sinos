@@ -100,7 +100,15 @@ Copiar `.env.local.example` para `.env.local` e preencher com as credenciais do 
 
 ## Pendências Técnicas Conhecidas
 
-- [ ] Configurar ESLint + Prettier
-- [ ] Configurar framework de testes (Vitest recomendado para Next.js)
-- [ ] Configurar repositório Git remoto (GitHub)
-- [ ] Adicionar Tailwind CSS (considerar migração do CSS puro)
+### Concluídas
+
+- [x] Configurar ESLint + Prettier (`npm run lint`, `npm run format` — `eslint-config-next` + Prettier)
+- [x] Configurar framework de testes (Vitest + Testing Library — `npm test` / `npm run test:run`)
+- [x] Configurar repositório Git remoto (GitHub — `leonardocobra/rede-parque-dos-sinos`)
+- [x] Adicionar Tailwind CSS (migração do CSS puro concluída — tokens `brand-*`)
+
+### Em aberto
+
+- [ ] Ampliar cobertura de testes em direção à meta de 80% (priorizar RLS de dono/claim e fluxos do `/painel`)
+- [ ] Resolver a instabilidade do e-mail/Magic Link do Supabase que bloqueia o login E2E
+- [ ] Cliente Supabase já migrado para `@supabase/ssr`; revisar redirect do Magic Link em produção (Vercel)
