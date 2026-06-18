@@ -9,7 +9,6 @@ import { CATS } from "../config";
 import { instagramHandle } from "../../lib/instagram";
 import { validarFoto } from "../../lib/avatar";
 
-// Bucket público no Supabase Storage onde ficam as fotos dos profissionais.
 const FOTO_BUCKET = "fotos-profissionais";
 
 function Field({ label, required, children }) {
@@ -31,28 +30,41 @@ export default function Cadastro() {
   const [form, setForm] = useState({
     nome: "",
     telefone: "",
-    servico: "",
-    categoria: "",
     bairro: "",
     regioes: "",
     instagram: "",
     experiencia: "",
     descricao: "",
   });
-  const [foto, setFoto] = useState(null); // Blob recortado, pronto para upload
-  const [fotoPreview, setFotoPreview] = useState(null); // object URL da prévia
-  const [cropFile, setCropFile] = useState(null); // arquivo aberto no modal de recorte
+  // Lista de pares serviço+categoria (mín 1, máx 3)
+  const [servicos, setServicos] = useState([{ servico: "", categoria: "", descricao: "", instagram: "", expandido: false }]);
+  const [foto, setFoto] = useState(null);
+  const [fotoPreview, setFotoPreview] = useState(null);
+  const [cropFile, setCropFile] = useState(null);
   const [fotoErro, setFotoErro] = useState(null);
   const [status, setStatus] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  // Id do cadastro recém-criado, usado para oferecer vínculo de conta (P0.3).
   const [novoId, setNovoId] = useState(null);
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
-  const valid = form.nome && form.telefone && form.servico && form.categoria;
 
-  // Valida o arquivo escolhido e, se ok, abre o modal de recorte. O input é
-  // resetado para permitir reescolher o mesmo arquivo depois.
+  const servicosValidos = servicos.filter((s) => s.servico && s.categoria);
+  const valid = form.nome && form.telefone && servicosValidos.length > 0;
+
+  function atualizarServico(idx, campo, valor) {
+    setServicos((prev) => prev.map((s, i) => (i === idx ? { ...s, [campo]: valor } : s)));
+  }
+
+  function adicionarServico() {
+    if (servicos.length >= 3) return;
+    setServicos((prev) => [...prev, { servico: "", categoria: "", descricao: "", instagram: "", expandido: false }]);
+  }
+
+  function removerServico(idx) {
+    if (servicos.length <= 1) return;
+    setServicos((prev) => prev.filter((_, i) => i !== idx));
+  }
+
   function onFoto(e) {
     const file = e.target.files?.[0] || null;
     e.target.value = "";
@@ -61,7 +73,6 @@ export default function Cadastro() {
     if (ok && file) setCropFile(file);
   }
 
-  // Recebe o recorte quadrado (Blob) do modal e atualiza a prévia.
   function onCrop(blob, url) {
     if (fotoPreview) URL.revokeObjectURL(fotoPreview);
     setFoto(blob);
@@ -75,7 +86,6 @@ export default function Cadastro() {
     setFotoPreview(null);
   }
 
-  // Envia a foto recortada (JPEG) para o Storage e devolve a URL pública.
   async function uploadFoto() {
     if (!foto) return "";
     const path = `${crypto.randomUUID()}.jpg`;
@@ -97,8 +107,6 @@ export default function Cadastro() {
       .insert({
         nome: form.nome.trim(),
         telefone: form.telefone.trim(),
-        servico: form.servico.trim(),
-        categoria: form.categoria,
         bairro: form.bairro.trim(),
         regioes: form.regioes.trim(),
         instagram: instagramHandle(form.instagram) || "",
@@ -113,8 +121,21 @@ export default function Cadastro() {
       setSubmitting(false);
       return;
     }
-    // Guarda o id para o passo opcional de criar conta e vincular o cadastro.
-    setNovoId(data?.id || null);
+    const profId = data?.id;
+    // Insere cada serviço na tabela dedicada
+    if (profId && servicosValidos.length > 0) {
+      await supabase.from("profissional_servicos").insert(
+        servicosValidos.map((s, idx) => ({
+          profissional_id: profId,
+          servico: s.servico.trim(),
+          categoria: s.categoria,
+          ordem: idx,
+          descricao: s.descricao?.trim() || null,
+          instagram: instagramHandle(s.instagram) || null,
+        }))
+      );
+    }
+    setNovoId(profId || null);
     setStatus("success");
   }
 
@@ -161,29 +182,89 @@ export default function Cadastro() {
                 className={inputClass}
               />
             </Field>
-            <Field label="Serviço prestado" required>
-              <input
-                type="text"
-                placeholder="Ex: Pedreiro, Eletricista..."
-                value={form.servico}
-                onChange={set("servico")}
-                className={inputClass}
-              />
-            </Field>
-            <Field label="Categoria" required>
-              <select
-                value={form.categoria}
-                onChange={set("categoria")}
-                className={`${inputClass} ${!form.categoria ? "text-brand-grey-light" : ""}`}
-              >
-                <option value="">Selecione...</option>
-                {CATS.map((c) => (
-                  <option key={c.value} value={c.value}>
-                    {c.icon} {c.value}
-                  </option>
+
+            {/* Serviços — lista dinâmica de até 3 pares serviço+categoria */}
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-[5px]">
+                <label className="text-[11px] font-bold text-brand-grey uppercase tracking-[0.8px]">
+                  Serviços *
+                </label>
+                {servicos.length < 3 && (
+                  <button
+                    type="button"
+                    onClick={adicionarServico}
+                    className="text-[11px] font-bold text-brand-red"
+                  >
+                    + Adicionar
+                  </button>
+                )}
+              </div>
+              <div className="space-y-2">
+                {servicos.map((s, idx) => (
+                  <div key={idx} className="border border-brand-border rounded-lg p-3 space-y-1.5">
+                    <div className="flex gap-2 items-start">
+                      <div className="flex-1 space-y-1.5">
+                        <input
+                          type="text"
+                          placeholder="Ex: Pedreiro, Eletricista..."
+                          value={s.servico}
+                          onChange={(e) => atualizarServico(idx, "servico", e.target.value)}
+                          className={inputClass}
+                        />
+                        <select
+                          value={s.categoria}
+                          onChange={(e) => atualizarServico(idx, "categoria", e.target.value)}
+                          className={`${inputClass} ${!s.categoria ? "text-brand-grey-light" : ""}`}
+                        >
+                          <option value="">Categoria...</option>
+                          {CATS.map((c) => (
+                            <option key={c.value} value={c.value}>
+                              {c.icon} {c.value}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      {servicos.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removerServico(idx)}
+                          className="mt-2.5 text-brand-grey-light text-[18px] leading-none shrink-0 px-1"
+                          aria-label="Remover serviço"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => atualizarServico(idx, "expandido", !s.expandido)}
+                      className="text-[11px] font-bold text-brand-grey-light"
+                    >
+                      {s.expandido ? "▴ Ocultar detalhes" : "▾ Detalhes opcionais"}
+                    </button>
+                    {s.expandido && (
+                      <div className="space-y-1.5 pt-1">
+                        <textarea
+                          placeholder="Descrição deste serviço (opcional)"
+                          value={s.descricao}
+                          onChange={(e) => atualizarServico(idx, "descricao", e.target.value)}
+                          rows={2}
+                          className={`${inputClass} resize-y`}
+                        />
+                        <input
+                          type="text"
+                          placeholder="@seuperfil Instagram (opcional)"
+                          value={s.instagram}
+                          onChange={(e) => atualizarServico(idx, "instagram", e.target.value)}
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </div>
                 ))}
-              </select>
-            </Field>
+              </div>
+            </div>
+
             <Field label="Bairro">
               <input
                 type="text"
@@ -292,26 +373,19 @@ export default function Cadastro() {
   );
 }
 
-// Oferta opcional pós-cadastro (P0.3): cria uma conta por magic link e guarda o
-// id do cadastro recém-criado no localStorage. Após o login (/auth/callback →
-// /painel), o cadastro é reivindicado automaticamente (ver ClaimPendente).
-// Quem não quiser conta simplesmente ignora — o cadastro anônimo já está feito.
 function CriarConta({ novoId }) {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("idle"); // idle | enviando | enviado | erro
+  const [status, setStatus] = useState("idle");
   const valido = /\S+@\S+\.\S+/.test(email);
 
   async function enviar() {
     if (!valido || status === "enviando") return;
     setStatus("enviando");
-    // Guarda o cadastro a vincular antes de sair para o e-mail. O magic link
-    // volta no mesmo navegador, então o localStorage sobrevive ao round-trip.
     if (novoId) {
       try {
         localStorage.setItem("cadastro_pendente", novoId);
       } catch {
-        // localStorage indisponível (ex.: modo privado) — segue sem o vínculo
-        // automático; o dono ainda pode reivindicar por telefone no painel.
+        // localStorage indisponível — segue sem vínculo automático
       }
     }
     const origin = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;

@@ -31,10 +31,17 @@ function CatalogoContent() {
   async function load() {
     setLoading(true);
     const [{ data: p }, { data: a }] = await Promise.all([
-      supabase.from("profissionais").select("*").order("criado_em", { ascending: false }),
+      supabase
+        .from("profissionais")
+        .select("*, profissional_servicos(id, servico, categoria, ordem, descricao, instagram)")
+        .order("criado_em", { ascending: false }),
       supabase.from("avaliacoes").select("*"),
     ]);
-    setProfs(p || []);
+    const sorted = (p || []).map((prof) => ({
+      ...prof,
+      profissional_servicos: (prof.profissional_servicos || []).sort((a, b) => a.ordem - b.ordem),
+    }));
+    setProfs(sorted);
     setAvals(a || []);
     setLoading(false);
   }
@@ -49,12 +56,16 @@ function CatalogoContent() {
 
   const filtered = profs.filter((p) => {
     const s = normalize(search);
+    const textoServicos = normalize(
+      (p.profissional_servicos || []).map((sv) => sv.servico).join(" ")
+    );
     return (
       (!s ||
         normalize(p.nome).includes(s) ||
-        normalize(p.servico).includes(s) ||
+        textoServicos.includes(s) ||
         normalize(p.bairro).includes(s)) &&
-      (!catFilter || p.categoria === catFilter)
+      (!catFilter ||
+        (p.profissional_servicos || []).some((sv) => sv.categoria === catFilter))
     );
   });
 
@@ -166,8 +177,11 @@ function CatalogoContent() {
               const st = stats(p.id);
               const open = openId === p.id;
               const wn = (p.telefone || "").replace(/\D/g, "");
-              const ig = instagramUrl(p.instagram);
               const ini = iniciais(p.nome);
+              const servicos = p.profissional_servicos || [];
+              const servicoPrimario = servicos[0]?.servico || "";
+              const igHandle = servicos.find((s) => s.instagram)?.instagram || p.instagram;
+              const ig = instagramUrl(igHandle);
               return (
                 <div
                   key={p.id}
@@ -210,8 +224,12 @@ function CatalogoContent() {
                           </span>
                         )}
                       </div>
-                      <div className="text-[13px] text-brand-red font-bold">
-                        {catIcon(p.categoria)} {p.servico}
+                      <div className="space-y-0.5">
+                        {servicos.map((sv) => (
+                          <div key={sv.id} className="text-[13px] text-brand-red font-bold">
+                            {catIcon(sv.categoria)} {sv.servico}
+                          </div>
+                        ))}
                       </div>
                       <div className="text-xs text-brand-grey-light mt-0.5">
                         {p.bairro && "📍 " + p.bairro}
@@ -299,7 +317,7 @@ function CatalogoContent() {
                           Avaliar
                         </Link>
                       </div>
-                      <BotoesCompartilhar id={p.id} nome={p.nome} servico={p.servico} />
+                      <BotoesCompartilhar id={p.id} nome={p.nome} servico={servicoPrimario} />
                       <div className="text-right mt-2">
                         <Link
                           href={"/profissional/" + p.id}

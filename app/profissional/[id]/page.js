@@ -8,22 +8,20 @@ import { getProfissional, getAvaliacoesDe, getOutrosDaCategoria } from "../../..
 import { computeStats } from "../../../lib/catalogo";
 import { iniciais } from "../../../lib/avatar";
 import { instagramUrl } from "../../../lib/instagram";
-import { catIcon } from "../../config";
 import {
   tituloPerfil,
   descricaoPerfil,
   whatsappLink,
   perfilJsonLd,
+  servicoPrimario,
+  categoriaPrimaria,
   CIDADE,
 } from "../../../lib/perfil";
 import { absUrl } from "../../../lib/site";
+import ServicosInterativos from "./ServicosInterativos";
 
-// ISR: HTML estático e rápido para indexação, revalidado a cada minuto para
-// refletir novas avaliações sem ficar totalmente dinâmico.
 export const revalidate = 60;
 
-// Metadados dinâmicos por perfil (título/descrição com serviço + cidade).
-// A OG image vem de opengraph-image.js nesta mesma rota.
 export async function generateMetadata({ params }) {
   const prof = await getProfissional(params.id);
   if (!prof) return { title: "Profissional não encontrado · A Rede" };
@@ -54,9 +52,10 @@ export default async function PerfilPage({ params }) {
   const prof = await getProfissional(id);
   if (!prof) notFound();
 
+  const categoriaPrincipal = categoriaPrimaria(prof);
   const [avals, outros] = await Promise.all([
     getAvaliacoesDe(id),
-    getOutrosDaCategoria(prof.categoria, id),
+    getOutrosDaCategoria(categoriaPrincipal, id),
   ]);
 
   const st = computeStats(id, avals);
@@ -65,6 +64,7 @@ export default async function PerfilPage({ params }) {
   const ig = instagramUrl(prof.instagram);
   const comentarios = avals.filter((a) => (a.comentario || "").trim());
   const jsonLd = perfilJsonLd(prof, st, absUrl(`/profissional/${id}`));
+  const servicos = prof.profissional_servicos || [];
 
   const percentuais = st
     ? [
@@ -105,10 +105,12 @@ export default async function PerfilPage({ params }) {
           )}
           <div className="flex-1 min-w-0">
             <h1 className="font-display text-[22px] leading-tight">{prof.nome}</h1>
-            <div className="text-[14px] text-brand-red font-bold mt-0.5">
-              {catIcon(prof.categoria)} {prof.servico}
-            </div>
-            <div className="text-[12px] text-brand-grey-light mt-0.5">{prof.categoria}</div>
+            <ServicosInterativos servicos={servicos} />
+            {servicos.length > 0 && (
+              <div className="text-[12px] text-brand-grey-light mt-0.5">
+                {[...new Set(servicos.map((s) => s.categoria))].join(" · ")}
+              </div>
+            )}
             <div className="flex items-center gap-2 flex-wrap mt-2">
               {st?.recomendado && (
                 <span className="bg-brand-red-light text-brand-red font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px]">
@@ -172,7 +174,7 @@ export default async function PerfilPage({ params }) {
           <ContatoBotoes
             id={id}
             nome={prof.nome}
-            servico={prof.servico}
+            servico={servicoPrimario(prof)}
             whatsapp={wa}
             instagram={ig}
           />
@@ -188,6 +190,11 @@ export default async function PerfilPage({ params }) {
                   key={a.id}
                   className="bg-brand-card rounded-[10px] border border-brand-border p-3.5"
                 >
+                  {a.profissional_servicos?.servico && (
+                    <div className="text-[11px] text-brand-grey-light font-bold uppercase tracking-[0.5px] mb-1">
+                      {a.profissional_servicos.servico}
+                    </div>
+                  )}
                   <Estrelas nota={a.nota} />
                   <p className="text-[13px] text-brand-grey leading-relaxed mt-1.5">
                     {a.comentario}
@@ -201,37 +208,42 @@ export default async function PerfilPage({ params }) {
         {/* Outros profissionais da categoria */}
         {outros.length > 0 && (
           <section className="mt-7">
-            <h2 className="font-display text-[18px] mb-2">Outros de {prof.categoria}</h2>
+            <h2 className="font-display text-[18px] mb-2">Outros de {categoriaPrincipal}</h2>
             <div className="space-y-2">
-              {outros.map((o) => (
-                <Link
-                  key={o.id}
-                  href={"/profissional/" + o.id}
-                  className="bg-brand-card rounded-[10px] border border-brand-border p-3 flex gap-3 items-center"
-                >
-                  {o.foto_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={o.foto_url}
-                      alt={"Foto de " + o.nome}
-                      className="w-[40px] h-[40px] rounded-lg object-cover shrink-0 border border-brand-border"
-                    />
-                  ) : (
-                    <div className="w-[40px] h-[40px] rounded-lg bg-brand-surface flex items-center justify-center text-[12px] font-extrabold text-brand-red shrink-0 border border-brand-border">
-                      {iniciais(o.nome)}
+              {outros.map((o) => {
+                const oServicos = o.profissional_servicos || [];
+                return (
+                  <Link
+                    key={o.id}
+                    href={"/profissional/" + o.id}
+                    className="bg-brand-card rounded-[10px] border border-brand-border p-3 flex gap-3 items-center"
+                  >
+                    {o.foto_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={o.foto_url}
+                        alt={"Foto de " + o.nome}
+                        className="w-[40px] h-[40px] rounded-lg object-cover shrink-0 border border-brand-border"
+                      />
+                    ) : (
+                      <div className="w-[40px] h-[40px] rounded-lg bg-brand-surface flex items-center justify-center text-[12px] font-extrabold text-brand-red shrink-0 border border-brand-border">
+                        {iniciais(o.nome)}
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-[14px] truncate">{o.nome}</div>
+                      <div className="text-[12px] text-brand-red font-bold truncate">
+                        {oServicos[0]?.servico || ""}
+                      </div>
                     </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="font-bold text-[14px] truncate">{o.nome}</div>
-                    <div className="text-[12px] text-brand-red font-bold truncate">{o.servico}</div>
-                  </div>
-                  <span className="text-brand-grey-light text-[13px]">→</span>
-                </Link>
-              ))}
+                    <span className="text-brand-grey-light text-[13px]">→</span>
+                  </Link>
+                );
+              })}
             </div>
             <div className="text-right mt-4">
               <Link
-                href={"/catalogo?cat=" + encodeURIComponent(prof.categoria)}
+                href={"/catalogo?cat=" + encodeURIComponent(categoriaPrincipal)}
                 className="text-[12px] font-bold text-brand-grey"
               >
                 Ver todos em {CIDADE} →

@@ -15,7 +15,7 @@ const INK = "#0a0a0a";
 export default async function Image({ params }) {
   const prof = await getProfissional(params.id);
   const nome = prof?.nome || "Profissional";
-  const servico = prof?.servico || "";
+  const servico = prof?.profissional_servicos?.[0]?.servico || "";
 
   return new ImageResponse(
     <div
