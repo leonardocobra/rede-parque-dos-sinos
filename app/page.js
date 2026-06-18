@@ -3,8 +3,12 @@ import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import TypedBrand from "./components/TypedBrand";
 import { CATS, REGRAS } from "./config";
+import { getContadores } from "../lib/profissionais";
 
-export default function Home() {
+export const revalidate = 3600;
+
+export default async function Home() {
+  const { profissionais, avaliacoes } = await getContadores();
   return (
     <>
       <Nav />
@@ -16,9 +20,16 @@ export default function Home() {
           <div className="text-[11px] font-extrabold tracking-[3px] uppercase text-brand-red mb-4 text-left">
             Parque dos Sinos · Jacareí
           </div>
-          <h1 className="font-mono font-extrabold text-[clamp(48px,16vw,72px)] leading-[1.05] mb-4 flex justify-start text-brand-text">
+          <h1 className="font-mono font-extrabold text-[clamp(48px,16vw,72px)] leading-[1.05] mb-2 flex justify-start text-brand-text">
             <TypedBrand />
           </h1>
+          {profissionais > 0 && (
+            <p className="text-[12px] font-bold text-brand-red mb-4 text-left tracking-[0.3px]">
+              {profissionais} {profissionais === 1 ? "profissional" : "profissionais"}
+              {avaliacoes > 0 &&
+                ` · ${avaliacoes} ${avaliacoes === 1 ? "avaliação" : "avaliações"}`}
+            </p>
+          )}
           <p className="text-[15px] text-brand-grey leading-relaxed max-w-[420px] mb-10 text-left">
             A rede de profissionais de confiança da sua região. Gratuita, organizada e feita pela
             comunidade.
