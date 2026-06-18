@@ -9,20 +9,22 @@ export default function Home() {
     <>
       <Nav />
 
-      {/* Hero — ocupa a primeira tela inteira (Como Funciona fica abaixo da dobra) */}
-      <div className="px-6 py-12 text-center relative border-b border-brand-border flex flex-col justify-center min-h-[calc(100dvh-52px)]">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-60 h-60 rounded-full bg-brand-red-light blur-[60px] opacity-60 pointer-events-none" />
-        <div className="relative z-[2] max-w-[560px] mx-auto w-full">
-          <div className="text-[11px] font-extrabold tracking-[3px] uppercase text-brand-red mb-4 text-left">
-            Parque dos Sinos · Jacareí
+      {/* Hero — ocupa exatamente a primeira tela; Como Funciona só aparece após scroll */}
+      <div className="px-6 relative border-b border-brand-border flex flex-col justify-center min-h-[calc(100dvh-52px)]">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-brand-red-light blur-[80px] opacity-50 pointer-events-none" />
+        <div className="relative z-[2] max-w-[560px] mx-auto w-full flex flex-col gap-8 py-12">
+          {/* Wordmark + descrição */}
+          <div>
+            <h1 className="font-mono font-extrabold text-[clamp(56px,18vw,88px)] leading-[1] mb-5 flex justify-start text-brand-text">
+              <TypedBrand />
+            </h1>
+            <p className="text-[15px] text-brand-grey leading-relaxed max-w-[380px]">
+              A rede de profissionais de confiança da sua região. Gratuita, organizada e feita pela
+              comunidade.
+            </p>
           </div>
-          <h1 className="font-mono font-extrabold text-[clamp(48px,16vw,72px)] leading-[1.05] mb-4 flex justify-start text-brand-text">
-            <TypedBrand />
-          </h1>
-          <p className="text-[15px] text-brand-grey leading-relaxed max-w-[420px] mb-10 text-left">
-            A rede de profissionais de confiança da sua região. Gratuita, organizada e feita pela
-            comunidade.
-          </p>
+
+          {/* CTAs */}
           <div className="flex flex-col gap-3">
             <Link
               href="/catalogo"
@@ -42,10 +44,7 @@ export default function Home() {
                 Divulgue seu trabalho gratuitamente
               </div>
             </Link>
-            <Link
-              href="/avaliar"
-              className="bg-brand-black rounded-xl py-4 px-5 block text-left mt-2"
-            >
+            <Link href="/avaliar" className="bg-brand-black rounded-xl py-4 px-5 block text-left">
               <div className="text-sm font-bold text-white leading-tight">Avaliar Profissional</div>
               <div className="text-xs text-brand-onink-muted leading-snug mt-0.5">
                 Já contratou alguém pela rede?
