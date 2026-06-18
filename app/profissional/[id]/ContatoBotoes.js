@@ -1,43 +1,12 @@
 "use client";
-import { useState } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { WhatsAppIcon, InstagramIcon } from "../../components/SocialIcons";
-import { absUrl } from "../../../lib/site";
-import { CIDADE } from "../../../lib/perfil";
+import BotoesCompartilhar from "../../components/BotoesCompartilhar";
 
 export default function ContatoBotoes({ id, nome, servico, whatsapp, instagram }) {
-  const [copiado, setCopiado] = useState(false);
-
   function registrar(canal) {
     track("contato_click", { canal, id, nome });
-  }
-
-  function compartilharWhatsApp() {
-    const url = absUrl(`/profissional/${id}`);
-    const texto = `Encontrei na Rede: ${nome} — ${servico} em ${CIDADE}\n${url}`;
-    track("perfil_share", { canal: "whatsapp", id });
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(texto)}`,
-      "_blank",
-      "noopener,noreferrer"
-    );
-  }
-
-  async function copiarLink() {
-    const url = absUrl(`/profissional/${id}`);
-    try {
-      await navigator.clipboard.writeText(url);
-    } catch {
-      const el = document.createElement("input");
-      el.value = url;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand("copy");
-      document.body.removeChild(el);
-    }
-    setCopiado(true);
-    setTimeout(() => setCopiado(false), 2000);
   }
 
   return (
@@ -75,26 +44,9 @@ export default function ContatoBotoes({ id, nome, servico, whatsapp, instagram }
           Avaliar
         </Link>
       </div>
-      <div className="flex gap-2 mt-2">
-        <button
-          type="button"
-          onClick={compartilharWhatsApp}
-          className="bg-brand-surface border border-brand-border rounded-lg px-4 py-2.5 text-[12px] font-bold text-brand-grey flex-1 flex items-center justify-center gap-1.5"
-        >
-          <WhatsAppIcon />
-          Compartilhar
-        </button>
-        <button
-          type="button"
-          onClick={copiarLink}
-          className="bg-brand-surface border border-brand-border rounded-lg px-4 py-2.5 text-[12px] font-bold text-brand-grey flex-1"
-        >
-          {copiado ? "✓ Copiado!" : "Copiar link"}
-        </button>
+      <div className="mt-2">
+        <BotoesCompartilhar id={id} nome={nome} servico={servico} />
       </div>
-      <p className="text-[11px] text-brand-grey-light text-center mt-2 tracking-[0.3px]">
-        Encontrei na Rede
-      </p>
     </div>
   );
 }
