@@ -3,10 +3,13 @@ import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { WhatsAppIcon, InstagramIcon } from "../../components/SocialIcons";
 import BotoesCompartilhar from "../../components/BotoesCompartilhar";
+import { registrarEvento } from "../../../lib/eventos";
 
 export default function ContatoBotoes({ id, nome, servico, whatsapp, instagram }) {
   function registrar(canal) {
     track("contato_click", { canal, id, nome });
+    // Evento na camada própria (conversão consultável por canal).
+    registrarEvento("contact_click", { profissional_id: id, canal });
   }
 
   return (

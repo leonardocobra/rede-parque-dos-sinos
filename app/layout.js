@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import FeedbackButton from "./components/FeedbackButton";
+import PageViewTracker from "./components/PageViewTracker";
 import { BRAND } from "./brand";
 import { siteUrl } from "../lib/site";
 export const metadata = {
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
       <body>
         {children}
         <FeedbackButton />
+        <PageViewTracker />
         <Analytics />
       </body>
     </html>
