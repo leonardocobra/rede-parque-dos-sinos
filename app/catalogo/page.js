@@ -267,7 +267,7 @@ function CatalogoContent() {
                     <div className="px-4 pb-4 border-t border-brand-border pt-3.5">
                       {servicos.length > 0 && (
                         <div className="mb-3">
-                          <ServicosInterativos servicos={servicos} />
+                          <ServicosInterativos servicos={servicos} bioFallback={p.descricao} />
                         </div>
                       )}
                       {p.regioes && (

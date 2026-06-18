@@ -7,7 +7,12 @@ import { InstagramIcon } from "../../components/SocialIcons";
 // `ativoId`/`onAtivoChange` permitem usar o componente de forma controlada
 // (perfil, onde o serviço ativo também governa a seção "Outros"). Sem essas
 // props ele mantém o próprio estado — é assim que o catálogo o usa.
-export default function ServicosInterativos({ servicos, ativoId: ativoIdProp, onAtivoChange }) {
+//
+// `bioFallback` é exibido como descrição quando o serviço ativo não tem
+// descrição própria. Usado no catálogo (que não mostra a bio geral em outro
+// lugar) para não deixar o card expandido vazio. O perfil não passa essa prop:
+// lá a bio já vive na seção "Sobre", então evitamos duplicação.
+export default function ServicosInterativos({ servicos, ativoId: ativoIdProp, onAtivoChange, bioFallback }) {
   const [ativoIdState, setAtivoIdState] = useState(servicos[0]?.id || null);
   const controlado = ativoIdProp !== undefined;
   const ativoId = controlado ? ativoIdProp : ativoIdState;
@@ -22,6 +27,7 @@ export default function ServicosInterativos({ servicos, ativoId: ativoIdProp, on
   const ativo = servicos.find((s) => s.id === ativoId) || servicos[0];
   const multiplos = servicos.length > 1;
   const igUrl = ativo.instagram ? instagramUrl(ativo.instagram) : null;
+  const descricaoExibida = ativo.descricao || bioFallback || "";
 
   return (
     <div className="mt-1">
@@ -47,10 +53,10 @@ export default function ServicosInterativos({ servicos, ativoId: ativoIdProp, on
         </div>
       )}
 
-      {(ativo.descricao || igUrl || ativo.itens?.length > 0) && (
+      {(descricaoExibida || igUrl || ativo.itens?.length > 0) && (
         <div className={`${multiplos ? "mt-2.5 pt-2.5 border-t border-brand-border" : "mt-1.5"}`}>
-          {ativo.descricao && (
-            <p className="text-[13px] text-brand-grey leading-relaxed">{ativo.descricao}</p>
+          {descricaoExibida && (
+            <p className="text-[13px] text-brand-grey leading-relaxed">{descricaoExibida}</p>
           )}
 
           {/* Itens/produtos do serviço — pronto para evoluir o perfil público.
