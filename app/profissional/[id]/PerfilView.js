@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { track } from "@vercel/analytics";
 import { getBrowserSupabase } from "../../../lib/supabase/client";
+import { registrarEvento } from "../../../lib/eventos";
 
 // Dispara o registro de visualização de perfil uma vez, no mount.
 // Métrica-norte do doc de crescimento: "visualizações de perfil".
@@ -14,6 +15,8 @@ import { getBrowserSupabase } from "../../../lib/supabase/client";
 export default function PerfilView({ id, nome }) {
   useEffect(() => {
     track("perfil_view", { id, nome });
+    // Evento na camada própria (consultável por SQL no /admin e na fase 2).
+    registrarEvento("profile_view", { profissional_id: id });
     // Incremento best-effort: falha aqui nunca deve atrapalhar a página.
     // O builder do supabase-js é "thenable" mas não expõe `.catch`; por isso
     // envolvemos num Promise real antes de tratar o erro.
