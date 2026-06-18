@@ -9,20 +9,13 @@ import { CATS, catIcon } from "../config";
 import { instagramUrl } from "../../lib/instagram";
 import { iniciais } from "../../lib/avatar";
 import { computeStats, sortProfissionais, ORDENACOES, ORDENACAO_PADRAO } from "../../lib/catalogo";
-import { WhatsAppIcon, InstagramIcon, ShareIcon } from "../components/SocialIcons";
+import { WhatsAppIcon, InstagramIcon } from "../components/SocialIcons";
 import { track } from "@vercel/analytics";
+import { categoriaParaSlug } from "../../lib/categorias";
+import BotoesCompartilhar from "../components/BotoesCompartilhar";
 
 function normalize(s) {
   return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-}
-
-// Compartilha o link do perfil público no WhatsApp. Monta a URL absoluta no
-// clique (evita mismatch de hidratação) e registra a métrica de compartilhamento.
-function compartilharPerfil(p) {
-  const url = `${window.location.origin}/profissional/${p.id}`;
-  const texto = `Encontrei ${p.nome} na Rede: ${url}`;
-  track("perfil_share", { canal: "whatsapp", id: p.id });
-  window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, "_blank", "noopener,noreferrer");
 }
 
 function CatalogoContent() {
@@ -111,9 +104,13 @@ function CatalogoContent() {
                 Todos
               </button>
               {CATS.map((c) => (
-                <button
+                <Link
                   key={c.value}
-                  onClick={() => setCatFilter(catFilter === c.value ? null : c.value)}
+                  href={`/catalogo/${categoriaParaSlug(c.value)}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCatFilter(catFilter === c.value ? null : c.value);
+                  }}
                   className={`rounded-[6px] px-3 py-[5px] text-[11px] font-bold whitespace-nowrap border ${
                     catFilter === c.value
                       ? "bg-brand-red text-white border-brand-red"
@@ -121,7 +118,7 @@ function CatalogoContent() {
                   }`}
                 >
                   {c.icon} {c.value}
-                </button>
+                </Link>
               ))}
             </div>
 
@@ -272,24 +269,7 @@ function CatalogoContent() {
                           ))}
                         </div>
                       )}
-                      <div className="flex items-center justify-end gap-3 mb-3">
-                        <button
-                          type="button"
-                          onClick={() => compartilharPerfil(p)}
-                          aria-label="Compartilhar perfil no WhatsApp"
-                          className="inline-flex items-center gap-1.5 text-[12px] font-bold text-brand-grey"
-                        >
-                          <ShareIcon />
-                          Compartilhar
-                        </button>
-                        <Link
-                          href={"/profissional/" + p.id}
-                          className="text-[12px] font-bold text-brand-red"
-                        >
-                          Ver perfil completo →
-                        </Link>
-                      </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 mb-2">
                         {wn && (
                           <a
                             href={"https://wa.me/55" + wn}
@@ -317,6 +297,15 @@ function CatalogoContent() {
                           className="bg-brand-card text-brand-text border-[1.5px] border-brand-border rounded-lg px-5 py-2.5 text-[13px] font-bold flex-1 text-center"
                         >
                           Avaliar
+                        </Link>
+                      </div>
+                      <BotoesCompartilhar id={p.id} nome={p.nome} servico={p.servico} />
+                      <div className="text-right mt-2">
+                        <Link
+                          href={"/profissional/" + p.id}
+                          className="text-[12px] font-bold text-brand-red"
+                        >
+                          Ver perfil completo →
                         </Link>
                       </div>
                     </div>
