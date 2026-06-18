@@ -283,7 +283,7 @@ export default function Cadastro() {
                 className={inputClass}
               />
             </Field>
-            <Field label="Instagram (opcional)">
+            <Field label="Instagram principal (opcional)">
               <input
                 type="text"
                 placeholder="@seuperfil"
@@ -301,9 +301,9 @@ export default function Cadastro() {
                 className={inputClass}
               />
             </Field>
-            <Field label="Descrição do serviço">
+            <Field label="Sobre você (apresentação geral)">
               <textarea
-                placeholder="Descreva os serviços que você oferece..."
+                placeholder="Uma apresentação geral sua. A descrição de cada serviço fica em cada serviço acima."
                 value={form.descricao}
                 onChange={set("descricao")}
                 rows={3}
