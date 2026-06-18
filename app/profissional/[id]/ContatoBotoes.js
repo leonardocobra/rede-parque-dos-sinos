@@ -79,16 +79,17 @@ export default function ContatoBotoes({ id, nome, servico, whatsapp, instagram }
         <button
           type="button"
           onClick={compartilharWhatsApp}
-          className="bg-brand-surface border border-brand-border rounded-lg px-4 py-2.5 text-[12px] font-bold text-brand-grey flex-1"
+          className="bg-brand-surface border border-brand-border rounded-lg px-4 py-2.5 text-[12px] font-bold text-brand-grey flex-1 flex items-center justify-center gap-1.5"
         >
-          📲 Compartilhar no WhatsApp
+          <WhatsAppIcon />
+          Compartilhar
         </button>
         <button
           type="button"
           onClick={copiarLink}
           className="bg-brand-surface border border-brand-border rounded-lg px-4 py-2.5 text-[12px] font-bold text-brand-grey flex-1"
         >
-          {copiado ? "✓ Copiado!" : "🔗 Copiar link"}
+          {copiado ? "✓ Copiado!" : "Copiar link"}
         </button>
       </div>
       <p className="text-[11px] text-brand-grey-light text-center mt-2 tracking-[0.3px]">
