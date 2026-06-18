@@ -225,13 +225,15 @@ function CatalogoContent() {
                           </span>
                         )}
                       </div>
-                      <div className="space-y-0.5">
-                        {servicos.map((sv) => (
-                          <div key={sv.id} className="text-[13px] text-brand-red font-bold">
-                            {catIcon(sv.categoria)} {sv.servico}
-                          </div>
-                        ))}
-                      </div>
+                      {!open && (
+                        <div className="space-y-0.5">
+                          {servicos.map((sv) => (
+                            <div key={sv.id} className="text-[13px] text-brand-red font-bold">
+                              {catIcon(sv.categoria)} {sv.servico}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       <div className="text-xs text-brand-grey-light mt-0.5">
                         {p.bairro && "📍 " + p.bairro}
                         {p.experiencia ? " · " + p.experiencia : ""}
