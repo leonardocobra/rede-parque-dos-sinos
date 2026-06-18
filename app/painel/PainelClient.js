@@ -67,7 +67,7 @@ function Metricas({ cadastro, stats }) {
           <p className="text-[12px] font-bold text-brand-red">Você é Recomendado ✓</p>
         ) : (
           <p className="text-[12px] text-brand-grey-light">
-            Recomendado: a partir de 3 avaliações com 80% de "contrataria novamente".
+            Recomendado: a partir de 3 avaliações com 80% de &ldquo;contrataria novamente&rdquo;.
           </p>
         )}
         {cadastro.verificado ? (
