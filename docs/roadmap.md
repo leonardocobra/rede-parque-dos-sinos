@@ -27,17 +27,21 @@ crescimento, organizada em 3 frentes novas — duas delas compartilham uma funda
 ## A fundação compartilhada (pré-requisito de Now)
 
 ```
-        ┌─ Frente 3 (observabilidade admin)
-Camada  ├─ Frente 2b (analytics por profissional, UTM, cohorts)
+        ┌─ Frente 3 fase 1 (admin / Leonardo como piloto)
+Camada  ├─ Frente 3 fase 2 (mesma engine, escopo por profissional — ex-2b)
 de      └─ Frente 2a (score, parte "dados de canal")
 eventos
 (profile views por origem/UTM, cliques de contato WhatsApp,
  passos do funil — registrados no Supabase)
 ```
 
-Construir **uma vez** a camada de eventos/UTM destrava três entregas. Fazê-la primeiro evita
-reconstruir instrumentação três vezes. Cumpre o princípio #7 de `crescimento-catalogo.md`
-("sem medição é chute").
+Construir **uma vez** a camada de eventos/UTM destrava tudo. Fazê-la primeiro evita reconstruir
+instrumentação. Cumpre o princípio #7 de `crescimento-catalogo.md` ("sem medição é chute").
+
+**Decisão (2026-06-18):** a antiga Frente 2b (analytics por profissional) vira **fase 2 da Frente
+3** — mesmo motor de analytics, com o Leonardo como **piloto (tenant zero)** primeiro. Uma vez
+validada, a mesma engine é exposta por profissional. Isso remove a dependência de já existir
+tráfego, e a decisão de serviço Python só se coloca na hora de replicar para os profissionais.
 
 ## Now (fundação + destravar)
 
@@ -54,14 +58,14 @@ Ordem definida com o Leonardo (2026-06-18):
 | # | Item | Frente | Spec | Valor/Esforço |
 | --- | --- | --- | --- | --- |
 | 1 | **Itens/subserviços no perfil** (foto, descrição, preço opcional, disponibilidade/estoque) | 1a | `docs/perfil-itens-spec.md` | Alto / Médio |
-| 2 | **Observabilidade admin** (comportamento dos profissionais, performance, conversão da jornada) | 3 | `docs/observabilidade-spec.md` | Alto / Médio |
+| 2 | **Observabilidade & Analytics — fase 1** (motor único; Leonardo como piloto: comportamento da oferta, jornada/conversão, canais/UTM, performance) | 3 | `docs/observabilidade-spec.md` | Alto / Médio |
 | 3 | **Score de maturidade digital** (diagnóstico + próximos passos no painel) | 2a | `docs/crescimento-score-analytics-spec.md` | Alto / Baixo-Médio |
 
 ## Later (direcional, exige decisão)
 
 | Item | Frente | Gatilho |
 | --- | --- | --- |
-| Analytics Python (UTM, gestão de canais, cohorts, conversão por canal) | 2b | Após a camada de eventos provar valor; só se Vercel Analytics for insuficiente |
+| **Observabilidade & Analytics — fase 2** (mesma engine exposta por profissional; UTM/canais/cohorts no painel do profissional) | 3 fase 2 (ex-2b) | Após a fase 1 validar o motor com o Leonardo como piloto; decisão de serviço Python só aqui |
 | **Checkout + pagamento no app** | 1b | **Decisão estratégica explícita** — conflita com o anti-escopo "gratuito e da comunidade" |
 | OTP de WhatsApp → selo Verificado automático | Auth fase 3 | Sobre a infra de auth atual |
 | Resposta a avaliações pelo profissional | Auth fase 3 | Fast-follow de produto |
@@ -82,6 +86,8 @@ Ordem definida com o Leonardo (2026-06-18):
 - [x] **Frente 1: construir 1a (itens/subserviços) agora; checkout (1b) vira estudo estratégico futuro.**
 - [x] **Primeira prioridade de Next: itens no perfil (Frente 1a).**
 - [x] **Persistir o roadmap** como artefato versionado + uma spec por frente nova.
+- [x] **Fundir a antiga Frente 2b na Frente 3** como fase 2: motor único de analytics, Leonardo como
+      piloto (tenant zero) na fase 1; exposição por profissional depois de validado.
 
 ## Decisões em aberto (para o Leonardo)
 

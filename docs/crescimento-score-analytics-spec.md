@@ -1,6 +1,9 @@
-# Spec — Score de maturidade digital & Analytics por profissional (Frente 2)
+# Spec — Score de maturidade digital (Frente 2)
 
-> PRD. **Frente 2.** `2a` (score) é Next; `2b` (analytics Python) é Later.
+> PRD. **Frente 2.** Score de maturidade digital (Next).
+> **A antiga Frente 2b (analytics por profissional) foi fundida na Frente 3** como fase 2 — ver
+> `docs/observabilidade-spec.md`. Motivo: é o mesmo motor de analytics da observabilidade, só com
+> escopo por profissional; o Leonardo pilota primeiro (tenant zero) e depois replica.
 > Liga com: `docs/crescimento-catalogo.md`, `docs/roadmap.md`, `docs/observabilidade-spec.md`.
 
 ## Problem Statement
@@ -51,50 +54,24 @@ auto-declarado.
 ### Esforço / Valor
 
 Baixo-Médio / Alto. Não depende da camada de eventos para o MVP (heurístico + auto-declarado).
-A parte "dados de canal" do score melhora quando a Frente 2b existir.
+A parte "dados de canal" do score melhora quando a Frente 3 fase 2 (analytics por profissional)
+existir.
 
-## Frente 2b — Analytics por profissional (Later)
+## Analytics por profissional (movido para a Frente 3)
 
-### Conceito
+A entrega de dados de canal ao profissional — **quantos viram o perfil por canal (UTM), quantos
+viraram contato/transação, cohorts** — era a antiga Frente 2b. Foi **fundida na Frente 3** como
+fase 2, porque usa exatamente o mesmo motor de analytics da observabilidade (só muda o escopo: a
+Rede inteira vs. um profissional). O Leonardo pilota o motor na fase 1; a exposição por profissional
+vem depois de validado. A decisão sobre serviço Python / PostHog / job de materialização também
+mora lá. Ver `docs/observabilidade-spec.md`.
 
-Dar ao profissional dados de canal: **quantos usuários novos viram o perfil por canal (UTM),
-quantos concluíram transação ou entraram em contato no WhatsApp, cohorts e outros insights.**
+## Success Metrics (Frente 2 — score)
 
-### Pré-requisitos (dependência dura)
-
-- **Camada de eventos/UTM** do roadmap (`docs/roadmap.md` → Now): captura de origem/UTM no perfil,
-  evento de clique de contato, passos do funil. Sem isso, 2b é chute.
-- Decidir o **canal de processamento**: começar com **Vercel Analytics + queries no Supabase** e só
-  introduzir um **serviço Python** se isso provar insuficiente.
-
-### Sobre o módulo Python (decisão de arquitetura)
-
-> ⚠️ Adicionar um serviço Python ao stack Next/Vercel/Supabase é uma decisão relevante (deploy,
-> observabilidade, custo, manutenção por 1 pessoa). **Recomendação:** não começar por ele.
-> Validar primeiro o que UTM + eventos no Supabase + Vercel Analytics entregam. Se houver demanda
-> real por cohorts/atribuição multi-touch que o SQL não cobre bem, então avaliar:
-> - um job Python (ex.: Vercel Cron / função serverless) que lê eventos do Supabase e materializa
->   agregados (UTM por canal, cohorts, funil) em tabelas de leitura; ou
-> - uma ferramenta pronta (PostHog, Plausible com UTM) antes de construir.
-
-### O que o profissional veria (futuro)
-
-- Visualizações do perfil por canal (Instagram, Google, busca, direto, link compartilhado).
-- Conversão por canal: views → cliques de WhatsApp → (futuro) transação.
-- Cohorts simples (ex.: quem viu na semana X voltou?).
-
-### Esforço / Valor
-
-Alto / Alto (mas Later). O valor real depende de já existir tráfego mensurável e oferta com itens.
-
-## Success Metrics (Frente 2)
-
-- **2a Engajamento**: % de contas que abrem o bloco de score e completam ≥1 sugestão em 30 dias.
-- **2a Qualidade**: aumento médio de completude de perfil após lançamento do score.
-- **2b**: adoção de UTM (links com origem) e clareza de atribuição dos contatos por canal.
+- **Engajamento**: % de contas que abrem o bloco de score e completam ≥1 sugestão em 30 dias.
+- **Qualidade**: aumento médio de completude de perfil após lançamento do score.
 
 ## Open Questions
 
 - [ ] Score numérico (0–100) ou níveis (Bronze/Prata/Ouro)? (níveis comunicam melhor; recomendo)
 - [ ] Quais sinais são auto-declarados vs. verificados? (declarar não infla credibilidade pública)
-- [ ] 2b: construir do zero, usar PostHog/Plausible, ou job Python? — **decidir só após 2a + eventos**.
