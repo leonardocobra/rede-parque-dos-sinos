@@ -10,10 +10,10 @@ export default function Home() {
       <Nav />
 
       {/* Hero — ocupa exatamente a primeira tela; Como Funciona só aparece após scroll */}
-      <div className="px-6 relative border-b border-brand-border flex flex-col min-h-[calc(100dvh-52px)]">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-brand-red-light blur-[80px] opacity-50 pointer-events-none" />
-        <div className="relative z-[2] max-w-[560px] mx-auto w-full flex flex-col flex-1 pt-12 pb-8">
-          {/* Wordmark + descrição — topo */}
+      <div className="px-6 relative border-b border-brand-border flex flex-col justify-center min-h-[calc(100dvh-52px)]">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-brand-red-light blur-[80px] opacity-50 pointer-events-none" />
+        <div className="relative z-[2] max-w-[560px] mx-auto w-full flex flex-col gap-8 py-12">
+          {/* Wordmark + descrição */}
           <div>
             <h1 className="font-mono font-extrabold text-[clamp(56px,18vw,88px)] leading-[1] mb-5 flex justify-start text-brand-text">
               <TypedBrand />
@@ -24,10 +24,7 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Espaço flexível */}
-          <div className="flex-1" />
-
-          {/* CTAs — rodapé da hero */}
+          {/* CTAs */}
           <div className="flex flex-col gap-3">
             <Link
               href="/catalogo"
