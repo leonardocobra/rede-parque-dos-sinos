@@ -2,16 +2,34 @@
 // Rota protegida por DUAS barreiras no servidor:
 //   1) sessão válida (cookie) — senão vai para /entrar;
 //   2) e-mail na allowlist ADMIN_EMAILS — senão 404 (não revela a rota).
-// Mostra a "visão da oferta" (P0.3). Leitura de eventos (service_role) vem
-// na próxima fatia. Ver docs/observabilidade-spec.md.
+// Mostra a "visão da oferta" (P0.3) e o analytics de eventos (P0.4/P0.5),
+// este último lido via service_role (SELECT de `eventos` é fechado).
+// Ver docs/observabilidade-spec.md.
 import { redirect, notFound } from "next/navigation";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import SairButton from "../painel/SairButton";
 import { getServerSupabase } from "../../lib/supabase/server";
-import { isAdmin, computeVisaoOferta } from "../../lib/admin";
+import { getServiceSupabase } from "../../lib/supabase/service";
+import { isAdmin, computeVisaoOferta, computeAnalyticsEventos } from "../../lib/admin";
 
 export const dynamic = "force-dynamic";
+
+const JANELA_DIAS = 30;
+
+// Lê os eventos dos últimos JANELA_DIAS via service_role. Retorna null se a
+// chave não estiver configurada (o /admin degrada com uma mensagem).
+async function lerEventos() {
+  const service = getServiceSupabase();
+  if (!service) return null;
+  const desde = new Date(Date.now() - JANELA_DIAS * 24 * 60 * 60 * 1000).toISOString();
+  const { data } = await service
+    .from("eventos")
+    .select("tipo, rota, canal, origem, sessao_id, criado_em")
+    .gte("criado_em", desde)
+    .limit(50000); // suficiente para o piloto; acima disso, paginar.
+  return data || [];
+}
 
 function Stat({ valor, rotulo, sub }) {
   return (
@@ -35,12 +53,15 @@ export default async function Admin() {
   if (!isAdmin(user.email)) notFound();
 
   // Leituras públicas (SELECT liberado nessas tabelas). A agregação é pura.
-  const [{ data: profissionais }, { data: servicos }] = await Promise.all([
+  // Eventos vêm via service_role (SELECT fechado a anon/authenticated).
+  const [{ data: profissionais }, { data: servicos }, eventos] = await Promise.all([
     supabase.from("profissionais").select("id, foto_url, user_id, verificado, criado_em"),
     supabase.from("profissional_servicos").select("profissional_id, categoria"),
+    lerEventos(),
   ]);
 
   const v = computeVisaoOferta(profissionais || [], servicos || []);
+  const a = eventos ? computeAnalyticsEventos(eventos) : null;
 
   return (
     <>
@@ -82,10 +103,81 @@ export default async function Admin() {
           </div>
         )}
 
-        <p className="text-[12px] text-brand-grey-light mt-6">
-          Próxima fatia: tráfego e conversão da jornada por canal (tabela de eventos, via leitura de
-          servidor).
-        </p>
+        <div className="flex items-baseline justify-between mt-7 mb-2">
+          <h2 className="font-display text-[16px]">Tráfego e jornada</h2>
+          <span className="text-[11px] text-brand-grey-light">últimos {JANELA_DIAS} dias</span>
+        </div>
+
+        {a === null ? (
+          <p className="text-[13px] text-brand-grey-light">
+            Configure <code className="text-brand-text">SUPABASE_SERVICE_ROLE_KEY</code> para ver o
+            tráfego e a conversão da jornada.
+          </p>
+        ) : a.visitas === 0 ? (
+          <p className="text-[13px] text-brand-grey-light">
+            Ainda sem eventos registrados nesta janela. Assim que houver navegação, os números
+            aparecem aqui.
+          </p>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              <Stat valor={a.visitantes} rotulo="Visitantes" sub={`${a.visitas} visitas`} />
+              <Stat valor={a.perfilViews} rotulo="Views de perfil" />
+              <Stat
+                valor={a.contatos}
+                rotulo="Contatos"
+                sub={`${a.taxaContato}% dos visitantes`}
+              />
+            </div>
+
+            <h3 className="font-display text-[14px] mt-5 mb-2">Por canal</h3>
+            <div className="bg-brand-card rounded-[10px] border border-brand-border divide-y divide-brand-border">
+              <div className="grid grid-cols-[1fr_auto_auto] gap-3 px-4 py-2 text-[10px] text-brand-grey-light uppercase tracking-[0.5px]">
+                <span>Origem</span>
+                <span className="text-right w-16">Visitantes</span>
+                <span className="text-right w-16">Contatos</span>
+              </div>
+              {a.porCanal.map((c) => (
+                <div
+                  key={c.origem}
+                  className="grid grid-cols-[1fr_auto_auto] gap-3 px-4 py-2.5 items-center"
+                >
+                  <span className="text-[13px] text-brand-text truncate">{c.origem}</span>
+                  <span className="text-[13px] text-brand-grey text-right w-16">{c.visitantes}</span>
+                  <span className="text-[13px] font-bold text-brand-text text-right w-16">
+                    {c.contatos}
+                    <span className="text-[11px] font-normal text-brand-grey-light">
+                      {" "}
+                      ({c.pctContato}%)
+                    </span>
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <h3 className="font-display text-[14px] mt-5 mb-2">Funil da jornada</h3>
+            <div className="space-y-1.5">
+              {a.funil.map((f) => (
+                <div key={f.etapa} className="flex items-center gap-3">
+                  <span className="text-[12px] text-brand-grey w-20 shrink-0">{f.etapa}</span>
+                  <div className="flex-1 bg-brand-surface rounded-[5px] h-6 overflow-hidden border border-brand-border">
+                    <div
+                      className="bg-brand-red h-full flex items-center px-2"
+                      style={{ width: `${Math.max(f.pct, f.sessoes > 0 ? 6 : 0)}%` }}
+                    >
+                      <span className="text-[11px] font-bold text-white whitespace-nowrap">
+                        {f.sessoes}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[11px] text-brand-grey-light w-10 text-right shrink-0">
+                    {f.pct}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
       <Footer />
     </>
