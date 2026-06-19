@@ -8,6 +8,7 @@ import { instagramHandle } from "../../lib/instagram";
 import { validarFoto } from "../../lib/avatar";
 import { soDigitos, filtrarPorTelefone } from "../../lib/telefone";
 import CropFotoModal from "../components/CropFotoModal";
+import DivulgarPorCanal from "../components/DivulgarPorCanal";
 
 const FOTO_BUCKET = "fotos-profissionais";
 
@@ -435,6 +436,8 @@ function EditarCadastro({ cadastro, stats }) {
       </div>
 
       <Metricas cadastro={cadastro} stats={stats} />
+
+      <DivulgarPorCanal id={cadastro.id} />
 
       <GerenciarServicos cadastro={cadastro} />
 
