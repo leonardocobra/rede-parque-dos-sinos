@@ -4,6 +4,7 @@ import { track } from "@vercel/analytics";
 import { WhatsAppIcon } from "./SocialIcons";
 import { absUrl } from "../../lib/site";
 import { CIDADE } from "../../lib/perfil";
+import { adicionarUtm } from "../../lib/utm";
 
 function LinkIcon() {
   return (
@@ -25,7 +26,9 @@ export default function BotoesCompartilhar({ id, nome, servico }) {
   const [copiado, setCopiado] = useState(false);
 
   function compartilharWhatsApp() {
-    const url = absUrl(`/profissional/${id}`);
+    // Link com utm_source=whatsapp: quem chega por aqui é contado como
+    // "whatsapp" no /admin, mesmo sem referrer.
+    const url = adicionarUtm(absUrl(`/profissional/${id}`), "whatsapp");
     const texto = `Encontrei na Rede: ${nome} — ${servico} em ${CIDADE}\n${url}`;
     track("perfil_share", { canal: "whatsapp", id });
     window.open(
