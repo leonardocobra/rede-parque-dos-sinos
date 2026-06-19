@@ -23,7 +23,9 @@ export default async function Painel() {
   // Cadastros que já pertencem a esta conta (RLS deixa o dono ler os seus).
   const { data: meus } = await supabase
     .from("profissionais")
-    .select("*, profissional_servicos(id, servico, categoria, ordem)")
+    .select(
+      "*, profissional_servicos(id, servico, categoria, ordem, descricao, instagram, profissional_itens(*))"
+    )
     .eq("user_id", user.id)
     .order("criado_em", { ascending: false });
 
