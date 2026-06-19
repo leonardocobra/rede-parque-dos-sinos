@@ -10,6 +10,7 @@ import { soDigitos, filtrarPorTelefone } from "../../lib/telefone";
 import CropFotoModal from "../components/CropFotoModal";
 import DivulgarPorCanal from "../components/DivulgarPorCanal";
 import GerenciarItens from "./GerenciarItens";
+import Pilulas from "../components/Pilulas";
 
 const FOTO_BUCKET = "fotos-profissionais";
 
@@ -478,21 +479,7 @@ function EditarCadastro({ cadastro, stats }) {
         </Link>
       </div>
 
-      <div className="flex gap-1.5 mb-4 overflow-x-auto -mx-1 px-1">
-        {SECOES.map((sec) => (
-          <button
-            key={sec.id}
-            onClick={() => setSecao(sec.id)}
-            className={`px-3 py-[6px] rounded-full text-[12px] font-bold whitespace-nowrap ${
-              secao === sec.id
-                ? "bg-brand-red text-white"
-                : "bg-brand-surface text-brand-grey border border-brand-border"
-            }`}
-          >
-            {sec.label}
-          </button>
-        ))}
-      </div>
+      <Pilulas secoes={SECOES} ativo={secao} onChange={setSecao} className="mb-4" />
 
       {secao === "geral" && (
         <>
