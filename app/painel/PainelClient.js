@@ -483,8 +483,8 @@ function EditarCadastro({ cadastro, stats }) {
 
       {secao === "geral" && (
         <>
-          <Metricas cadastro={cadastro} stats={stats} />
           <DivulgarPorCanal id={cadastro.id} />
+          <Metricas cadastro={cadastro} stats={stats} />
         </>
       )}
 
