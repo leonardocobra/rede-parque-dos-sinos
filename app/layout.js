@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import FeedbackButton from "./components/FeedbackButton";
 import PageViewTracker from "./components/PageViewTracker";
 import { BRAND } from "./brand";
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
         <FeedbackButton />
         <PageViewTracker />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
