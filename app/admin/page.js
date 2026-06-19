@@ -178,6 +178,23 @@ export default async function Admin() {
             </div>
           </>
         )}
+
+        <h2 className="font-display text-[16px] mt-7 mb-2">Desempenho</h2>
+        <div className="bg-brand-card rounded-[10px] border border-brand-border p-4">
+          <p className="text-[13px] text-brand-grey leading-relaxed">
+            Os Web Vitals (LCP, INP, CLS) são coletados em campo pelo Vercel Speed Insights, com
+            percentis (p75) e quebra por página. Acompanhe a saúde de carregamento e interação no
+            dashboard da Vercel.
+          </p>
+          <a
+            href="https://vercel.com/leonardo-cobra/rede-parque-dos-sinos-kwfd/speed-insights"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block mt-3 text-[13px] font-bold text-brand-red"
+          >
+            Abrir Speed Insights na Vercel →
+          </a>
+        </div>
       </div>
       <Footer />
     </>
