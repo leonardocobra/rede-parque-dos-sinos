@@ -71,10 +71,10 @@ GRANT INSERT, UPDATE, DELETE ON profissional_itens TO authenticated;
 -- 4) Trigger: limite de 20 itens por serviço (contém abuso/custo de imagem)
 -- ------------------------------------------------------------
 CREATE OR REPLACE FUNCTION check_max_itens()
-RETURNS TRIGGER LANGUAGE plpgsql AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SET search_path = '' AS $$
 BEGIN
   IF (
-    SELECT COUNT(*) FROM profissional_itens
+    SELECT COUNT(*) FROM public.profissional_itens
     WHERE servico_id = NEW.servico_id
   ) >= 20 THEN
     RAISE EXCEPTION 'Máximo de 20 itens por serviço';
@@ -91,7 +91,7 @@ CREATE TRIGGER max_itens_trigger
 -- 5) Trigger: atualizar atualizado_em em cada UPDATE
 -- ------------------------------------------------------------
 CREATE OR REPLACE FUNCTION touch_itens_atualizado_em()
-RETURNS TRIGGER LANGUAGE plpgsql AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SET search_path = '' AS $$
 BEGIN
   NEW.atualizado_em = NOW();
   RETURN NEW;
