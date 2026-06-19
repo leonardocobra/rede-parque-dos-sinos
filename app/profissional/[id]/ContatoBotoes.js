@@ -5,6 +5,14 @@ import { WhatsAppIcon, InstagramIcon } from "../../components/SocialIcons";
 import BotoesCompartilhar from "../../components/BotoesCompartilhar";
 import { registrarEvento } from "../../../lib/eventos";
 
+// Linha de contato do perfil público. Contrato fixo (sempre renderizado,
+// nunca atrás de tab/estado — entra como children do PerfilInterativo):
+//   - WhatsApp  → CTA primário. Aparece sempre que houver link utilizável
+//                 (whatsappLink só é null quando o telefone não tem dígito algum;
+//                 nesse caso raro o botão é escondido — não há destino).
+//   - Instagram → opcional. Sem handle não há link, então sem botão.
+//   - Avaliar   → sempre presente.
+// Ordem fixa: WhatsApp → Instagram → Avaliar.
 export default function ContatoBotoes({ id, nome, servico, whatsapp, instagram }) {
   function registrar(canal) {
     track("contato_click", { canal, id, nome });
