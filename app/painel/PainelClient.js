@@ -12,6 +12,7 @@ import DivulgarPorCanal from "../components/DivulgarPorCanal";
 import GerenciarItens from "./GerenciarItens";
 import Pilulas from "../components/Pilulas";
 import PainelDesempenho from "./PainelDesempenho";
+import ScoreMaturidade from "./ScoreMaturidade";
 
 const FOTO_BUCKET = "fotos-profissionais";
 
@@ -395,6 +396,7 @@ function EditarCadastro({ cadastro, stats }) {
   const [secao, setSecao] = useState("geral");
   const SECOES = [
     { id: "geral", label: "Visão geral" },
+    { id: "presenca", label: "Presença" },
     { id: "servicos", label: "Serviços e itens" },
     { id: "perfil", label: "Perfil" },
     { id: "desempenho", label: "Desempenho" },
@@ -489,6 +491,8 @@ function EditarCadastro({ cadastro, stats }) {
           <Metricas cadastro={cadastro} stats={stats} />
         </>
       )}
+
+      {secao === "presenca" && <ScoreMaturidade cadastro={cadastro} stats={stats} />}
 
       {secao === "servicos" && <GerenciarServicos cadastro={cadastro} />}
 
