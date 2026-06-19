@@ -11,6 +11,7 @@ import CropFotoModal from "../components/CropFotoModal";
 import DivulgarPorCanal from "../components/DivulgarPorCanal";
 import GerenciarItens from "./GerenciarItens";
 import Pilulas from "../components/Pilulas";
+import PainelDesempenho from "./PainelDesempenho";
 
 const FOTO_BUCKET = "fotos-profissionais";
 
@@ -396,6 +397,7 @@ function EditarCadastro({ cadastro, stats }) {
     { id: "geral", label: "Visão geral" },
     { id: "servicos", label: "Serviços e itens" },
     { id: "perfil", label: "Perfil" },
+    { id: "desempenho", label: "Desempenho" },
   ];
 
   function onFoto(e) {
@@ -489,6 +491,8 @@ function EditarCadastro({ cadastro, stats }) {
       )}
 
       {secao === "servicos" && <GerenciarServicos cadastro={cadastro} />}
+
+      {secao === "desempenho" && <PainelDesempenho profissionalId={cadastro.id} />}
 
       {secao === "perfil" && (
         <>
