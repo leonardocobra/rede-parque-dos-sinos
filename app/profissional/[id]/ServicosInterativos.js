@@ -3,6 +3,7 @@ import { useState } from "react";
 import { instagramUrl } from "../../../lib/instagram";
 import { catIcon } from "../../config";
 import { InstagramIcon } from "../../components/SocialIcons";
+import ItensDoServico from "./ItensDoServico";
 
 // `ativoId`/`onAtivoChange` permitem usar o componente de forma controlada
 // (perfil, onde o serviço ativo também governa a seção "Outros"). Sem essas
@@ -53,28 +54,15 @@ export default function ServicosInterativos({ servicos, ativoId: ativoIdProp, on
         </div>
       )}
 
-      {(descricaoExibida || igUrl || ativo.itens?.length > 0) && (
+      {(descricaoExibida || igUrl || ativo.profissional_itens?.length > 0) && (
         <div className={`${multiplos ? "mt-2.5 pt-2.5 border-t border-brand-border" : "mt-1.5"}`}>
           {descricaoExibida && (
             <p className="text-[13px] text-brand-grey leading-relaxed">{descricaoExibida}</p>
           )}
 
-          {/* Itens/produtos do serviço — pronto para evoluir o perfil público.
-              Renderiza só quando o serviço já tem itens cadastrados. */}
-          {ativo.itens?.length > 0 && (
-            <ul className="mt-2 space-y-1">
-              {ativo.itens.map((item) => (
-                <li key={item.id} className="flex items-baseline justify-between gap-3 text-[13px]">
-                  <span className="text-brand-text">{item.nome}</span>
-                  {item.preco && (
-                    <span className="text-brand-grey-light font-bold whitespace-nowrap">
-                      {item.preco}
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
+          {/* Itens/subserviços do serviço ativo (Frente 1a). Carrossel com foto
+              quando há fotos; lista de texto quando não há. */}
+          <ItensDoServico itens={ativo.profissional_itens} />
 
           {igUrl && (
             <a
