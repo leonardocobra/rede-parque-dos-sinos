@@ -83,7 +83,7 @@ export default async function PerfilPage({ params }) {
       )}
       <PerfilView id={id} nome={prof.nome} />
       <Nav />
-      <div className="px-5 max-w-[560px] mx-auto pt-5 pb-8">
+      <div className="px-5 max-w-[560px] md:max-w-[640px] mx-auto pt-5 pb-8">
         <Link href="/catalogo" className="text-[12px] text-brand-grey-light font-bold">
           ← Voltar ao catálogo
         </Link>

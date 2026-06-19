@@ -75,7 +75,7 @@ function CatalogoContent() {
   return (
     <>
       <Nav />
-      <div className="px-5 max-w-[560px] mx-auto">
+      <div className="px-5 max-w-[560px] md:max-w-[940px] mx-auto">
         <div className="flex items-center justify-between mb-4 pt-5">
           <h2 className="font-display text-[26px]">Catálogo</h2>
           <button
@@ -174,6 +174,7 @@ function CatalogoContent() {
               </div>
             )}
 
+            <div className="grid gap-2.5 md:grid-cols-2 md:items-start">
             {ordenados.map((p, i) => {
               const st = stats(p.id);
               const open = openId === p.id;
@@ -186,8 +187,8 @@ function CatalogoContent() {
               return (
                 <div
                   key={p.id}
-                  className={`fade-up bg-brand-card rounded-[10px] mb-2.5 border transition-colors duration-200 ${
-                    open ? "border-brand-red" : "border-brand-border"
+                  className={`fade-up bg-brand-card rounded-[10px] border transition-colors duration-200 ${
+                    open ? "border-brand-red md:col-span-2" : "border-brand-border"
                   }`}
                   style={{ animationDelay: Math.min(i, 10) * 0.03 + "s" }}
                 >
@@ -207,17 +208,19 @@ function CatalogoContent() {
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                          <span className="font-bold text-[15px]">{p.nome}</span>
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <span className="font-bold text-[15px] truncate min-w-0">
+                            {p.nome}
+                          </span>
                           {st?.recomendado && (
-                            <span className="bg-brand-red-light text-brand-red font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px]">
+                            <span className="shrink-0 bg-brand-red-light text-brand-red font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px]">
                               Recomendado
                             </span>
                           )}
                           {p.verificado && (
                             <span
                               title="Identidade confirmada pela Rede"
-                              className="bg-brand-black text-white font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px] inline-flex items-center gap-1"
+                              className="ml-auto shrink-0 bg-brand-black text-white font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px] inline-flex items-center gap-1"
                             >
                               ✓ Verificado
                             </span>
@@ -338,6 +341,7 @@ function CatalogoContent() {
                 </div>
               );
             })}
+            </div>
 
             <div className="text-right mt-5 pb-5">
               <Link

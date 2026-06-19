@@ -42,7 +42,7 @@ export default async function PaginaCategoria({ params }) {
   return (
     <>
       <Nav />
-      <div className="px-5 max-w-[560px] mx-auto pt-5 pb-10">
+      <div className="px-5 max-w-[560px] md:max-w-[940px] mx-auto pt-5 pb-10">
         <Link href="/catalogo" className="text-[12px] text-brand-grey-light font-bold">
           ← Catálogo
         </Link>
@@ -70,7 +70,7 @@ export default async function PaginaCategoria({ params }) {
             </Link>
           </div>
         ) : (
-          <div className="space-y-2.5">
+          <div className="grid gap-2.5 md:grid-cols-2 md:items-start">
             {profissionais.map((p) => {
               const ini = iniciais(p.nome);
               const wn = (p.telefone || "").replace(/\D/g, "");
@@ -100,10 +100,15 @@ export default async function PaginaCategoria({ params }) {
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <span className="font-bold text-[15px]">{p.nome}</span>
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="font-bold text-[15px] truncate min-w-0">
+                          {p.nome}
+                        </span>
                         {p.verificado && (
-                          <span className="bg-brand-black text-white font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px] inline-flex items-center gap-1">
+                          <span
+                            title="Identidade confirmada pela Rede"
+                            className="ml-auto shrink-0 bg-brand-black text-white font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px] inline-flex items-center gap-1"
+                          >
                             ✓ Verificado
                           </span>
                         )}
