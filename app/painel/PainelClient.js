@@ -9,6 +9,7 @@ import { validarFoto } from "../../lib/avatar";
 import { soDigitos, filtrarPorTelefone } from "../../lib/telefone";
 import CropFotoModal from "../components/CropFotoModal";
 import DivulgarPorCanal from "../components/DivulgarPorCanal";
+import GerenciarItens from "./GerenciarItens";
 
 const FOTO_BUCKET = "fotos-profissionais";
 
@@ -104,6 +105,12 @@ function GerenciarServicos({ cadastro }) {
   const [novoForm, setNovoForm] = useState({ servico: "", categoria: "", descricao: "", instagram: "" });
   const [mostraAdicionar, setMostraAdicionar] = useState(false);
   const [statusOp, setStatusOp] = useState({});
+  const [expandidoId, setExpandidoId] = useState(null);
+  const [contagens, setContagens] = useState(() =>
+    Object.fromEntries(
+      (cadastro.profissional_servicos || []).map((s) => [s.id, (s.profissional_itens || []).length])
+    )
+  );
 
   function iniciarEdicao(s) {
     setEditandoId(s.id);
@@ -262,29 +269,49 @@ function GerenciarServicos({ cadastro }) {
                 )}
               </div>
             ) : (
-              <div className="flex items-center justify-between gap-2">
-                <div>
-                  <div className="text-[14px] font-bold">{s.servico}</div>
-                  <div className="text-[12px] text-brand-grey-light">{s.categoria}</div>
-                </div>
-                <div className="flex gap-3 shrink-0">
-                  <button
-                    onClick={() => iniciarEdicao(s)}
-                    className="text-[12px] text-brand-grey font-bold"
-                  >
-                    Editar
-                  </button>
-                  {servicos.length > 1 && (
+              <>
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <div className="text-[14px] font-bold">{s.servico}</div>
+                    <div className="text-[12px] text-brand-grey-light">{s.categoria}</div>
+                  </div>
+                  <div className="flex gap-3 shrink-0">
                     <button
-                      onClick={() => remover(s.id)}
-                      disabled={statusOp[s.id] === "removendo"}
-                      className="text-[12px] text-brand-red font-bold disabled:opacity-50"
+                      onClick={() => iniciarEdicao(s)}
+                      className="text-[12px] text-brand-grey font-bold"
                     >
-                      {statusOp[s.id] === "removendo" ? "..." : "Remover"}
+                      Editar
                     </button>
-                  )}
+                    {servicos.length > 1 && (
+                      <button
+                        onClick={() => remover(s.id)}
+                        disabled={statusOp[s.id] === "removendo"}
+                        className="text-[12px] text-brand-red font-bold disabled:opacity-50"
+                      >
+                        {statusOp[s.id] === "removendo" ? "..." : "Remover"}
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
+
+                <button
+                  onClick={() => setExpandidoId((id) => (id === s.id ? null : s.id))}
+                  className="mt-2 flex items-center gap-1.5 text-[12px] font-bold text-brand-text"
+                  aria-expanded={expandidoId === s.id}
+                >
+                  <span className="text-brand-grey-light">{expandidoId === s.id ? "▾" : "▸"}</span>
+                  Itens ({contagens[s.id] ?? 0})
+                </button>
+
+                {expandidoId === s.id && (
+                  <GerenciarItens
+                    servico={s}
+                    profissionalId={cadastro.id}
+                    onCount={(n) => setContagens((c) => ({ ...c, [s.id]: n }))}
+                    onRevalidar={() => revalidarPerfil(cadastro.id)}
+                  />
+                )}
+              </>
             )}
           </div>
         ))}
@@ -361,6 +388,14 @@ function EditarCadastro({ cadastro, stats }) {
   const [status, setStatus] = useState("idle");
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const valido = form.nome && form.telefone;
+  // Navegação por seções: o painel é um shell que comporta módulos. Itens novos
+  // (score, desempenho, avaliações) entram como mais uma pílula, sem refatorar.
+  const [secao, setSecao] = useState("geral");
+  const SECOES = [
+    { id: "geral", label: "Visão geral" },
+    { id: "servicos", label: "Serviços e itens" },
+    { id: "perfil", label: "Perfil" },
+  ];
 
   function onFoto(e) {
     const file = e.target.files?.[0] || null;
@@ -427,20 +462,49 @@ function EditarCadastro({ cadastro, stats }) {
   return (
     <div className="bg-brand-card rounded-[10px] border border-brand-border p-4">
       <div className="flex items-center justify-between gap-2 mb-3">
-        <h3 className="font-display text-[18px]">{cadastro.nome || "Seu cadastro"}</h3>
-        {cadastro.verificado && (
-          <span className="bg-brand-black text-white font-bold text-[10px] px-2 py-[3px] rounded-[4px] uppercase tracking-[0.6px]">
-            ✓ Verificado
-          </span>
-        )}
+        <div className="flex items-center gap-2 min-w-0">
+          <h3 className="font-display text-[18px] truncate">{cadastro.nome || "Seu cadastro"}</h3>
+          {cadastro.verificado && (
+            <span className="bg-brand-black text-white font-bold text-[10px] px-2 py-[3px] rounded-[4px] uppercase tracking-[0.6px] shrink-0">
+              ✓ Verificado
+            </span>
+          )}
+        </div>
+        <Link
+          href={`/profissional/${cadastro.id}`}
+          className="text-[12px] font-bold text-brand-grey shrink-0"
+        >
+          Ver perfil →
+        </Link>
       </div>
 
-      <Metricas cadastro={cadastro} stats={stats} />
+      <div className="flex gap-1.5 mb-4 overflow-x-auto -mx-1 px-1">
+        {SECOES.map((sec) => (
+          <button
+            key={sec.id}
+            onClick={() => setSecao(sec.id)}
+            className={`px-3 py-[6px] rounded-full text-[12px] font-bold whitespace-nowrap ${
+              secao === sec.id
+                ? "bg-brand-red text-white"
+                : "bg-brand-surface text-brand-grey border border-brand-border"
+            }`}
+          >
+            {sec.label}
+          </button>
+        ))}
+      </div>
 
-      <DivulgarPorCanal id={cadastro.id} />
+      {secao === "geral" && (
+        <>
+          <Metricas cadastro={cadastro} stats={stats} />
+          <DivulgarPorCanal id={cadastro.id} />
+        </>
+      )}
 
-      <GerenciarServicos cadastro={cadastro} />
+      {secao === "servicos" && <GerenciarServicos cadastro={cadastro} />}
 
+      {secao === "perfil" && (
+        <>
       <h4 className="font-display text-[15px] mb-2">Editar cadastro</h4>
 
       <Field label="Nome completo">
@@ -465,7 +529,7 @@ function EditarCadastro({ cadastro, stats }) {
         <textarea
           className={`${inputClass} resize-y`}
           rows={3}
-          placeholder="Uma apresentação geral sua. A descrição de cada serviço fica em 'Meus Serviços' acima."
+          placeholder="Uma apresentação geral sua. A descrição de cada serviço fica na aba 'Serviços e itens'."
           value={form.descricao}
           onChange={set("descricao")}
         />
@@ -517,18 +581,14 @@ function EditarCadastro({ cadastro, stats }) {
         >
           {status === "salvando" ? "Salvando..." : "Salvar alterações"}
         </button>
-        <Link
-          href={`/profissional/${cadastro.id}`}
-          className="text-[12px] font-bold text-brand-grey"
-        >
-          Ver meu perfil →
-        </Link>
       </div>
       {status === "ok" && <p className="text-brand-red text-[13px] mt-3">Alterações salvas!</p>}
       {status === "erro" && (
         <p className="text-brand-red text-[13px] mt-3">Não foi possível salvar. Tente novamente.</p>
       )}
       <CropFotoModal file={cropFile} onCancel={() => setCropFile(null)} onConfirm={onCrop} />
+        </>
+      )}
     </div>
   );
 }
