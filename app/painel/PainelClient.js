@@ -492,11 +492,16 @@ function EditarCadastro({ cadastro, stats }) {
         </>
       )}
 
-      {secao === "presenca" && <ScoreMaturidade cadastro={cadastro} stats={stats} />}
+      {secao === "presenca" && <ScoreMaturidade cadastro={cadastro} />}
 
       {secao === "servicos" && <GerenciarServicos cadastro={cadastro} />}
 
-      {secao === "desempenho" && <PainelDesempenho profissionalId={cadastro.id} />}
+      {secao === "desempenho" && (
+        <PainelDesempenho
+          profissionalId={cadastro.id}
+          onIrParaDivulgar={() => setSecao("geral")}
+        />
+      )}
 
       {secao === "perfil" && (
         <>
