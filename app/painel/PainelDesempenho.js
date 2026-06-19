@@ -37,7 +37,7 @@ function BarraFonte({ origem, total, max }) {
   );
 }
 
-export default function PainelDesempenho({ profissionalId }) {
+export default function PainelDesempenho({ profissionalId, onIrParaDivulgar }) {
   const [dados, setDados] = useState(null);
   const [estado, setEstado] = useState("carregando"); // carregando | ok | erro | indisponivel
 
@@ -119,11 +119,13 @@ export default function PainelDesempenho({ profissionalId }) {
         </div>
       )}
 
-      <div className="bg-brand-surface border border-brand-border rounded-lg px-3 py-2.5 text-[12px] text-brand-grey">
-        Use seu link taggeado na aba{" "}
-        <span className="font-bold text-brand-text">Divulgar</span> para ver de onde vêm
-        as visitas com mais detalhes.
-      </div>
+      <button
+        onClick={onIrParaDivulgar}
+        className="w-full bg-brand-surface border border-brand-border rounded-lg px-3 py-2.5 text-[13px] font-bold text-brand-text text-left flex items-center justify-between gap-2"
+      >
+        Divulgue seu perfil
+        <span className="text-brand-grey-light">→</span>
+      </button>
     </div>
   );
 }
