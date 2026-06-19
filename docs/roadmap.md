@@ -22,6 +22,8 @@ crescimento, organizada em 3 frentes novas — duas delas compartilham uma funda
 | Compartilhamento (botão WhatsApp, páginas de categoria) | Crescimento |
 | Auth Magic Link + `/painel` (edição, claim, métricas, selos) | Oferta |
 | Descrição por serviço + múltiplos serviços | Catálogo |
+| Itens/subserviços no perfil — migration + painel + render público (PRs #41/#42/#43) | Catálogo/Oferta |
+| Painel como shell de módulos (navegação por pílulas) | Oferta/Plataforma |
 | Infra: Vitest, ESLint, Prettier, Tailwind | Plataforma |
 
 ## A fundação compartilhada (pré-requisito de Now)
@@ -53,13 +55,21 @@ tráfego, e a decisão de serviço Python só se coloca na hora de replicar para
 
 ## Next (1–3 meses, sobre a fundação)
 
-Ordem definida com o Leonardo (2026-06-18):
+Ordem revista com o Leonardo (2026-06-19): a Frente 1a (itens) foi entregue (A/B/C, PRs #41/#42/#43).
+O **PR D** (vitrine de itens no catálogo) foi **deliberadamente pausado** — depende de adoção, não de
+código (ver gatilho abaixo). Próxima prioridade migra para medição/score.
 
 | # | Item | Frente | Spec | Valor/Esforço |
 | --- | --- | --- | --- | --- |
-| 1 | **Itens/subserviços no perfil** (foto, descrição, preço opcional, disponibilidade/estoque) | 1a | `docs/perfil-itens-spec.md` | Alto / Médio |
-| 2 | **Observabilidade & Analytics — fase 1** (motor único; Leonardo como piloto: comportamento da oferta, jornada/conversão, canais/UTM, performance) | 3 | `docs/observabilidade-spec.md` | Alto / Médio |
-| 3 | **Score de maturidade digital** (diagnóstico + próximos passos no painel) | 2a | `docs/crescimento-score-analytics-spec.md` | Alto / Baixo-Médio |
+| 1 | **Observabilidade & Analytics — fase 1** (motor único; Leonardo como piloto: comportamento da oferta, jornada/conversão, canais/UTM, performance) | 3 | `docs/observabilidade-spec.md` | Alto / Médio |
+| 2 | **Score de maturidade digital** (diagnóstico + próximos passos no painel) | 2a | `docs/crescimento-score-analytics-spec.md` | Alto / Baixo-Médio |
+| 3 | **PR D — vitrine de itens no catálogo** (itens no card expandido + selo "a partir de R$" no card colapsado) | 1a | `docs/perfil-itens-spec.md` (P0.4) | Médio / S–M |
+
+> **PR D — gatilho de adoção (decisão 2026-06-19):** só fazer quando **≥5 profissionais tiverem ≥1
+> item**. Sem adoção, o sinal aparece sobre catálogo vazio e não há conversão a medir (a leitura de
+> eventos de 2026-06-19 mostrou base mínima e 0 itens). O render do PR C já cobre o perfil; o card
+> expandido do catálogo fica quase de graça (a query do catálogo passa a trazer `profissional_itens`).
+> P1 do PR D (lightbox de foto, reordenar itens por arraste) segue como Later.
 
 ## Later (direcional, exige decisão)
 
@@ -80,6 +90,17 @@ Ordem definida com o Leonardo (2026-06-18):
 - **2b (Python)** adiciona um runtime fora do stack Next/Vercel/Supabase. Só justifica depois que a
   camada de eventos mostrar que o Vercel Analytics + Supabase são insuficientes.
 - **Capacidade = 1 pessoa.** Para cada item que entra em "Now", algo sai. Por isso a fundação primeiro.
+
+## Decisões tomadas (2026-06-19)
+
+- [x] **Frente 1a entregue** (A: migration · B: painel/itens + shell de pílulas · C: render no perfil —
+      PRs #41/#42/#43 mergeados).
+- [x] **Painel vira shell de módulos** (navegação por pílulas): módulos futuros (score, desempenho,
+      avaliações) entram como mais uma pílula, sem refatorar.
+- [x] **Layout dos itens no perfil: híbrido + carrossel** — carrossel com foto quando há fotos; lista
+      de texto quando não há; nada quando não há itens.
+- [x] **PR D pausado por gatilho de adoção** (≥5 profs com ≥1 item) — o gargalo agora é adoção/tráfego,
+      não código de itens. Próxima prioridade migra para medição (Frente 3 fase 1) / score (2a).
 
 ## Decisões tomadas (2026-06-18)
 
