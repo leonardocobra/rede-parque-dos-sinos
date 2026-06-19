@@ -50,15 +50,15 @@ describe("ServicosInterativos", () => {
   it("renderiza itens/produtos do serviço quando existem", () => {
     const servicos = [
       servico({
-        itens: [
-          { id: "i1", nome: "Pintura de parede", preco: "R$ 30/m²" },
-          { id: "i2", nome: "Textura" },
+        profissional_itens: [
+          { id: "i1", titulo: "Pintura de parede", preco: 30, preco_tipo: "fixo" },
+          { id: "i2", titulo: "Textura" },
         ],
       }),
     ];
     render(<ServicosInterativos servicos={servicos} />);
     expect(screen.getByText("Pintura de parede")).toBeInTheDocument();
-    expect(screen.getByText("R$ 30/m²")).toBeInTheDocument();
+    expect(screen.getByText("R$ 30,00")).toBeInTheDocument();
     expect(screen.getByText("Textura")).toBeInTheDocument();
   });
 
