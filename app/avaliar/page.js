@@ -4,6 +4,9 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import { supabase } from "../../lib/supabase";
+import { absUrl } from "../../lib/site";
+import { registrarEvento } from "../../lib/eventos";
+import { track } from "@vercel/analytics";
 
 function Toggle({ label, value, onChange }) {
   return (
@@ -54,6 +57,7 @@ function AvaliarContent() {
   const [comentario, setComentario] = useState("");
   const [status, setStatus] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [compartilhado, setCompartilhado] = useState(false);
 
   useEffect(() => {
     supabase
@@ -109,7 +113,6 @@ function AvaliarContent() {
       return;
     }
     setStatus("success");
-    setTimeout(() => router.push("/catalogo"), 2000);
   }
 
   return (
@@ -122,7 +125,7 @@ function AvaliarContent() {
         </p>
 
         {status === "success" ? (
-          <div className="text-center py-12">
+          <div className="text-center py-8">
             <div className="w-14 h-14 rounded-full bg-brand-red-light flex items-center justify-center mx-auto mb-4 text-[28px]">
               ✓
             </div>
@@ -130,6 +133,48 @@ function AvaliarContent() {
             <p className="text-[13px] text-brand-grey mt-2">
               Obrigado por contribuir com a comunidade.
             </p>
+            <div className="mt-6 bg-brand-card border border-brand-border rounded-[10px] p-4 text-left">
+              <p className="text-[13px] font-bold text-brand-text mb-1">
+                Conhece alguém que precisaria desse profissional?
+              </p>
+              <p className="text-[12px] text-brand-grey-light mb-3">
+                Indique para um vizinho — leva 10 segundos.
+              </p>
+              <button
+                type="button"
+                onClick={async () => {
+                  const nomePro = profs.find((p) => p.id === profId)?.nome || "";
+                  const url = absUrl(`/profissional/${profId}`);
+                  const texto = `Acabei de avaliar ${nomePro} na A Rede — ótimo profissional aqui em Jacareí! ${url}`;
+                  track("perfil_share", { canal: "pos_avaliacao", id: profId });
+                  registrarEvento("share_pos_avaliacao", { profissional_id: profId });
+                  setCompartilhado(true);
+                  if (typeof navigator !== "undefined" && navigator.share) {
+                    try {
+                      await navigator.share({ text: texto, url });
+                      return;
+                    } catch {
+                      // cancelado — fallback WhatsApp
+                    }
+                  }
+                  window.open(
+                    `https://wa.me/?text=${encodeURIComponent(texto)}`,
+                    "_blank",
+                    "noopener,noreferrer"
+                  );
+                }}
+                className="w-full bg-brand-black text-white rounded-lg py-2.5 text-[13px] font-bold"
+              >
+                {compartilhado ? "Obrigado por indicar!" : "Indicar para alguém"}
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => router.push("/catalogo")}
+              className="mt-3 text-[13px] text-brand-grey-light font-bold"
+            >
+              Ir para o catálogo →
+            </button>
           </div>
         ) : (
           <div>

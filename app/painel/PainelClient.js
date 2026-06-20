@@ -13,6 +13,7 @@ import GerenciarItens from "./GerenciarItens";
 import Pilulas from "../components/Pilulas";
 import PainelDesempenho from "./PainelDesempenho";
 import ScoreMaturidade from "./ScoreMaturidade";
+import { absUrl } from "../../lib/site";
 
 const FOTO_BUCKET = "fotos-profissionais";
 
@@ -52,6 +53,44 @@ export default function PainelClient({ cadastros, stats = {} }) {
       {cadastros.map((c) => (
         <EditarCadastro key={c.id} cadastro={c} stats={stats[c.id]} />
       ))}
+    </div>
+  );
+}
+
+function PedirAvaliacao({ cadastro }) {
+  const [copiado, setCopiado] = useState(false);
+
+  async function copiarLink() {
+    const link =
+      absUrl(`/avaliar`) +
+      `?id=${cadastro.id}&nome=${encodeURIComponent(cadastro.nome || "")}`;
+    try {
+      await navigator.clipboard.writeText(link);
+    } catch {
+      const el = document.createElement("input");
+      el.value = link;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+    }
+    setCopiado(true);
+    setTimeout(() => setCopiado(false), 3000);
+  }
+
+  return (
+    <div className="mb-4 bg-brand-surface border border-brand-border rounded-lg p-3">
+      <div className="text-[13px] font-bold text-brand-text mb-0.5">Peça uma avaliação</div>
+      <p className="text-[12px] text-brand-grey-light mb-2">
+        Copie o link e mande para quem já usou seu serviço.
+      </p>
+      <button
+        type="button"
+        onClick={copiarLink}
+        className="w-full bg-brand-black text-white rounded-lg py-2 text-[12px] font-bold"
+      >
+        {copiado ? "Link copiado!" : "Copiar link de avaliação"}
+      </button>
     </div>
   );
 }
@@ -489,6 +528,7 @@ function EditarCadastro({ cadastro, stats }) {
         <>
           <DivulgarPorCanal id={cadastro.id} />
           <Metricas cadastro={cadastro} stats={stats} />
+          <PedirAvaliacao cadastro={cadastro} />
         </>
       )}
 

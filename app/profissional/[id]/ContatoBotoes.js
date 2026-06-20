@@ -25,7 +25,7 @@ export default function ContatoBotoes({ id, nome, servico, whatsapp, instagram }
       <div className="flex gap-2">
         {whatsapp && (
           <a
-            href={whatsapp}
+            href={`${whatsapp}?text=${encodeURIComponent(`Oi ${nome}! Vi seu perfil na A Rede e tenho interesse em ${servico}.`)}`}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Contato via WhatsApp"
