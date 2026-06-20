@@ -148,10 +148,16 @@ function AvaliarContent() {
                   // O card do preview já mostra nome/serviço/cidade/foto; a
                   // mensagem traz só a prova social ("acabei de avaliar") + nome.
                   const mensagem = `Acabei de avaliar ${nomePro} e recomendo o trabalho! 👇`;
+                  const usaNativo = typeof navigator !== "undefined" && !!navigator.share;
                   track("perfil_share", { canal: "pos_avaliacao", id: profId });
-                  registrarEvento("share_pos_avaliacao", { profissional_id: profId });
+                  // Mesmo canal real do compartilhamento (nativo vs whatsapp) para
+                  // a quebra por canal do referral no /admin.
+                  registrarEvento("share_pos_avaliacao", {
+                    profissional_id: profId,
+                    canal: usaNativo ? "nativo" : "whatsapp",
+                  });
                   setCompartilhado(true);
-                  if (typeof navigator !== "undefined" && navigator.share) {
+                  if (usaNativo) {
                     try {
                       await navigator.share({ text: mensagem, url });
                       return;
