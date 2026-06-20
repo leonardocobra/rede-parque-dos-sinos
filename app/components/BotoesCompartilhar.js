@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
 import { track } from "@vercel/analytics";
-import { WhatsAppIcon } from "./SocialIcons";
+import { ShareIcon } from "./SocialIcons";
 import { absUrl } from "../../lib/site";
 import { CIDADE } from "../../lib/perfil";
 import { adicionarUtm } from "../../lib/utm";
+import { registrarEvento } from "../../lib/eventos";
 
 function LinkIcon() {
   return (
@@ -25,14 +26,25 @@ function CheckIcon() {
 export default function BotoesCompartilhar({ id, nome, servico }) {
   const [copiado, setCopiado] = useState(false);
 
-  function compartilharWhatsApp() {
-    // Link com utm_source=whatsapp: quem chega por aqui é contado como
-    // "whatsapp" no /admin, mesmo sem referrer.
+  async function indicar() {
     const url = adicionarUtm(absUrl(`/profissional/${id}`), "whatsapp");
-    const texto = `Encontrei na Rede: ${nome} — ${servico} em ${CIDADE}\n${url}`;
-    track("perfil_share", { canal: "whatsapp", id });
+    const textoShare = `Encontrei ${nome} na A Rede — ${servico} em ${CIDADE}. Recomendo!\n${url}`;
+    track("perfil_share", { canal: "share", id });
+    registrarEvento("share_perfil", { profissional_id: id });
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({
+          title: `${nome} — ${servico} · A Rede`,
+          text: `Encontrei ${nome} na A Rede — ${servico} em ${CIDADE}. Recomendo!`,
+          url,
+        });
+        return;
+      } catch {
+        // usuário cancelou ou browser não suporta — fallback para WhatsApp
+      }
+    }
     window.open(
-      `https://wa.me/?text=${encodeURIComponent(texto)}`,
+      `https://wa.me/?text=${encodeURIComponent(textoShare)}`,
       "_blank",
       "noopener,noreferrer"
     );
@@ -58,11 +70,11 @@ export default function BotoesCompartilhar({ id, nome, servico }) {
     <div className="flex gap-2">
       <button
         type="button"
-        onClick={compartilharWhatsApp}
+        onClick={indicar}
         className="bg-brand-surface border border-brand-border rounded-lg px-4 py-2 text-[12px] font-bold text-brand-grey flex-1 flex items-center justify-center gap-1.5"
       >
-        <WhatsAppIcon />
-        Compartilhar
+        <ShareIcon />
+        Indicar para alguém
       </button>
       <button
         type="button"
