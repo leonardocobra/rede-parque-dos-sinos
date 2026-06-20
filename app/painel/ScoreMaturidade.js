@@ -118,7 +118,7 @@ export default function ScoreMaturidade({ cadastro }) {
           </div>
           {proximosPassos.length > MAX_PASSOS && (
             <p className="text-[11px] text-brand-grey-light mt-2">
-              + {proximosPassos.length - MAX_PASSOS} ação{proximosPassos.length - MAX_PASSOS > 1 ? "ões" : ""} disponíveis
+              + {proximosPassos.length - MAX_PASSOS} {proximosPassos.length - MAX_PASSOS > 1 ? "ações" : "ação"} disponíveis
             </p>
           )}
         </div>

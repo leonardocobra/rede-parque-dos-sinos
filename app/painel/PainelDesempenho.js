@@ -76,8 +76,20 @@ export default function PainelDesempenho({ profissionalId, onIrParaDivulgar }) {
     );
   }
 
-  const { perfilViews, contatos, fontes, serie } = dados;
+  const { perfilViews, contatos, fontes, serie, referral } = dados;
   const maxFonte = fontes.length > 0 ? fontes[0].total : 1;
+  const { shares, sharesPorCanal, visitasIndicacao, contatosIndicacao } = referral || {};
+  const temReferral = shares > 0 || visitasIndicacao > 0 || contatosIndicacao > 0;
+
+  const ROTULOS_CANAL = {
+    nativo: "Nativo",
+    whatsapp: "WhatsApp",
+    link_copiado: "Link copiado",
+    instagram: "Instagram",
+    status: "Status",
+    facebook: "Facebook",
+    perfil: "Link do painel",
+  };
 
   return (
     <div className="space-y-4">
@@ -118,6 +130,40 @@ export default function PainelDesempenho({ profissionalId, onIrParaDivulgar }) {
           ))}
         </div>
       )}
+
+      <div className="bg-brand-surface rounded-lg p-3 space-y-3">
+        <p className="text-[11px] text-brand-grey-light uppercase tracking-[0.6px]">
+          Indicações
+        </p>
+
+        {temReferral ? (
+          <>
+            <div className="grid grid-cols-3 gap-2">
+              <KPI valor={shares} rotulo="Compartilhamentos" />
+              <KPI valor={visitasIndicacao} rotulo="Visitas via indicação" />
+              <KPI valor={contatosIndicacao} rotulo="Contatos via indicação" />
+            </div>
+
+            {sharesPorCanal && sharesPorCanal.length > 0 && (
+              <div className="pt-1">
+                <p className="text-[10px] text-brand-grey-light mb-1.5">Como compartilhou</p>
+                <div className="flex flex-wrap gap-x-3 gap-y-1">
+                  {sharesPorCanal.map(({ canal, total }) => (
+                    <span key={canal} className="text-[12px] text-brand-text">
+                      {ROTULOS_CANAL[canal] ?? canal}{" "}
+                      <span className="text-brand-grey-light font-normal">{total}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="text-[12px] text-brand-grey-light">
+            Nenhuma indicação registrada ainda — compartilhe seu perfil para começar a ver aqui.
+          </p>
+        )}
+      </div>
 
       <button
         onClick={onIrParaDivulgar}
