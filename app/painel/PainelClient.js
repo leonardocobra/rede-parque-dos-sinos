@@ -14,6 +14,7 @@ import Pilulas from "../components/Pilulas";
 import PainelDesempenho from "./PainelDesempenho";
 import ScoreMaturidade from "./ScoreMaturidade";
 import { absUrl } from "../../lib/site";
+import { registrarEvento } from "../../lib/eventos";
 
 const FOTO_BUCKET = "fotos-profissionais";
 
@@ -74,6 +75,9 @@ function PedirAvaliacao({ cadastro }) {
       document.execCommand("copy");
       document.body.removeChild(el);
     }
+    // Pedir avaliação é um ato de distribuição — registra para fechar o ciclo
+    // de engajamento no /admin (tipo distinto: não é indicação de novo cliente).
+    registrarEvento("share_pedir_avaliacao", { profissional_id: cadastro.id, canal: "link_copiado" });
     setCopiado(true);
     setTimeout(() => setCopiado(false), 3000);
   }

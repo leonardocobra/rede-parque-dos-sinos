@@ -3,6 +3,7 @@ import { useState } from "react";
 import { track } from "@vercel/analytics";
 import { absUrl } from "../../lib/site";
 import { adicionarUtm, CANAIS_DIVULGACAO, FONTE_PERFIL } from "../../lib/utm";
+import { registrarEvento } from "../../lib/eventos";
 
 // Hub de divulgação do profissional (no /painel). Todo link sai com o utm_source
 // certo para que a origem seja medida no /admin — mesmo quando o app de origem
@@ -26,6 +27,10 @@ export default function DivulgarPorCanal({ id }) {
       document.body.removeChild(el);
     }
     track("perfil_share", { canal: source, id });
+    // Registra o ato de copiar como share — o UTM do link já fecha o loop de
+    // atribuição (origem da sessão do visitante), mas sem este evento o /admin
+    // vê contatos por indicação sem ver o share que os originou.
+    registrarEvento("share_perfil", { profissional_id: id, canal: source });
     setCopiado(idAlvo);
     setTimeout(() => setCopiado((c) => (c === idAlvo ? null : c)), 2000);
   }
