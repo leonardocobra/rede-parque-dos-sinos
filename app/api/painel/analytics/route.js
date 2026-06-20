@@ -41,10 +41,16 @@ export async function GET(request) {
   const desde = new Date(Date.now() - JANELA_DIAS * 24 * 60 * 60 * 1000).toISOString();
   const { data: eventos, error } = await service
     .from("eventos")
-    .select("tipo, origem, criado_em")
+    .select("tipo, origem, canal, criado_em")
     .eq("profissional_id", profissionalId)
     .gte("criado_em", desde)
-    .in("tipo", ["profile_view", "contact_click"])
+    .in("tipo", [
+      "profile_view",
+      "contact_click",
+      "share_perfil",
+      "share_pos_avaliacao",
+      "share_pedir_avaliacao",
+    ])
     .order("criado_em", { ascending: true });
 
   if (error) return NextResponse.json({ erro: "erro ao buscar eventos" }, { status: 500 });
