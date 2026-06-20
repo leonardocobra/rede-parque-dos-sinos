@@ -26,7 +26,29 @@ function Stat({ valor, rotulo, sub }) {
   );
 }
 
-function Oferta({ v }) {
+function Maturidade({ s }) {
+  return (
+    <>
+      <div className="grid grid-cols-3 gap-2.5">
+        {s.distribuicao.map((d) => (
+          <div key={d.nome} className="bg-brand-card rounded-[10px] border border-brand-border p-3 text-center">
+            <span className={`inline-block text-[10px] font-bold px-1.5 py-[2px] rounded-[3px] uppercase tracking-[0.5px] mb-2 ${d.corBadge}`}>
+              {d.nome}
+            </span>
+            <div className="font-display text-[24px] leading-none text-brand-text">{d.total}</div>
+            <div className="text-[11px] text-brand-grey-light mt-1">{d.pct}%</div>
+          </div>
+        ))}
+      </div>
+      <div className="bg-brand-card rounded-[10px] border border-brand-border px-4 py-3 mt-2.5 flex items-center justify-between">
+        <span className="text-[13px] text-brand-grey-light">Média do score</span>
+        <span className="font-display text-[20px] text-brand-text">{s.media} <span className="text-[12px] font-sans text-brand-grey-light">/ 100</span></span>
+      </div>
+    </>
+  );
+}
+
+function Oferta({ v, s }) {
   return (
     <>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -41,6 +63,9 @@ function Oferta({ v }) {
         <Stat valor={v.novos30} rotulo="Novos (30d)" />
         <Stat valor={v.novos90} rotulo="Novos (90d)" />
       </div>
+
+      <h3 className="font-display text-[14px] mt-6 mb-2">Maturidade digital</h3>
+      <Maturidade s={s} />
 
       <h3 className="font-display text-[14px] mt-6 mb-2">Adoção de itens</h3>
       <div className="grid grid-cols-2 gap-2.5">
@@ -183,7 +208,7 @@ function Desempenho() {
   );
 }
 
-export default function AdminClient({ email, v, a, janelaDias }) {
+export default function AdminClient({ email, v, a, s, janelaDias }) {
   const [secao, setSecao] = useState("oferta");
 
   return (
@@ -205,7 +230,7 @@ export default function AdminClient({ email, v, a, janelaDias }) {
         </div>
       )}
 
-      {secao === "oferta" && <Oferta v={v} />}
+      {secao === "oferta" && <Oferta v={v} s={s} />}
       {secao === "trafego" && <Trafego a={a} />}
       {secao === "desempenho" && <Desempenho />}
     </div>
