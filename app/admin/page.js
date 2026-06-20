@@ -11,7 +11,8 @@ import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import { getServerSupabase } from "../../lib/supabase/server";
 import { getServiceSupabase } from "../../lib/supabase/service";
-import { isAdmin, computeVisaoOferta, computeAnalyticsEventos } from "../../lib/admin";
+import { isAdmin, computeVisaoOferta, computeAnalyticsEventos, computeScoreDistribuicao } from "../../lib/admin";
+import { computaScore } from "../../lib/score";
 import AdminClient from "./AdminClient";
 
 export const dynamic = "force-dynamic";
@@ -46,20 +47,27 @@ export default async function Admin() {
   // service_role (SELECT fechado a anon/authenticated).
   const [{ data: profissionais }, { data: servicos }, { data: itens }, eventos] = await Promise.all(
     [
-      supabase.from("profissionais").select("id, foto_url, user_id, verificado, criado_em"),
+      supabase.from("profissionais").select(
+        "id, foto_url, user_id, verificado, criado_em, descricao, instagram, experiencia, " +
+        "tem_google, tem_fotos_google, tem_outro_diretorio, instagram_ativo, " +
+        "tem_fotos_trabalho, link_na_bio, usa_whatsapp_business, fez_meta_ads, fez_google_ads, " +
+        "profissional_servicos(profissional_itens(id))"
+      ),
       supabase.from("profissional_servicos").select("profissional_id, categoria"),
       supabase.from("profissional_itens").select("profissional_id, foto_url, ativo"),
       lerEventos(),
     ]
   );
 
-  const v = computeVisaoOferta(profissionais || [], servicos || [], new Date(), itens || []);
+  const lista = profissionais || [];
+  const v = computeVisaoOferta(lista, servicos || [], new Date(), itens || []);
   const a = eventos ? computeAnalyticsEventos(eventos, { dias: JANELA_DIAS }) : null;
+  const s = computeScoreDistribuicao(lista, { computaScore });
 
   return (
     <>
       <Nav />
-      <AdminClient email={user.email} v={v} a={a} janelaDias={JANELA_DIAS} />
+      <AdminClient email={user.email} v={v} a={a} s={s} janelaDias={JANELA_DIAS} />
       <Footer />
     </>
   );
