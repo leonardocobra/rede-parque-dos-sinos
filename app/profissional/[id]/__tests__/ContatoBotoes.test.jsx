@@ -58,7 +58,14 @@ describe("ContatoBotoes", () => {
 
   it("aponta o WhatsApp e o Avaliar para os destinos corretos", () => {
     render(<ContatoBotoes {...props()} />);
-    expect(linkWhats()).toHaveAttribute("href", "https://wa.me/5511999999999");
     expect(linkAvaliar()).toHaveAttribute("href", "/avaliar?id=p1&nome=Jo%C3%A3o%20Pintor");
+  });
+
+  it("pré-preenche o WhatsApp com mensagem atribuída à Rede (nome + serviço)", () => {
+    render(<ContatoBotoes {...props()} />);
+    const href = linkWhats().getAttribute("href");
+    expect(href.startsWith("https://wa.me/5511999999999?text=")).toBe(true);
+    const texto = decodeURIComponent(href.split("?text=")[1]);
+    expect(texto).toBe("Oi João Pintor! Vi seu perfil na A Rede e tenho interesse em Pintor.");
   });
 });
