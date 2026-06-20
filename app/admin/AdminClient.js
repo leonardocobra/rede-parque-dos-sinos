@@ -105,9 +105,15 @@ function LegendaItem({ cor, children }) {
 
 // Rótulo amigável dos tipos/canais de indicação.
 const ROTULO_CANAL_SHARE = {
-  nativo: "Compartilhamento nativo",
-  whatsapp: "WhatsApp",
-  link_copiado: "Link copiado",
+  // canais do botão "Indicar" (BotoesCompartilhar)
+  nativo: "Share nativo (SO)",
+  whatsapp: "WhatsApp (fallback)",
+  link_copiado: "Link copiado (perfil)",
+  // canais UTM do gerador de links do /painel (DivulgarPorCanal)
+  instagram: "Instagram (bio/post)",
+  status: "Status / Stories",
+  facebook: "Facebook",
+  perfil: "Link genérico (painel)",
   "(desconhecido)": "Não identificado",
 };
 
@@ -123,8 +129,8 @@ function Referral({ r }) {
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
         <Stat
           valor={r.shares}
-          rotulo="Indicações feitas"
-          sub={`${r.porTipo.share_perfil} do perfil · ${r.porTipo.share_pos_avaliacao} pós-avaliação`}
+          rotulo="Shares registrados"
+          sub={`${r.porTipo.share_perfil} perfil · ${r.porTipo.share_pos_avaliacao} pós-aval. · ${r.porTipo.share_pedir_avaliacao} pedido-aval.`}
         />
         <Stat valor={r.profissionaisAlcancados} rotulo="Profissionais indicados" />
         <Stat
