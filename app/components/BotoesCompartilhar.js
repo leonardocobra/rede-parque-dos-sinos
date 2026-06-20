@@ -32,8 +32,15 @@ export default function BotoesCompartilhar({ id, nome }) {
     // renderize no destino) — sem repetir o que o card já diz.
     const mensagem = `Recomendo o trabalho de ${nome}! 👇`;
     track("perfil_share", { canal: "share", id });
-    registrarEvento("share_perfil", { profissional_id: id });
-    if (typeof navigator !== "undefined" && navigator.share) {
+    // Registra o canal real do compartilhamento: `nativo` quando o share sheet
+    // do SO é usado, `whatsapp` no fallback wa.me. Alimenta a quebra por canal
+    // do referral no /admin.
+    const usaNativo = typeof navigator !== "undefined" && !!navigator.share;
+    registrarEvento("share_perfil", {
+      profissional_id: id,
+      canal: usaNativo ? "nativo" : "whatsapp",
+    });
+    if (usaNativo) {
       try {
         await navigator.share({ title: `${nome} · A Rede`, text: mensagem, url });
         return;
@@ -50,6 +57,10 @@ export default function BotoesCompartilhar({ id, nome }) {
 
   async function copiarLink() {
     const url = absUrl(`/profissional/${id}`);
+    // Copiar o link também é intenção de indicação — registra como tal para não
+    // perder esse sinal (canal `link_copiado`).
+    track("perfil_share", { canal: "link", id });
+    registrarEvento("share_perfil", { profissional_id: id, canal: "link_copiado" });
     try {
       await navigator.clipboard.writeText(url);
     } catch {
