@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import PainelClient from "../PainelClient";
 
@@ -99,5 +99,65 @@ describe("PainelClient — itens dentro do serviço", () => {
     expect(screen.getByPlaceholderText(/Título do item/)).toBeInTheDocument();
     // A lista deu lugar ao editor.
     expect(screen.queryByText("Assentamento de porcelanato")).not.toBeInTheDocument();
+  });
+
+  it("abre o editor de edição do serviço ao clicar em Editar antes de expandir itens", () => {
+    renderPainel();
+    fireEvent.click(screen.getByRole("button", { name: "Serviços e itens" }));
+    // Itens ainda colapsados — único "Editar" visível é o do serviço
+    fireEvent.click(screen.getByRole("button", { name: "Editar" }));
+    // Campo de serviço pré-populado
+    expect(screen.getByDisplayValue("Azulejista e Pintor")).toBeInTheDocument();
+  });
+
+  it("abre o editor de edição do item ao clicar em Editar no item", () => {
+    renderPainel();
+    fireEvent.click(screen.getByRole("button", { name: "Serviços e itens" }));
+    fireEvent.click(screen.getByRole("button", { name: /Itens \(1\)/ }));
+    // Com itens expandidos há dois "Editar" — o do serviço e o do item.
+    // O do item é o segundo na ordem de renderização.
+    const editarBtns = screen.getAllByRole("button", { name: "Editar" });
+    fireEvent.click(editarBtns[editarBtns.length - 1]);
+    expect(screen.getByText("Editar item")).toBeInTheDocument();
+    const titulo = screen.getByPlaceholderText(/Título do item/);
+    expect(titulo.value).toBe("Assentamento de porcelanato");
+  });
+
+  it("fecha o editor e volta à lista ao clicar em Voltar (←)", () => {
+    renderPainel();
+    fireEvent.click(screen.getByRole("button", { name: "Serviços e itens" }));
+    fireEvent.click(screen.getByRole("button", { name: /Itens \(1\)/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Adicionar item/ }));
+    expect(screen.getByText("Novo item")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Voltar" }));
+    // Voltou para a lista
+    expect(screen.queryByText("Novo item")).not.toBeInTheDocument();
+    expect(screen.getByText("Assentamento de porcelanato")).toBeInTheDocument();
+  });
+});
+
+describe("PainelClient — estado sem cadastros", () => {
+  it("exibe tela de reivindicação quando não há cadastros", () => {
+    render(<PainelClient cadastros={[]} stats={{}} />);
+    expect(screen.getByText(/Encontrar seu cadastro/i)).toBeInTheDocument();
+  });
+});
+
+describe("PainelClient — métricas na Visão geral", () => {
+  it("mostra '—' como nota média quando stats é undefined", () => {
+    render(<PainelClient cadastros={[cadastro]} stats={{}} />);
+    expect(screen.getByText("—")).toBeInTheDocument();
+  });
+
+  it("mostra 'Recomendado ✓' quando stats.recomendado é true", () => {
+    const statsRec = { p1: { count: 5, avg: 4.8, recomendado: true } };
+    render(<PainelClient cadastros={[cadastro]} stats={statsRec} />);
+    expect(screen.getByText(/Recomendado ✓/)).toBeInTheDocument();
+  });
+
+  it("mostra 'Identidade verificada ✓' quando verificado é true", () => {
+    const verificado = { ...cadastro, verificado: true };
+    render(<PainelClient cadastros={[verificado]} stats={stats} />);
+    expect(screen.getByText(/Identidade verificada ✓/)).toBeInTheDocument();
   });
 });
