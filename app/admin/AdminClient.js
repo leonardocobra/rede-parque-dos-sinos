@@ -103,6 +103,64 @@ function LegendaItem({ cor, children }) {
   );
 }
 
+// Rótulo amigável dos tipos/canais de indicação.
+const ROTULO_CANAL_SHARE = {
+  nativo: "Compartilhamento nativo",
+  whatsapp: "WhatsApp",
+  link_copiado: "Link copiado",
+  "(desconhecido)": "Não identificado",
+};
+
+// Bloco de referral — a métrica-norte. Desenhado para ser honesto com N baixo:
+// números absolutos, sem taxas de conversão enganosas. Separa o que foi
+// compartilhado (outbound) do eco no tráfego (visitas/contatos que chegaram por
+// indicação) — são lentes diferentes, e hoje uma pode existir sem a outra.
+function Referral({ r }) {
+  const semShares = r.shares === 0;
+  return (
+    <>
+      <h3 className="font-display text-[14px] mt-5 mb-2">Indicações · métrica-norte</h3>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+        <Stat
+          valor={r.shares}
+          rotulo="Indicações feitas"
+          sub={`${r.porTipo.share_perfil} do perfil · ${r.porTipo.share_pos_avaliacao} pós-avaliação`}
+        />
+        <Stat valor={r.profissionaisAlcancados} rotulo="Profissionais indicados" />
+        <Stat
+          valor={r.contatosIndicacao}
+          rotulo="Contatos por indicação"
+          sub={`${r.visitasIndicacao} visita${r.visitasIndicacao === 1 ? "" : "s"} via link`}
+        />
+      </div>
+
+      {semShares ? (
+        <p className="text-[12px] text-brand-grey-light mt-2 leading-relaxed">
+          Ninguém usou o botão “Indicar” nesta janela ainda. O instrumento está no ar — assim que
+          houver compartilhamentos, a quebra por canal aparece aqui. As visitas por indicação acima
+          vêm de links de divulgação (UTM), que não passam pelo botão.
+        </p>
+      ) : (
+        <>
+          <h4 className="text-[12px] font-bold text-brand-grey mt-3 mb-1.5">
+            Como foi compartilhado
+          </h4>
+          <div className="bg-brand-card rounded-[10px] border border-brand-border divide-y divide-brand-border">
+            {r.porCanal.map((c) => (
+              <div key={c.canal} className="flex items-center justify-between px-4 py-2.5">
+                <span className="text-[13px] text-brand-text">
+                  {ROTULO_CANAL_SHARE[c.canal] || c.canal}
+                </span>
+                <span className="text-[13px] font-bold text-brand-grey">{c.total}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
 function Trafego({ a }) {
   if (a === null) {
     return (
@@ -112,7 +170,7 @@ function Trafego({ a }) {
       </p>
     );
   }
-  if (a.visitas === 0) {
+  if (a.visitas === 0 && a.referral.shares === 0) {
     return (
       <p className="text-[13px] text-brand-grey-light">
         Ainda sem eventos registrados nesta janela. Assim que houver navegação, os números aparecem
@@ -127,6 +185,8 @@ function Trafego({ a }) {
         <Stat valor={a.perfilViews} rotulo="Views de perfil" />
         <Stat valor={a.contatos} rotulo="Contatos" sub={`${a.taxaContato}% dos visitantes`} />
       </div>
+
+      <Referral r={a.referral} />
 
       <h3 className="font-display text-[14px] mt-5 mb-2">Tendência por dia</h3>
       <div className="bg-brand-card rounded-[10px] border border-brand-border p-3.5">
