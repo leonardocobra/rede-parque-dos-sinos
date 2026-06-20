@@ -174,7 +174,7 @@ function CatalogoContent() {
               </div>
             )}
 
-            <div className="grid gap-2.5 md:grid-cols-2 md:items-start">
+            <div className="grid gap-2.5 md:grid-cols-2">
             {ordenados.map((p, i) => {
               const st = stats(p.id);
               const open = openId === p.id;
@@ -187,12 +187,12 @@ function CatalogoContent() {
               return (
                 <div
                   key={p.id}
-                  className={`fade-up bg-brand-card rounded-[10px] border transition-colors duration-200 ${
+                  className={`fade-up bg-brand-card rounded-[10px] border transition-colors duration-200 flex flex-col ${
                     open ? "border-brand-red md:col-span-2" : "border-brand-border"
                   }`}
                   style={{ animationDelay: Math.min(i, 10) * 0.03 + "s" }}
                 >
-                  <div onClick={() => setOpenId(open ? null : p.id)} className="p-4 cursor-pointer">
+                  <div onClick={() => setOpenId(open ? null : p.id)} className="p-4 cursor-pointer flex-1">
                     <div className="flex gap-3.5 items-start">
                       {p.foto_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
