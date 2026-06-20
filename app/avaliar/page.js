@@ -145,20 +145,22 @@ function AvaliarContent() {
                 onClick={async () => {
                   const nomePro = profs.find((p) => p.id === profId)?.nome || "";
                   const url = absUrl(`/profissional/${profId}`);
-                  const texto = `Acabei de avaliar ${nomePro} na A Rede — ótimo profissional aqui em Jacareí! ${url}`;
+                  // O card do preview já mostra nome/serviço/cidade/foto; a
+                  // mensagem traz só a prova social ("acabei de avaliar") + nome.
+                  const mensagem = `Acabei de avaliar ${nomePro} e recomendo o trabalho! 👇`;
                   track("perfil_share", { canal: "pos_avaliacao", id: profId });
                   registrarEvento("share_pos_avaliacao", { profissional_id: profId });
                   setCompartilhado(true);
                   if (typeof navigator !== "undefined" && navigator.share) {
                     try {
-                      await navigator.share({ text: texto, url });
+                      await navigator.share({ text: mensagem, url });
                       return;
                     } catch {
                       // cancelado — fallback WhatsApp
                     }
                   }
                   window.open(
-                    `https://wa.me/?text=${encodeURIComponent(texto)}`,
+                    `https://wa.me/?text=${encodeURIComponent(`${mensagem}\n${url}`)}`,
                     "_blank",
                     "noopener,noreferrer"
                   );

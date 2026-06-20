@@ -3,7 +3,6 @@ import { useState } from "react";
 import { track } from "@vercel/analytics";
 import { ShareIcon } from "./SocialIcons";
 import { absUrl } from "../../lib/site";
-import { CIDADE } from "../../lib/perfil";
 import { adicionarUtm } from "../../lib/utm";
 import { registrarEvento } from "../../lib/eventos";
 
@@ -23,28 +22,27 @@ function CheckIcon() {
   );
 }
 
-export default function BotoesCompartilhar({ id, nome, servico }) {
+export default function BotoesCompartilhar({ id, nome }) {
   const [copiado, setCopiado] = useState(false);
 
   async function indicar() {
     const url = adicionarUtm(absUrl(`/profissional/${id}`), "whatsapp");
-    const textoShare = `Encontrei ${nome} na A Rede — ${servico} em ${CIDADE}. Recomendo!\n${url}`;
+    // Mensagem enxuta: o card do preview já mostra nome, serviço, cidade e foto.
+    // Aqui vai só a voz pessoal de indicação (+ o nome, caso o preview não
+    // renderize no destino) — sem repetir o que o card já diz.
+    const mensagem = `Recomendo o trabalho de ${nome}! 👇`;
     track("perfil_share", { canal: "share", id });
     registrarEvento("share_perfil", { profissional_id: id });
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
-        await navigator.share({
-          title: `${nome} — ${servico} · A Rede`,
-          text: `Encontrei ${nome} na A Rede — ${servico} em ${CIDADE}. Recomendo!`,
-          url,
-        });
+        await navigator.share({ title: `${nome} · A Rede`, text: mensagem, url });
         return;
       } catch {
         // usuário cancelou ou browser não suporta — fallback para WhatsApp
       }
     }
     window.open(
-      `https://wa.me/?text=${encodeURIComponent(textoShare)}`,
+      `https://wa.me/?text=${encodeURIComponent(`${mensagem}\n${url}`)}`,
       "_blank",
       "noopener,noreferrer"
     );
