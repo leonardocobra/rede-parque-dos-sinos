@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { getProfissional, getAvaliacoesDe } from "../../../lib/profissionais";
 import { computeStats } from "../../../lib/catalogo";
 import { iniciais } from "../../../lib/avatar";
-import { servicoPrimario } from "../../../lib/perfil";
+import { servicoPrimario, nomeComServico } from "../../../lib/perfil";
 
 // Imagem de preview (OG) por perfil — o link compartilhado no WhatsApp puxa
 // clique pela CARA e pelos sinais de confiança (foto real, nota, selos).
@@ -66,6 +66,9 @@ export default async function Image({ params }) {
   const prof = await getProfissional(params.id);
   const nome = prof?.nome || "Profissional";
   const servico = prof ? servicoPrimario(prof) : "";
+  // Não mostra a linha do serviço quando o nome do negócio já o contém
+  // (ex.: "Doce Sabão Lavanderia" + "Lavanderia").
+  const mostrarServico = servico && nomeComServico(nome, servico) !== nome;
   const foto = prof?.foto_url || null;
 
   // Nota e selo de recomendação são fortes gatilhos de clique numa indicação.
@@ -140,7 +143,7 @@ export default async function Image({ params }) {
           >
             {nome}
           </div>
-          {servico && (
+          {mostrarServico && (
             <div
               style={{
                 display: "flex",
