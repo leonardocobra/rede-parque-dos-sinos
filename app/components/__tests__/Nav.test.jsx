@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import Nav from "../Nav";
+import Nav from "../features/Nav";
 import { BRAND } from "../../brand";
 
 vi.mock("next/navigation", () => ({

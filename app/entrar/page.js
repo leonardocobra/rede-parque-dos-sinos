@@ -1,8 +1,8 @@
 "use client";
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Nav from "../components/Nav";
-import Footer from "../components/Footer";
+import Nav from "../components/features/Nav";
+import Footer from "../components/features/Footer";
 import { getBrowserSupabase } from "../../lib/supabase/client";
 
 const inputClass =

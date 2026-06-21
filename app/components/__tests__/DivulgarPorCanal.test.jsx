@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import DivulgarPorCanal from "../DivulgarPorCanal";
+import DivulgarPorCanal from "../features/DivulgarPorCanal";
 
 vi.mock("@vercel/analytics", () => ({ track: vi.fn() }));
 vi.mock("../../../lib/eventos", () => ({ registrarEvento: vi.fn() }));

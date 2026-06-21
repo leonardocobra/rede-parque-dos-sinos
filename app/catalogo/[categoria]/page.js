@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Nav from "../../components/Nav";
-import Footer from "../../components/Footer";
-import BotoesCompartilhar from "../../components/BotoesCompartilhar";
-import { WhatsAppIcon, InstagramIcon } from "../../components/SocialIcons";
+import Nav from "../../components/features/Nav";
+import Footer from "../../components/features/Footer";
+import BotoesCompartilhar from "../../components/features/BotoesCompartilhar";
+import { WhatsAppIcon, InstagramIcon } from "../../components/ui/SocialIcons";
 import { CATS, catIcon } from "../../config";
 import { slugParaCategoria, categoriaParaSlug } from "../../../lib/categorias";
 import { getProfissionaisDaCategoria } from "../../../lib/profissionais";

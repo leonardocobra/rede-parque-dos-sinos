@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
-import { WhatsAppIcon, InstagramIcon } from "../../components/SocialIcons";
-import BotoesCompartilhar from "../../components/BotoesCompartilhar";
+import { WhatsAppIcon, InstagramIcon } from "../../components/ui/SocialIcons";
+import BotoesCompartilhar from "../../components/features/BotoesCompartilhar";
 import { registrarEvento } from "../../../lib/eventos";
 
 // Linha de contato do perfil público. Contrato fixo (sempre renderizado,

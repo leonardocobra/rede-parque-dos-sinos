@@ -3,7 +3,7 @@ import { useState } from "react";
 import { getBrowserSupabase } from "../../lib/supabase/client";
 import { validarFoto } from "../../lib/avatar";
 import { MAX_ITENS, PRECO_TIPOS, resumoItem, validarItem } from "../../lib/itens";
-import CropFotoModal from "../components/CropFotoModal";
+import CropFotoModal from "../components/ui/CropFotoModal";
 
 const FOTO_BUCKET = "fotos-profissionais";
 

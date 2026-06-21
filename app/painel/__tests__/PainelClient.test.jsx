@@ -19,8 +19,8 @@ vi.mock("../../../lib/supabase/client", () => ({
 vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh: () => {} }) }));
 
 // Módulos que tocam rede/canvas e não interessam a estes testes.
-vi.mock("../../components/DivulgarPorCanal", () => ({ default: () => null }));
-vi.mock("../../components/CropFotoModal", () => ({ default: () => null }));
+vi.mock("../../components/features/DivulgarPorCanal", () => ({ default: () => null }));
+vi.mock("../../components/ui/CropFotoModal", () => ({ default: () => null }));
 
 const cadastro = {
   id: "p1",

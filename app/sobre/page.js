@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Nav from "../components/Nav";
-import Footer from "../components/Footer";
+import Nav from "../components/features/Nav";
+import Footer from "../components/features/Footer";
 import { REGRAS } from "../config";
 
 function Section({ title, children }) {

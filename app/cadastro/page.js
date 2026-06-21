@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import Nav from "../components/Nav";
-import Footer from "../components/Footer";
-import CropFotoModal from "../components/CropFotoModal";
+import Nav from "../components/features/Nav";
+import Footer from "../components/features/Footer";
+import CropFotoModal from "../components/ui/CropFotoModal";
 import { supabase } from "../../lib/supabase";
 import { CATS } from "../config";
 import { instagramHandle } from "../../lib/instagram";

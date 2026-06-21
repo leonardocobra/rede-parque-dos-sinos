@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { instagramUrl } from "../../../lib/instagram";
 import { catIcon } from "../../config";
-import { InstagramIcon } from "../../components/SocialIcons";
+import { InstagramIcon } from "../../components/ui/SocialIcons";
 import ItensDoServico from "./ItensDoServico";
 
 // `ativoId`/`onAtivoChange` permitem usar o componente de forma controlada

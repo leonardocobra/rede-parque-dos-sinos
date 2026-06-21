@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Nav from "../components/Nav";
-import Footer from "../components/Footer";
+import Nav from "../components/features/Nav";
+import Footer from "../components/features/Footer";
 import { supabase } from "../../lib/supabase";
 import { absUrl } from "../../lib/site";
 import { registrarEvento } from "../../lib/eventos";

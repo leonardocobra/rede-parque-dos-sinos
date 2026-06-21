@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Nav from "../../components/Nav";
-import Footer from "../../components/Footer";
+import Nav from "../../components/features/Nav";
+import Footer from "../../components/features/Footer";
 import PerfilView from "./PerfilView";
 import ContatoBotoes from "./ContatoBotoes";
 import { getProfissional, getAvaliacoesDe, getOutrosPorCategoria } from "../../../lib/profissionais";
