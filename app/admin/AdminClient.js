@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import SairButton from "../painel/SairButton";
-import Pilulas from "../components/Pilulas";
+import Pilulas from "../components/ui/Pilulas";
 import GraficoTendencia from "./GraficoTendencia";
 
 // Shell do /admin: navegação por pílulas (Oferta / Tráfego / Desempenho),

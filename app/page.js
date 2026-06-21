@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Nav from "./components/Nav";
-import Footer from "./components/Footer";
-import TypedBrand from "./components/TypedBrand";
+import Nav from "./components/features/Nav";
+import Footer from "./components/features/Footer";
+import TypedBrand from "./components/features/TypedBrand";
 import { CATS, REGRAS } from "./config";
 
 export default function Home() {

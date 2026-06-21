@@ -2,17 +2,17 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Nav from "../components/Nav";
-import Footer from "../components/Footer";
+import Nav from "../components/features/Nav";
+import Footer from "../components/features/Footer";
 import { supabase } from "../../lib/supabase";
 import { CATS, catIcon } from "../config";
 import { instagramUrl } from "../../lib/instagram";
 import { iniciais } from "../../lib/avatar";
 import { computeStats, sortProfissionais, ORDENACOES, ORDENACAO_PADRAO } from "../../lib/catalogo";
-import { WhatsAppIcon, InstagramIcon } from "../components/SocialIcons";
+import { WhatsAppIcon, InstagramIcon } from "../components/ui/SocialIcons";
 import { track } from "@vercel/analytics";
 import { categoriaParaSlug } from "../../lib/categorias";
-import BotoesCompartilhar from "../components/BotoesCompartilhar";
+import BotoesCompartilhar from "../components/features/BotoesCompartilhar";
 import ServicosInterativos from "../profissional/[id]/ServicosInterativos";
 
 function normalize(s) {

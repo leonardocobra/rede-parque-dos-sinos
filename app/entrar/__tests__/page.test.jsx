@@ -13,8 +13,8 @@ vi.mock("next/navigation", () => ({
 }));
 
 // Nav e Footer não interessam ao teste e tocam outros módulos.
-vi.mock("../../components/Nav", () => ({ default: () => null }));
-vi.mock("../../components/Footer", () => ({ default: () => null }));
+vi.mock("../../components/features/Nav", () => ({ default: () => null }));
+vi.mock("../../components/features/Footer", () => ({ default: () => null }));
 
 function preencheEEnvia(email = "ana@exemplo.com") {
   fireEvent.change(screen.getByPlaceholderText("voce@exemplo.com"), {

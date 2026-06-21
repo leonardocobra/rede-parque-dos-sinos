@@ -1,8 +1,8 @@
 // Painel do profissional. Rota protegida: sem sessão, manda para /entrar.
 // Lista os cadastros do dono (RLS por user_id) e entrega ao cliente para edição.
 import { redirect } from "next/navigation";
-import Nav from "../components/Nav";
-import Footer from "../components/Footer";
+import Nav from "../components/features/Nav";
+import Footer from "../components/features/Footer";
 import SairButton from "./SairButton";
 import PainelClient from "./PainelClient";
 import ClaimPendente from "./ClaimPendente";

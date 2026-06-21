@@ -7,8 +7,8 @@
 // A apresentação (pílulas Oferta/Tráfego/Desempenho) fica em AdminClient.
 // Ver docs/observabilidade-spec.md.
 import { redirect, notFound } from "next/navigation";
-import Nav from "../components/Nav";
-import Footer from "../components/Footer";
+import Nav from "../components/features/Nav";
+import Footer from "../components/features/Footer";
 import { getServerSupabase } from "../../lib/supabase/server";
 import { getServiceSupabase } from "../../lib/supabase/service";
 import { isAdmin, computeVisaoOferta, computeAnalyticsEventos, computeScoreDistribuicao } from "../../lib/admin";

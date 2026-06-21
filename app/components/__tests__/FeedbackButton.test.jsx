@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import FeedbackButton from "../FeedbackButton";
+import FeedbackButton from "../features/FeedbackButton";
 
 const insert = vi.fn();
 

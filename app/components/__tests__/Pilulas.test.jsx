@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import Pilulas from "../Pilulas";
+import Pilulas from "../ui/Pilulas";
 
 const secoes = [
   { id: "a", label: "Oferta" },
