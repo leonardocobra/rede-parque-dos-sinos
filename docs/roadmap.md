@@ -80,13 +80,16 @@ compartilhável e convertendo antes de qualquer esforço de tráfego. Tráfego c
 
 ## Next (1–3 meses — fechar o loop de referral)
 
+> **Status (2026-06-21):** itens 1 e 2 já entregues. Item 3 movido para Later (gatilho de adoção).
+> Validação na mão (#0 abaixo) é o próximo passo real — sem código.
+
 | # | Item | Por quê |
 | --- | --- | --- |
-| 1 | **Gancho de referral no fim da avaliação** — logo após o cliente avaliar, oferecer "indique esse profissional para um vizinho" com o share pré-pronto | A avaliação é um *artefato de referral*: transforma o avaliador em divulgador no pico de satisfação |
-| 2 | **"Peça uma avaliação"** no `/painel` — link que o pro manda ao cliente após o serviço | Bootstrapa prova social com os relacionamentos que o pro já tem, sem depender de tráfego da plataforma |
-| 3 | **Share por item/serviço** ("olha esse serviço") — referral granular | Indicação para "preciso justo disso"; alavanca o modelo de itens |
-| 4 | **Observabilidade & Analytics — fase 1** (motor único; Leonardo como piloto: oferta, jornada/conversão, canais/UTM) | Fundação de medição; instrumenta a métrica-norte de share/contato |
-| 5 | **Score de maturidade digital** + **notificação de valor ao pro** ("X visitas / 1 novo contato este mês") | Amarra a subida de maturidade a um *payoff real* — sem isso, o score é teatro de engajamento |
+| 0 | **Validação na mão** — testar com 1–2 pros reais se o morador compartilha espontaneamente, sem ser empurrado | Suposição mais arriscada do modelo; barata de testar antes de qualquer nova feature |
+| 1 | ~~**Gancho de referral no fim da avaliação**~~ ✅ | Entregue em `app/avaliar/page.js` — card de indicação pós-envio com `share_pos_avaliacao` |
+| 2 | ~~**"Peça uma avaliação"** no `/painel`~~ ✅ | Entregue — componente `PedirAvaliacao` em `PainelClient.js` |
+| 4 | ~~**Observabilidade & Analytics — fase 1**~~ ✅ | Entregue — `/admin` + analytics por pro no `/painel` |
+| 5 | ~~**Score de maturidade digital**~~ ✅ | Entregue — pílula Presença + distribuição no `/admin` |
 
 ## Later (direcional — exige gatilho ou decisão)
 
@@ -96,6 +99,7 @@ compartilhável e convertendo antes de qualquer esforço de tráfego. Tráfego c
 | **Pivô para marketplace** (matching/agregação de demanda, descoberta central) | **Portão de pivô:** moradores chegando com *intenção de demanda* (tráfego direto/orgânico ao catálogo buscando), não só via link de referral |
 | **Tráfego central — SEO de categoria/bairro + (depois) gestão de campanhas como serviço** | Densidade de perfis ricos (o conteúdo dos pros é a superfície de SEO); a venda de "campanhas como serviço" exige antes provar que A Rede converte audiência em contato |
 | **PR D — vitrine de itens no catálogo** (itens no card + selo "a partir de R$") | **≥5 profissionais com ≥1 item** (decisão 2026-06-19) — sem adoção, o sinal aparece sobre catálogo vazio |
+| **Share por item/serviço** ("olha esse serviço") — URL com âncora/parâmetro de item, mensagem contextualizada, `share_item` instrumentado | **≥5 profissionais com ≥1 item** (decisão 2026-06-21) — hoje o share é só do perfil; sem itens adotados, o feature é invisível. Mesmo gatilho do PR D |
 | **Observabilidade & Analytics — fase 2** (mesma engine exposta por profissional) | Após a fase 1 validar o motor com o Leonardo como piloto; decisão de serviço Python só aqui |
 | **Checkout + pagamento no app** | **Decisão estratégica explícita** — conflita com o anti-escopo "gratuito e da comunidade" |
 | OTP de WhatsApp → selo Verificado automático | Sobre a infra de auth atual |
@@ -113,6 +117,13 @@ compartilhável e convertendo antes de qualquer esforço de tráfego. Tráfego c
 - **Checkout (1b)** conflita com a tese comunitária documentada. É pivô de modelo de negócio, não
   feature. Decisão tomada (2026-06-18): não bundlar; estudar separadamente.
 - **Capacidade = 1 pessoa.** Para cada item que entra em "Now", algo sai.
+
+## Decisões tomadas (2026-06-21)
+
+- [x] **Share por item/serviço → Later** com gatilho igual ao PR D (≥5 profissionais com ≥1 item).
+      Hoje o share é só do perfil (`/profissional/[id]`); sem adoção de itens o feature é invisível.
+- [x] **Next totalmente entregue:** gancho pós-avaliação, "peça uma avaliação", analytics fase 1+2 e
+      score de maturidade todos em produção. Próximo passo real é a validação na mão (sem código).
 
 ## Decisões tomadas (2026-06-20)
 
