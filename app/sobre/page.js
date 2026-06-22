@@ -14,6 +14,13 @@ function Section({ title, children }) {
   );
 }
 
+export const metadata = {
+  title: "Sobre a Rede · Profissionais indicados por vizinhos em Jacareí",
+  description:
+    "A Rede nasceu no Parque dos Sinos, Jacareí-SP. Somos um catálogo comunitário de profissionais de confiança, indicados por quem já contratou.",
+  alternates: { canonical: "/sobre" },
+};
+
 export default function Sobre() {
   return (
     <>
