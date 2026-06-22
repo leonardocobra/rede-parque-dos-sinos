@@ -1,4 +1,5 @@
 import { listProfissionaisIds } from "../lib/profissionais";
+import { listServicoBairroCombos } from "../lib/local";
 import { absUrl } from "../lib/site";
 import { CATS } from "./config";
 import { categoriaParaSlug } from "../lib/categorias";
@@ -42,5 +43,13 @@ export default async function sitemap() {
     priority: 0.8,
   }));
 
-  return [...estaticas, ...categorias, ...perfis];
+  const combos = await listServicoBairroCombos();
+  const locais = combos.map((c) => ({
+    url: absUrl(`/servico/${c.servicoSlug}/${c.localSlug}`),
+    lastModified: agora,
+    changeFrequency: "weekly",
+    priority: 0.7,
+  }));
+
+  return [...estaticas, ...categorias, ...perfis, ...locais];
 }
