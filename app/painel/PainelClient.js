@@ -13,6 +13,7 @@ import GerenciarItens from "./GerenciarItens";
 import Pilulas from "../components/ui/Pilulas";
 import PainelDesempenho from "./PainelDesempenho";
 import ScoreMaturidade from "./ScoreMaturidade";
+import AssistenteGoogle from "./AssistenteGoogle";
 import { absUrl } from "../../lib/site";
 import { registrarEvento } from "../../lib/eventos";
 
@@ -536,7 +537,12 @@ function EditarCadastro({ cadastro, stats }) {
         </>
       )}
 
-      {secao === "presenca" && <ScoreMaturidade cadastro={cadastro} />}
+      {secao === "presenca" && (
+        <>
+          <AssistenteGoogle cadastro={cadastro} />
+          <ScoreMaturidade cadastro={cadastro} />
+        </>
+      )}
 
       {secao === "servicos" && <GerenciarServicos cadastro={cadastro} />}
 
