@@ -7,6 +7,8 @@ import { WhatsAppIcon, InstagramIcon } from "../../components/ui/SocialIcons";
 import { CATS, catIcon } from "../../config";
 import { slugParaCategoria, categoriaParaSlug } from "../../../lib/categorias";
 import { getProfissionaisDaCategoria } from "../../../lib/profissionais";
+import { catalogoItemListJsonLd } from "../../../lib/perfil";
+import { absUrl } from "../../../lib/site";
 import { iniciais } from "../../../lib/avatar";
 import { instagramUrl } from "../../../lib/instagram";
 
@@ -38,9 +40,20 @@ export default async function PaginaCategoria({ params }) {
 
   const profissionais = await getProfissionaisDaCategoria(nome);
   const cat = CATS.find((c) => c.value === nome);
+  const jsonLd = catalogoItemListJsonLd(
+    profissionais,
+    absUrl(`/catalogo/${params.categoria}`),
+    absUrl("/profissional")
+  );
 
   return (
     <>
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       <Nav />
       <div className="px-5 max-w-[560px] md:max-w-[940px] mx-auto pt-5 pb-10">
         <Link href="/catalogo" className="text-[12px] text-brand-grey-light font-bold">
