@@ -224,17 +224,30 @@ function CatalogoContent({ initialProfs, initialAvals }) {
                 </div>
                 {/* Serviços sempre abaixo da foto (full-width) para não quebrar
                     a simetria da lateral quando há vários serviços. */}
-                {!open && servicos.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-3">
-                    {servicos.map((sv) => (
-                      <span
-                        key={sv.id}
-                        className="bg-brand-surface border border-brand-border rounded-[6px] px-2.5 py-[5px] text-[13px] text-brand-red font-bold"
+                {!open && (
+                  <>
+                    {servicos.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-3">
+                        {servicos.map((sv) => (
+                          <span
+                            key={sv.id}
+                            className="bg-brand-surface border border-brand-border rounded-[6px] px-2.5 py-[5px] text-[13px] text-brand-red font-bold"
+                          >
+                            {catIcon(sv.categoria)} {sv.servico}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="mt-3 text-right">
+                      <Link
+                        href={"/profissional/" + p.id}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-[12px] font-bold text-brand-red"
                       >
-                        {catIcon(sv.categoria)} {sv.servico}
-                      </span>
-                    ))}
-                  </div>
+                        Ver perfil completo →
+                      </Link>
+                    </div>
+                  </>
                 )}
               </div>
               {open && (

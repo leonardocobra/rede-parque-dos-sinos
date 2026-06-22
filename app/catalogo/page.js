@@ -2,6 +2,8 @@ import Nav from "../components/features/Nav";
 import Footer from "../components/features/Footer";
 import CatalogoClient from "./CatalogoClient";
 import { getAllProfissionais, getAllAvaliacoes } from "../../lib/profissionais";
+import { catalogoItemListJsonLd } from "../../lib/perfil";
+import { absUrl } from "../../lib/site";
 
 export const revalidate = 60;
 
@@ -20,8 +22,15 @@ export const metadata = {
 
 export default async function Catalogo() {
   const [profs, avals] = await Promise.all([getAllProfissionais(), getAllAvaliacoes()]);
+  const jsonLd = catalogoItemListJsonLd(profs, absUrl("/catalogo"), absUrl("/profissional"));
   return (
     <>
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       <Nav />
       <CatalogoClient initialProfs={profs} initialAvals={avals} />
       <Footer />
