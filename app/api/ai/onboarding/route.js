@@ -21,6 +21,7 @@ import {
   persistirPerfil,
 } from "../../../../lib/ai/onboarding";
 import { instagramHandle } from "../../../../lib/instagram";
+import { gerarEmbeddingsProfissional } from "../../../../lib/ai/embeddings";
 
 const MODELO = "claude-haiku-4-5-20251001";
 const ROTA = "/api/ai/onboarding";
@@ -146,6 +147,8 @@ export async function POST(request) {
                 const profId = await persistirPerfil(sb, parsed.data);
                 sucesso = true;
                 send({ type: "salvo", profissional_id: profId });
+                // best-effort: gera embeddings sem bloquear o stream
+                gerarEmbeddingsProfissional(sb, profId).catch(() => {});
                 toolResults.push({
                   type: "tool_result",
                   tool_use_id: block.id,
