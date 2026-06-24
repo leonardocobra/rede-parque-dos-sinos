@@ -51,6 +51,7 @@ export default defineConfig({
       "app/onboarding/**",
       "app/api/auth/**",
       "app/api/revalidar-perfil/**",
+      "app/api/agente/**",
       // Fixtures de evals — JSON puro, sem lógica JS a medir
       "evals/fixtures/**",
       "app/profissional/[id]/page.{js,jsx}",
