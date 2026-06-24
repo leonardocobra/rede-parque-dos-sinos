@@ -118,6 +118,16 @@ compartilhável e convertendo antes de qualquer esforço de tráfego. Tráfego c
   feature. Decisão tomada (2026-06-18): não bundlar; estudar separadamente.
 - **Capacidade = 1 pessoa.** Para cada item que entra em "Now", algo sai.
 
+## Decisões tomadas (2026-06-24)
+
+- [x] **AI Native Lab = frente _paralela_ de portfólio, não pivô.** Lab de IA aplicada (onboarding
+      conversacional, agente sobre Postgres, RAG, evals, observabilidade de IA) sobre A Rede, medindo
+      aprendizado/portfólio — **não** monetização. Não altera a tese `enablement→referral→marketplace`;
+      a IA serve ao enablement. Spec: `docs/ai-native-lab-arquitetura.md`.
+- [x] **Provider e runtime:** Claude (Haiku 4.5 extração / Opus 4.8 geração) + embeddings de terceiro
+      (Voyage/OpenAI — Anthropic não tem) + pgvector no Supabase; chamadas LLM em Route Handlers no
+      Vercel (Node), API key server-only. O maior delta é a camada de servidor que o app ainda não tem.
+
 ## Decisões tomadas (2026-06-21)
 
 - [x] **Share por item/serviço → Later** com gatilho igual ao PR D (≥5 profissionais com ≥1 item).
