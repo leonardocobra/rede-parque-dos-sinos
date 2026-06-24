@@ -59,8 +59,8 @@ export default defineConfig({
       "app/painel/ClaimPendente.{js,jsx}",
       "app/painel/PainelDesempenho.{js,jsx}",
       "app/painel/ScoreMaturidade.{js,jsx}",
-      "app/components/CropFotoModal.{js,jsx}",
-      "app/components/PageViewTracker.{js,jsx}",
+      "app/components/ui/CropFotoModal.{js,jsx}",
+      "app/components/features/PageViewTracker.{js,jsx}",
     ],
     thresholds: {
       statements: 75,
