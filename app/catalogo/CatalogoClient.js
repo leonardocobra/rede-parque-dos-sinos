@@ -1,5 +1,5 @@
 "use client";
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { CATS, catIcon } from "../config";
@@ -45,12 +45,53 @@ function CatalogoContent({ initialProfs, initialAvals }) {
         normalize(p.nome).includes(s) ||
         textoServicos.includes(s) ||
         normalize(p.bairro).includes(s)) &&
-      (!catFilter ||
-        (p.profissional_servicos || []).some((sv) => sv.categoria === catFilter))
+      (!catFilter || (p.profissional_servicos || []).some((sv) => sv.categoria === catFilter))
     );
   });
 
   const ordenados = sortProfissionais(filtered, avals, ordenacao);
+
+  // Fallback semântico: quando a busca por palavra-chave não encontra nada,
+  // tenta a busca inteligente (entende "consertar encanamento" → Encanador).
+  // Só dispara com termo de busca e zero resultados de keyword.
+  const termo = search.trim();
+  const semDeveBuscar = termo.length >= 3 && filtered.length === 0 && profs.length > 0;
+  const [sugestoes, setSugestoes] = useState([]);
+  const [buscandoIA, setBuscandoIA] = useState(false);
+
+  useEffect(() => {
+    if (!semDeveBuscar) {
+      setSugestoes([]);
+      setBuscandoIA(false);
+      return;
+    }
+    const ctrl = new AbortController();
+    setBuscandoIA(true);
+    const t = setTimeout(async () => {
+      try {
+        const params = new URLSearchParams({ q: termo });
+        if (catFilter) params.set("categoria", catFilter);
+        const res = await fetch(`/api/busca-semantica?${params}`, { signal: ctrl.signal });
+        const json = await res.json();
+        // Dedupe por profissional — um perfil pode ter vários serviços.
+        const vistos = new Set();
+        const unicos = (json.resultados || []).filter((r) => {
+          if (vistos.has(r.profissional_id)) return false;
+          vistos.add(r.profissional_id);
+          return true;
+        });
+        setSugestoes(unicos);
+      } catch (e) {
+        if (e.name !== "AbortError") setSugestoes([]);
+      } finally {
+        setBuscandoIA(false);
+      }
+    }, 400);
+    return () => {
+      ctrl.abort();
+      clearTimeout(t);
+    };
+  }, [termo, semDeveBuscar, catFilter]);
 
   return (
     <div className="px-5 max-w-[560px] md:max-w-[940px] mx-auto">
@@ -127,20 +168,56 @@ function CatalogoContent({ initialProfs, initialAvals }) {
       </div>
 
       {filtered.length === 0 && (
-        <div className="text-center py-12 px-5">
-          <div className="text-[32px] mb-2 opacity-40">
-            {profs.length === 0 ? "📋" : "🔍"}
-          </div>
-          <div className="text-sm font-bold text-brand-grey">
-            {profs.length === 0 ? "Nenhum profissional cadastrado ainda" : "Nenhum resultado"}
-          </div>
-          {profs.length === 0 && (
-            <Link
-              href="/cadastro"
-              className="inline-block mt-3.5 bg-brand-red text-white rounded-lg px-6 py-2.5 text-[13px] font-bold"
-            >
-              Seja o primeiro
-            </Link>
+        <div className="py-12 px-5">
+          {buscandoIA ? (
+            <div className="text-center">
+              <div className="text-[32px] mb-2 opacity-40 animate-pulse">✨</div>
+              <div className="text-sm font-bold text-brand-grey">Buscando com IA…</div>
+            </div>
+          ) : sugestoes.length > 0 ? (
+            <div>
+              <div className="text-[13px] text-brand-grey-light mb-3 text-center">
+                Nada exato para <span className="font-bold text-brand-grey">“{termo}”</span>. Você
+                quis dizer:
+              </div>
+              <div className="grid gap-2.5 md:grid-cols-2">
+                {sugestoes.map((s) => (
+                  <Link
+                    key={s.servico_id}
+                    href={"/profissional/" + s.profissional_id}
+                    className="block bg-brand-card rounded-[10px] border border-brand-border p-4 hover:border-brand-red transition-colors"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-bold text-[15px] truncate">{s.nome}</span>
+                      <span className="ml-auto shrink-0 text-[10px] text-brand-grey-light font-bold">
+                        ✨ sugestão
+                      </span>
+                    </div>
+                    <div className="text-[13px] text-brand-red font-bold">
+                      {catIcon(s.categoria)} {s.servico}
+                    </div>
+                    {s.bairro && (
+                      <div className="text-xs text-brand-grey-light mt-1">📍 {s.bairro}</div>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="text-center">
+              <div className="text-[32px] mb-2 opacity-40">{profs.length === 0 ? "📋" : "🔍"}</div>
+              <div className="text-sm font-bold text-brand-grey">
+                {profs.length === 0 ? "Nenhum profissional cadastrado ainda" : "Nenhum resultado"}
+              </div>
+              {profs.length === 0 && (
+                <Link
+                  href="/cadastro"
+                  className="inline-block mt-3.5 bg-brand-red text-white rounded-lg px-6 py-2.5 text-[13px] font-bold"
+                >
+                  Seja o primeiro
+                </Link>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -163,7 +240,10 @@ function CatalogoContent({ initialProfs, initialAvals }) {
               }`}
               style={{ animationDelay: Math.min(i, 10) * 0.03 + "s" }}
             >
-              <div onClick={() => setOpenId(open ? null : p.id)} className="p-4 cursor-pointer flex-1">
+              <div
+                onClick={() => setOpenId(open ? null : p.id)}
+                className="p-4 cursor-pointer flex-1"
+              >
                 <div className="flex gap-3.5 items-start">
                   {p.foto_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -180,9 +260,7 @@ function CatalogoContent({ initialProfs, initialAvals }) {
                   )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <span className="font-bold text-[15px] truncate min-w-0">
-                        {p.nome}
-                      </span>
+                      <span className="font-bold text-[15px] truncate min-w-0">{p.nome}</span>
                       {st?.recomendado && (
                         <span className="shrink-0 bg-brand-red-light text-brand-red font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px]">
                           Recomendado
@@ -258,9 +336,7 @@ function CatalogoContent({ initialProfs, initialAvals }) {
                     </div>
                   )}
                   {p.regioes && (
-                    <div className="text-xs text-brand-grey-light mb-1.5">
-                      Atende: {p.regioes}
-                    </div>
+                    <div className="text-xs text-brand-grey-light mb-1.5">Atende: {p.regioes}</div>
                   )}
                   {st && st.count > 0 && (
                     <div className="flex gap-2 mb-3.5 flex-wrap">

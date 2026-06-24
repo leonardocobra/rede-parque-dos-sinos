@@ -13,12 +13,18 @@ export async function GET(request) {
 
   const limite = Math.min(parseInt(searchParams.get("limite") ?? "10", 10) || 10, 20);
   const categoria = searchParams.get("categoria") || null;
+  const minRaw = parseFloat(searchParams.get("min"));
+  const minSimilaridade = Number.isFinite(minRaw) ? minRaw : undefined;
 
   const service = getServiceSupabase();
   if (!service) return NextResponse.json({ erro: "Serviço indisponível" }, { status: 503 });
 
   try {
-    const resultados = await buscarPorSimilaridade(query, service, { limite, categoria });
+    const resultados = await buscarPorSimilaridade(query, service, {
+      limite,
+      categoria,
+      minSimilaridade,
+    });
     return NextResponse.json({ resultados });
   } catch (err) {
     return NextResponse.json({ erro: err.message }, { status: 500 });
