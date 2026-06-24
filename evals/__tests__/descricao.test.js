@@ -1,3 +1,4 @@
+// @vitest-environment node
 // Evals de qualidade de descrição — Fase 4 AI Native Lab
 //
 // Usa Claude Sonnet como juiz (LLM-as-judge) para avaliar se descrições
