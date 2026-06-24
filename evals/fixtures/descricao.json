@@ -1,0 +1,162 @@
+[
+  {
+    "id": "desc-001",
+    "servico": "Eletricista",
+    "contexto": "Eletricista residencial, 10 anos de experiência, Parque dos Sinos",
+    "texto": "Eletricista residencial e predial com 10 anos de experiência. Atendo emergências, instalações novas e manutenção. Parque dos Sinos e toda região de Jacareí.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-002",
+    "servico": "Diarista",
+    "contexto": "Diarista, 8 anos de experiência, material próprio",
+    "texto": "Diarista com material próprio e 8 anos de experiência. Trabalho com seriedade, pontualidade e cuidado com os detalhes. Atendo toda Jacareí.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-003",
+    "servico": "Encanador",
+    "contexto": "Encanador, atendimento rápido, fins de semana",
+    "texto": "Encanador com atendimento rápido e eficiente. Realizo reparos, instalações e desentupimento. Disponível inclusive aos finais de semana.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-004",
+    "servico": "Técnico de informática",
+    "contexto": "Técnico de informática, atendimento domiciliar, redes Wi-Fi",
+    "texto": "Técnico de informática com atendimento domiciliar. Formatação, limpeza, troca de peças e configuração de redes Wi-Fi. Jacareí e São José dos Campos.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-005",
+    "servico": "Professor particular",
+    "contexto": "Professor de matemática, ensino fundamental e médio, 5 anos",
+    "texto": "Professor de matemática com 5 anos de experiência em aulas particulares para ensino fundamental e médio. Método explicativo e resultado comprovado.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-006",
+    "servico": "Cabeleireiro",
+    "contexto": "Cabeleireiro, cortes modernos, coloração, atendimento domiciliar",
+    "texto": "Cabeleireiro especializado em cortes modernos, coloração e tratamentos capilares. Atendo no estúdio ou a domicílio, com horários flexíveis.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-007",
+    "servico": "Pedreiro",
+    "contexto": "Pedreiro, reformas e construção, orçamento sem compromisso",
+    "texto": "Pedreiro com experiência em reformas, construção de alvenaria, contrapisos e revestimentos. Orçamento sem compromisso.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-008",
+    "servico": "Mecânico",
+    "contexto": "Mecânico geral, carros e motos, 12 anos de oficina",
+    "texto": "Mecânico geral com 12 anos de oficina. Manutenção preventiva e corretiva em carros e motos. Diagnóstico preciso e preço justo.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-009",
+    "servico": "Designer gráfico",
+    "contexto": "Designer gráfico, identidade visual, entrega em 48h",
+    "texto": "Designer gráfico especializado em identidade visual, logos e conteúdo para redes sociais. Entrego em até 48h com revisões incluídas.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-010",
+    "servico": "Costureira",
+    "contexto": "Costureira, ajustes e criação sob medida, 15 anos",
+    "texto": "Costureira com 15 anos de experiência em ajustes, reformas de roupas e criação sob medida. Atendo em casa com entrega rápida.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-011",
+    "servico": "Pintor de paredes",
+    "contexto": "Pintor residencial e comercial, acabamento impecável",
+    "texto": "Pintor residencial e comercial. Realizo pintura interna e externa com qualidade e acabamento impecável. Trabalho limpo e dentro do prazo.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-012",
+    "servico": "Manicure",
+    "contexto": "Manicure e pedicure, atendimento domiciliar, nail art",
+    "texto": "Manicure e pedicure com atendimento domiciliar. Especializada em nail art, unhas em gel e esmaltação. Horários flexíveis, inclusive fins de semana.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-013",
+    "servico": "Azulejista",
+    "contexto": "Azulejista, banheiros e cozinhas, rejuntamento perfeito",
+    "texto": "Azulejista especializado em banheiros, cozinhas e áreas externas. Trabalho preciso, com rejuntamento perfeito e entrega no prazo combinado.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-014",
+    "servico": "Barbeiro",
+    "contexto": "Barbeiro moderno, cortes masculinos e degradê",
+    "texto": "Barbeiro moderno especializado em cortes masculinos e degradê. Atendo no bairro com agenda online e ambiente descontraído.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-015",
+    "servico": "Desenvolvedor web",
+    "contexto": "Desenvolvedor de sites para pequenas empresas, entrega em 7 dias",
+    "texto": "Desenvolvedor de sites responsivos e landing pages para pequenas empresas. Sites em até 7 dias, com SEO básico e treinamento incluído.",
+    "qualidade": "boa",
+    "score_minimo": 3
+  },
+  {
+    "id": "desc-016",
+    "servico": "Pedreiro",
+    "contexto": "Pedreiro",
+    "texto": "Pedreiro.",
+    "qualidade": "ruim",
+    "score_maximo": 2
+  },
+  {
+    "id": "desc-017",
+    "servico": "Eletricista",
+    "contexto": "Eletricista",
+    "texto": "Sou um profissional experiente e faço meu trabalho com qualidade. Gosto do que faço.",
+    "qualidade": "ruim",
+    "score_maximo": 2
+  },
+  {
+    "id": "desc-018",
+    "servico": "Diarista",
+    "contexto": "Diarista",
+    "texto": "Faço limpeza.",
+    "qualidade": "ruim",
+    "score_maximo": 2
+  },
+  {
+    "id": "desc-019",
+    "servico": "Designer gráfico",
+    "contexto": "Designer",
+    "texto": "Serviços disponíveis. Entre em contato para mais informações.",
+    "qualidade": "ruim",
+    "score_maximo": 2
+  },
+  {
+    "id": "desc-020",
+    "servico": "Mecânico",
+    "contexto": "Mecânico",
+    "texto": "Atendo.",
+    "qualidade": "ruim",
+    "score_maximo": 2
+  }
+]
