@@ -14,12 +14,15 @@ export const dynamic = "force-dynamic";
 // Protegido: sessão válida + allowlist de admin.
 export async function POST(request) {
   const supabase = getServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ erro: "Não autenticado" }, { status: 401 });
   if (!isAdmin(user.email)) return NextResponse.json({ erro: "Não autorizado" }, { status: 403 });
 
   const service = getServiceSupabase();
-  if (!service) return NextResponse.json({ erro: "SUPABASE_SERVICE_ROLE_KEY ausente" }, { status: 503 });
+  if (!service)
+    return NextResponse.json({ erro: "SUPABASE_SERVICE_ROLE_KEY ausente" }, { status: 503 });
 
   const forcar = new URL(request.url).searchParams.get("forcar") === "true";
 

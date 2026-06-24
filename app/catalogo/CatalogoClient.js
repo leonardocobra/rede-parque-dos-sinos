@@ -45,8 +45,7 @@ function CatalogoContent({ initialProfs, initialAvals }) {
         normalize(p.nome).includes(s) ||
         textoServicos.includes(s) ||
         normalize(p.bairro).includes(s)) &&
-      (!catFilter ||
-        (p.profissional_servicos || []).some((sv) => sv.categoria === catFilter))
+      (!catFilter || (p.profissional_servicos || []).some((sv) => sv.categoria === catFilter))
     );
   });
 
@@ -178,7 +177,8 @@ function CatalogoContent({ initialProfs, initialAvals }) {
           ) : sugestoes.length > 0 ? (
             <div>
               <div className="text-[13px] text-brand-grey-light mb-3 text-center">
-                Nada exato para <span className="font-bold text-brand-grey">“{termo}”</span>. Você quis dizer:
+                Nada exato para <span className="font-bold text-brand-grey">“{termo}”</span>. Você
+                quis dizer:
               </div>
               <div className="grid gap-2.5 md:grid-cols-2">
                 {sugestoes.map((s) => (
@@ -205,9 +205,7 @@ function CatalogoContent({ initialProfs, initialAvals }) {
             </div>
           ) : (
             <div className="text-center">
-              <div className="text-[32px] mb-2 opacity-40">
-                {profs.length === 0 ? "📋" : "🔍"}
-              </div>
+              <div className="text-[32px] mb-2 opacity-40">{profs.length === 0 ? "📋" : "🔍"}</div>
               <div className="text-sm font-bold text-brand-grey">
                 {profs.length === 0 ? "Nenhum profissional cadastrado ainda" : "Nenhum resultado"}
               </div>
@@ -242,7 +240,10 @@ function CatalogoContent({ initialProfs, initialAvals }) {
               }`}
               style={{ animationDelay: Math.min(i, 10) * 0.03 + "s" }}
             >
-              <div onClick={() => setOpenId(open ? null : p.id)} className="p-4 cursor-pointer flex-1">
+              <div
+                onClick={() => setOpenId(open ? null : p.id)}
+                className="p-4 cursor-pointer flex-1"
+              >
                 <div className="flex gap-3.5 items-start">
                   {p.foto_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -259,9 +260,7 @@ function CatalogoContent({ initialProfs, initialAvals }) {
                   )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <span className="font-bold text-[15px] truncate min-w-0">
-                        {p.nome}
-                      </span>
+                      <span className="font-bold text-[15px] truncate min-w-0">{p.nome}</span>
                       {st?.recomendado && (
                         <span className="shrink-0 bg-brand-red-light text-brand-red font-bold text-[10px] px-2.5 py-[3px] rounded-[4px] uppercase tracking-[0.6px]">
                           Recomendado
@@ -337,9 +336,7 @@ function CatalogoContent({ initialProfs, initialAvals }) {
                     </div>
                   )}
                   {p.regioes && (
-                    <div className="text-xs text-brand-grey-light mb-1.5">
-                      Atende: {p.regioes}
-                    </div>
+                    <div className="text-xs text-brand-grey-light mb-1.5">Atende: {p.regioes}</div>
                   )}
                   {st && st.count > 0 && (
                     <div className="flex gap-2 mb-3.5 flex-wrap">
