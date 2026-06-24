@@ -38,8 +38,8 @@ CREATE INDEX IF NOT EXISTS idx_servicos_embedding_hnsw
 -- 4) Função de busca semântica
 --    Retorna os p_limite serviços mais próximos do embedding
 --    da query, ordenados por similaridade decrescente.
---    Roda sob ai_readonly (SET LOCAL ROLE) — mesma convenção
---    das tools da Fase 2.
+--    SECURITY DEFINER + search_path fixado garante isolamento;
+--    SET LOCAL ROLE é proibido em SECURITY DEFINER (ERROR 42501).
 -- ------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION ai_buscar_servicos(
@@ -62,7 +62,6 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  SET LOCAL ROLE ai_readonly;
   RETURN QUERY
     SELECT
       ps.id,
