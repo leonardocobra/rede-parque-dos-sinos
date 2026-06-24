@@ -15,6 +15,11 @@
 -- em SECURITY DEFINER (ERROR 42501).
 -- ============================================================
 
+-- A assinatura ganha um 4º parâmetro, então não é um simples REPLACE:
+-- removemos a versão antiga (3 args) para não deixar overload órfão que
+-- causaria ambiguidade no PostgREST em chamadas com 3 argumentos.
+DROP FUNCTION IF EXISTS ai_buscar_servicos(vector, int, text);
+
 CREATE OR REPLACE FUNCTION ai_buscar_servicos(
   query_embedding   vector(512),
   p_limite          int     DEFAULT 10,
