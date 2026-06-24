@@ -48,8 +48,11 @@ export default defineConfig({
       "app/catalogo/**",
       "app/sobre/**",
       "app/painel/page.{js,jsx}",
+      "app/onboarding/**",
       "app/api/auth/**",
       "app/api/revalidar-perfil/**",
+      // Fixtures de evals — JSON puro, sem lógica JS a medir
+      "evals/fixtures/**",
       "app/profissional/[id]/page.{js,jsx}",
       "app/profissional/[id]/opengraph-image.{js,jsx}",
       "app/profissional/[id]/PerfilView.{js,jsx}",

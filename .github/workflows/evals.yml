@@ -1,0 +1,50 @@
+name: Evals LLM-as-judge
+
+on:
+  workflow_dispatch:
+    inputs:
+      motivo:
+        description: "Motivo da execução manual (ex: pré-merge, troca de modelo)"
+        required: false
+        default: "execução manual"
+  schedule:
+    # toda segunda-feira às 06:00 UTC
+    - cron: "0 6 * * 1"
+
+jobs:
+  evals:
+    name: Qualidade de descrição (Sonnet juiz)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Rodar evals LLM-as-judge
+        run: npm run test:evals
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Resumo no job summary
+        if: always()
+        run: |
+          echo "## Evals LLM-as-judge" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ Taxa de concordância ≥ 80% — modelo atual adequado." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Taxa de concordância abaixo do limiar. Ver log para ação de escalonamento." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Tier | Ação |" >> $GITHUB_STEP_SUMMARY
+            echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+            echo "| 1 | < 80% (MT-Bench) → gerador: Haiku → Sonnet |" >> $GITHUB_STEP_SUMMARY
+            echo "| 2 | < 60% (HELM) → gerador + juiz → Opus |" >> $GITHUB_STEP_SUMMARY
+          fi
