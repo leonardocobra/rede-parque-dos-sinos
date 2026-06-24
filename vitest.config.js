@@ -19,6 +19,10 @@ export default defineConfig({
   ],
   test: {
     environment: "jsdom",
+    // evals fazem chamadas reais à API Anthropic — precisam de Node, não jsdom.
+    // O plugin treat-js-as-jsx transforma .js antes da leitura de diretivas de
+    // arquivo, então @vitest-environment no comentário não é confiável aqui.
+    environmentMatchGlobs: [["evals/__tests__/**", "node"]],
     setupFiles: ["./vitest.setup.js"],
     globals: true,
   },
