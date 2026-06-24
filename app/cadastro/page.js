@@ -144,7 +144,13 @@ export default function Cadastro() {
       <Nav />
       <div className="px-5 py-6 max-w-[500px] mx-auto">
         <h2 className="font-display text-[26px] mb-1">Cadastrar Serviço</h2>
-        <p className="text-[13px] text-brand-grey-light mb-6">Gratuito e leva menos de 2 minutos</p>
+        <p className="text-[13px] text-brand-grey-light mb-1">Gratuito e leva menos de 2 minutos</p>
+        <p className="text-[12px] text-brand-grey-light mb-5">
+          Prefere responder perguntas?{" "}
+          <Link href="/onboarding" className="text-brand-red font-bold">
+            Cadastrar via Chat →
+          </Link>
+        </p>
 
         {status === "success" ? (
           <div className="py-8">
