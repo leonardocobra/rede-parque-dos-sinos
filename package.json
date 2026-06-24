@@ -8,7 +8,7 @@
     "start": "next start",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:evals": "vitest run --reporter=verbose evals/__tests__/descricao.test.js",
+    "test:evals": "vitest run --config vitest.config.evals.js --reporter=verbose",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
