@@ -13,6 +13,7 @@ import { getServerSupabase } from "../../lib/supabase/server";
 import { getServiceSupabase } from "../../lib/supabase/service";
 import { isAdmin, computeVisaoOferta, computeAnalyticsEventos, computeScoreDistribuicao } from "../../lib/admin";
 import { computaScore } from "../../lib/score";
+import { computeObservabilidadeIA } from "../../lib/observabilidade-ia";
 import AdminClient from "./AdminClient";
 
 export const dynamic = "force-dynamic";
@@ -33,6 +34,18 @@ async function lerEventos() {
   return data || [];
 }
 
+async function lerInvocacoes() {
+  const service = getServiceSupabase();
+  if (!service) return null;
+  const desde = new Date(Date.now() - JANELA_DIAS * 24 * 60 * 60 * 1000).toISOString();
+  const { data } = await service
+    .from("ai_invocacoes")
+    .select("id, rota, modelo, tokens_in, tokens_out, custo, latencia_ms, sucesso, erro, eval_score, criado_em")
+    .gte("criado_em", desde)
+    .limit(10000);
+  return data || [];
+}
+
 export default async function Admin() {
   const supabase = getServerSupabase();
   const {
@@ -45,7 +58,7 @@ export default async function Admin() {
   // Leituras públicas (SELECT liberado nessas tabelas). A agregação é pura.
   // Itens contam só os ativos (espelha o perfil público). Eventos vêm via
   // service_role (SELECT fechado a anon/authenticated).
-  const [{ data: profissionais }, { data: servicos }, { data: itens }, eventos] = await Promise.all(
+  const [{ data: profissionais }, { data: servicos }, { data: itens }, eventos, invocacoes] = await Promise.all(
     [
       supabase.from("profissionais").select(
         "id, foto_url, user_id, verificado, criado_em, descricao, instagram, experiencia, " +
@@ -56,6 +69,7 @@ export default async function Admin() {
       supabase.from("profissional_servicos").select("profissional_id, categoria"),
       supabase.from("profissional_itens").select("profissional_id, foto_url, ativo"),
       lerEventos(),
+      lerInvocacoes(),
     ]
   );
 
@@ -63,11 +77,12 @@ export default async function Admin() {
   const v = computeVisaoOferta(lista, servicos || [], new Date(), itens || []);
   const a = eventos ? computeAnalyticsEventos(eventos, { dias: JANELA_DIAS }) : null;
   const s = computeScoreDistribuicao(lista, { computaScore });
+  const ia = invocacoes ? computeObservabilidadeIA(invocacoes) : null;
 
   return (
     <>
       <Nav />
-      <AdminClient email={user.email} v={v} a={a} s={s} janelaDias={JANELA_DIAS} />
+      <AdminClient email={user.email} v={v} a={a} s={s} ia={ia} janelaDias={JANELA_DIAS} />
       <Footer />
     </>
   );

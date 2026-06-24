@@ -4,6 +4,7 @@ import SairButton from "../painel/SairButton";
 import Pilulas from "../components/ui/Pilulas";
 import GraficoTendencia from "./GraficoTendencia";
 import AgenteChat from "./AgenteChat";
+import ObservabilidadeIA from "./ObservabilidadeIA";
 
 // Shell do /admin: navegação por pílulas (Oferta / Tráfego / Desempenho),
 // espelhando o padrão do /painel. Recebe as agregações já computadas no
@@ -14,6 +15,7 @@ const SECOES = [
   { id: "trafego", label: "Tráfego" },
   { id: "desempenho", label: "Desempenho" },
   { id: "agente", label: "Agente" },
+  { id: "ia", label: "IA" },
 ];
 
 function Stat({ valor, rotulo, sub }) {
@@ -276,7 +278,7 @@ function Desempenho() {
   );
 }
 
-export default function AdminClient({ email, v, a, s, janelaDias }) {
+export default function AdminClient({ email, v, a, s, ia, janelaDias }) {
   const [secao, setSecao] = useState("oferta");
 
   return (
@@ -302,6 +304,7 @@ export default function AdminClient({ email, v, a, s, janelaDias }) {
       {secao === "trafego" && <Trafego a={a} />}
       {secao === "desempenho" && <Desempenho />}
       {secao === "agente" && <AgenteChat />}
+      {secao === "ia" && <ObservabilidadeIA ia={ia} janelaDias={janelaDias} />}
     </div>
   );
 }
