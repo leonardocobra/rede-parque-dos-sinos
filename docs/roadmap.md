@@ -1,7 +1,7 @@
 # Roadmap — A Rede
 
 > Tracker de produto do projeto (não há Jira/Linear; o tracker é esta pasta `docs/` + a memória).
-> Formato **Now / Next / Later** — themes e outcomes, não tarefas. Atualizado em 2026-06-20.
+> Formato **Now / Next / Later** — themes e outcomes, não tarefas. Atualizado em 2026-09-05.
 > Capacidade: **1 pessoa** (Leonardo). "Later" é genuinamente depois — o gargalo é tempo.
 
 ## Tese de produto (2026-06-20)
@@ -17,7 +17,7 @@ ENABLEMENT  ──ponte──▶  REFERRAL HIPERLOCAL  ──portão──▶  M
 ```
 
 - **Enablement (on-ramp):** perfil compartilhável + clicável, prova social, coaching (score de
-  maturidade). Faz o pro *parecer legítimo* e *converter melhor*.
+  maturidade). Faz o pro _parecer legítimo_ e _converter melhor_.
 - **Referral hiperlocal (a ponte):** o valor que o pro **não consegue sozinho** é cliente novo que
   ele não conhece. A fonte hiperlocal disso é a indicação — hoje verbal e efêmera ("você conhece um
   bom encanador?"). **A Rede é o trilho que torna o referral persistente e clicável.** O
@@ -25,12 +25,13 @@ ENABLEMENT  ──ponte──▶  REFERRAL HIPERLOCAL  ──portão──▶  M
   não (só) o pro se autopromovendo.
 - **Marketplace (destino):** não se dá cold-start nele; ele **cristaliza do grafo de referral**
   quando há liquidez. O **portão de pivô** é mensurável: quando moradores começarem a chegar
-  *buscando* (intenção de demanda — tráfego direto/orgânico ao catálogo) e não só via link de
+  _buscando_ (intenção de demanda — tráfego direto/orgânico ao catálogo) e não só via link de
   referral de um pro, a demanda existe por conta própria e o marketplace deixa de ser aposta.
 
 **Métrica-norte deste estágio** (substitui "views" e "maturidade" como sinal principal do `/admin`):
+
 > Quantos profissionais tiveram o próprio perfil **compartilhado** este mês, e **quantos contatos**
-> isso gerou *para eles*.
+> isso gerou _para eles_.
 
 **Por que enablement antes de marketplace, dada a capacidade de 1 pessoa:** liquidez hiperlocal com
 1 pessoa e produto gratuito é brutal — no marketplace, o Leonardo seria o motor de demanda para
@@ -45,66 +46,120 @@ infraestrutura (Vitest, ESLint, Prettier, Tailwind) configurada. A camada de eve
 fundação compartilhada. A fase atual é **crescimento via enablement→referral**, reordenada
 (2026-06-20) em torno do loop de indicação hiperlocal.
 
+### Lacuna de execução (2026-06-24 → 2026-09-05)
+
+**73 dias sem nenhum commit em nenhuma branch.** O último dia de trabalho (2026-06-24) concentrou
+10 PRs (#73–#82) — **todos do AI Native Lab**, a frente explicitamente declarada como _paralela de
+portfólio, não pivô_. A frente principal parou no mesmo dia.
+
+O próximo passo real do roadmap era, e continua sendo, o item **#0 — Validação na mão**: o único
+item sem código. Ele não foi feito. A energia migrou para o que era codável. Isso é fuga da
+validação, e o item validado é a **suposição-mãe do modelo inteiro** (ver Riscos).
+
+> **Regra adotada (2026-09-05):** enquanto a validação #0 não tiver resultado, nenhuma frente nova
+> entra no Now — nem AI Lab, nem SEO, nem features de catálogo.
+
 ## Entregue (Done)
 
-| Item | Tema |
-| --- | --- |
-| Rebrand "A Rede" (marca-mãe, bairro = contexto) — `app/brand.js` | Marca |
-| Perfil público SSR `/profissional/[id]` + OG image | Crescimento/SEO |
-| SEO técnico (sitemap, robots, JSON-LD, metadataBase) | Crescimento/SEO |
-| Compartilhamento (botão WhatsApp, páginas de categoria) | Crescimento |
-| Auth Magic Link + `/painel` (edição, claim, métricas, selos) | Oferta |
-| Descrição por serviço + múltiplos serviços | Catálogo |
-| Itens/subserviços no perfil — migration + painel + render público (PRs #41/#42/#43) | Catálogo/Oferta |
-| Painel como shell de módulos (navegação por pílulas) | Oferta/Plataforma |
-| Camada de eventos própria (tabela `eventos`, first-touch UTM por sessão) | Plataforma/Medição |
-| Infra: Vitest, ESLint, Prettier, Tailwind | Plataforma |
+| Item                                                                                                                                                                                                | Tema                        |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| Rebrand "A Rede" (marca-mãe, bairro = contexto) — `app/brand.js`                                                                                                                                    | Marca                       |
+| Perfil público SSR `/profissional/[id]` + OG image                                                                                                                                                  | Crescimento/SEO             |
+| SEO técnico (sitemap, robots, JSON-LD, metadataBase)                                                                                                                                                | Crescimento/SEO             |
+| Compartilhamento (botão WhatsApp, páginas de categoria)                                                                                                                                             | Crescimento                 |
+| Auth Magic Link + `/painel` (edição, claim, métricas, selos)                                                                                                                                        | Oferta                      |
+| Descrição por serviço + múltiplos serviços                                                                                                                                                          | Catálogo                    |
+| Itens/subserviços no perfil — migration + painel + render público (PRs #41/#42/#43)                                                                                                                 | Catálogo/Oferta             |
+| Painel como shell de módulos (navegação por pílulas)                                                                                                                                                | Oferta/Plataforma           |
+| Camada de eventos própria (tabela `eventos`, first-touch UTM por sessão)                                                                                                                            | Plataforma/Medição          |
+| Infra: Vitest, ESLint, Prettier, Tailwind                                                                                                                                                           | Plataforma                  |
+| Métricas de referral no `/admin` (métrica-norte) + bloco de indicações no `/painel` (PRs #60/#62)                                                                                                   | Medição/Referral            |
+| OG image do perfil com foto real e sinais de confiança (PRs #56/#57/#58/#59)                                                                                                                        | Referral                    |
+| **Fundação de SEO fase 2** — `/catalogo` SSR, links crawláveis + JSON-LD ItemList, páginas serviço × bairro, assistente de Google Business Profile (PRs #66–#69)                                    | Crescimento/SEO             |
+| **AI Native Lab fases 1–5** — fundação de servidor, onboarding conversacional, agente sobre Postgres, RAG/pgvector + embeddings Voyage, harness de evals, observabilidade no `/admin` (PRs #73–#82) | Frente paralela (portfólio) |
+| Busca semântica como fallback no catálogo, com threshold (PR #82)                                                                                                                                   | Catálogo/IA                 |
 
-## Now (o loop de enablement→referral)
+## Now (validar o trilho — sem código)
 
-O objetivo do Now é montar **o trilho de indicação** e deixar **um** perfil genuinamente
-compartilhável e convertendo antes de qualquer esforço de tráfego. Tráfego central (SEO, ads) é
-*Later* — fica melhor quanto mais perfis ricos já existirem; construir agora é otimizar casa vazia.
+O trilho de indicação **já está construído**. O que falta não é feature: é saber se ele é usado.
+Tráfego central (SEO, ads) segue _Later_ — fica melhor quanto mais perfis ricos já existirem.
 
-| Item | Por quê |
-| --- | --- |
-| **Compartilhar perfil em 1 toque** — dois atos distintos: **pro → própria audiência** ("meu cartão digital") e, prioritário, **morador → vizinho** ("indico esse profissional"). Mesmo botão, cópia e intenção opostas. | Motor de aquisição orgânico (referral) |
-| **OG/preview de link impecável com o selo da Rede** (nome, foto, serviço) | Faz a indicação *parecer confiável* no preview do WhatsApp — infraestrutura que faz o referral converter |
-| **Clique-pra-WhatsApp pré-preenchido** incluindo o nome do item/serviço de contexto e referenciando a Rede ("Vi seu perfil na Rede, quero orçamento de X") | Lead semi-estruturado de graça (sem fricção de form) **e** atribuível — o pro *vê* o contato chegar via Rede, o que faz ele valorizar o trilho |
-| **Decisões de produto** (logo definitiva, critério do selo Verificado) | Baratas; só dependem do Leonardo |
+| #   | Item                                                                                                                      | Status                             | Por quê                                                          |
+| --- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- | ---------------------------------------------------------------- |
+| 0   | **Validação na mão** — 2 pros reais, ~2 semanas, observar se o morador compartilha **espontaneamente**, sem ser empurrado | **Not Started** (desde 2026-06-21) | Suposição-mãe do modelo. Tudo depois disso é aposta cega         |
+| 1   | **Decisões de produto** — logo definitiva, critério do selo Verificado                                                    | **Not Started**                    | Custo ~1h, só dependem do Leonardo, paradas desde junho          |
+| 2   | **Dívida operacional** — rodar o reembed `?forcar=true` em `/api/admin/gerar-embeddings` pós-deploy do PR #82             | **Blocked** (esquecido em 24/06)   | Busca semântica pode estar em prod com embeddings desatualizados |
+| —   | ~~Compartilhar perfil em 1 toque~~                                                                                        | ✅ Done                            | `BotoesCompartilhar` / `DivulgarPorCanal` — duas superfícies     |
+| —   | ~~OG/preview com selo da Rede~~                                                                                           | ✅ Done                            | PR #56                                                           |
+| —   | ~~Clique-pra-WhatsApp pré-preenchido~~                                                                                    | ✅ Done                            | Instrumentado após o fix do CHECK de `eventos.tipo` (PR #70)     |
 
-> **Validar antes de investir nas features de share — a suposição mais arriscada:** o modelo repousa
-> em o morador/cliente **efetivamente compartilhar**. Testar barato, na unha, com 1–2 pros e seus
-> clientes, antes de polir o fluxo. Se compartilham espontaneamente → há produto. Se precisam ser
-> empurrados toda vez → o problema é proposta de valor, não feature.
+> **A suposição mais arriscada, agora sem desculpa de infraestrutura:** o modelo repousa em o
+> morador/cliente **efetivamente compartilhar**. Se compartilham espontaneamente → há produto. Se
+> precisam ser empurrados toda vez → o problema é proposta de valor, não feature. As features de
+> share existem há 2 meses; o que não existe é o dado.
+
+## Cenário competitivo (2026-09-05)
+
+**Connect+ — `appconnectplus.com.br`** — mesmo formato, **mesma cidade**. Villa Branca é bairro de
+Jacareí, igual ao Parque dos Sinos.
+
+|                   | A Rede                                 | Connect+                                                       |
+| ----------------- | -------------------------------------- | -------------------------------------------------------------- |
+| Alcance           | 1 bairro                               | **5 bairros** (SJC + Jacareí), subdomínio por bairro           |
+| Oferta            | Profissionais autônomos                | Lojas físicas + serviços + eventos + classificados + promoções |
+| Densidade alegada | dezenas                                | **+5.000 comércios**                                           |
+| Monetização       | gratuito (anti-escopo explícito)       | **Freemium: Grátis / Prata R$29,90 / Ouro R$60 + patrocínio**  |
+| Demanda           | referral morador→vizinho               | captura de e-mail do morador + ofertas como isca               |
+| Prova social      | avaliações, selo, painel com analytics | **nenhuma**                                                    |
+| Referral          | trilho de indicação instrumentado      | **nenhum**                                                     |
+
+**Leitura:**
+
+1. **Valida a tese de bairro e mata o conforto do "sou o único".** Alguém monetiza o formato a ~15 km
+   de distância, com expansão multi-bairro já rodando.
+2. **Eles pegaram o problema fácil; A Rede pegou o difícil — e isso é a favor.** "+5.000 comércios"
+   com categorias no estilo Google Business é catálogo raspado do Maps. Loja tem endereço fixo e já
+   existe em base pública. **Autônomo não existe em base nenhuma** — é exatamente por isso que o
+   enablement tem valor. Catálogo raspado é largo e morto; o nosso é estreito e vivo.
+3. **O fosso da Rede é confiança, e eles não têm nada disso.** Mas fosso não vale nada sobre catálogo
+   vazio — o que devolve a prioridade ao item #0.
+
+**Não** reagir puxando itens do Later (orçamento estruturado, marketplace, PR D). O gatilho deles é
+adoção, e adoção é justamente o que a validação #0 vai revelar se existe.
 
 ## Next (1–3 meses — fechar o loop de referral)
 
-> **Status (2026-06-21):** itens 1 e 2 já entregues. Item 3 movido para Later (gatilho de adoção).
-> Validação na mão (#0 abaixo) é o próximo passo real — sem código.
+> **Status (2026-09-05):** todo o Next original está entregue. A validação na mão foi **promovida ao
+> Now** — é o gargalo, não um "próximo". O Next fica deliberadamente **vazio até a validação #0
+> retornar um resultado**: o que entra aqui depende inteiramente de o morador compartilhar ou não.
+>
+> - **Se compartilha espontaneamente** → o canal orgânico liga. Next = densidade de perfis no Parque
+>   dos Sinos (recrutamento de pros) + share por item, cujo gatilho de adoção passa a ser plausível.
+> - **Se precisa ser empurrado** → o problema é proposta de valor. Next = voltar à tese, não à
+>   feature. Reabrir o que o pro ganha de concreto (e reavaliar o anti-escopo "gratuito").
 
-| # | Item | Por quê |
-| --- | --- | --- |
-| 0 | **Validação na mão** — testar com 1–2 pros reais se o morador compartilha espontaneamente, sem ser empurrado | Suposição mais arriscada do modelo; barata de testar antes de qualquer nova feature |
-| 1 | ~~**Gancho de referral no fim da avaliação**~~ ✅ | Entregue em `app/avaliar/page.js` — card de indicação pós-envio com `share_pos_avaliacao` |
-| 2 | ~~**"Peça uma avaliação"** no `/painel`~~ ✅ | Entregue — componente `PedirAvaliacao` em `PainelClient.js` |
-| 4 | ~~**Observabilidade & Analytics — fase 1**~~ ✅ | Entregue — `/admin` + analytics por pro no `/painel` |
-| 5 | ~~**Score de maturidade digital**~~ ✅ | Entregue — pílula Presença + distribuição no `/admin` |
+| #   | Item                                              | Por quê                                                                                   |
+| --- | ------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| 0   | ~~**Validação na mão**~~ → **movido para o Now**  | Não é "próximo": é o gargalo atual                                                        |
+| 1   | ~~**Gancho de referral no fim da avaliação**~~ ✅ | Entregue em `app/avaliar/page.js` — card de indicação pós-envio com `share_pos_avaliacao` |
+| 2   | ~~**"Peça uma avaliação"** no `/painel`~~ ✅      | Entregue — componente `PedirAvaliacao` em `PainelClient.js`                               |
+| 4   | ~~**Observabilidade & Analytics — fase 1**~~ ✅   | Entregue — `/admin` + analytics por pro no `/painel`                                      |
+| 5   | ~~**Score de maturidade digital**~~ ✅            | Entregue — pílula Presença + distribuição no `/admin`                                     |
 
 ## Later (direcional — exige gatilho ou decisão)
 
-| Item | Gatilho |
-| --- | --- |
-| **Orçamento estruturado** (form: serviço, bairro, descrição, foto, urgência → entrega assíncrona ao pro) | **Volume de demanda** que valha capturar/medir. É o **artefato-ponte para o marketplace** — onde A Rede começa a *possuir dados de demanda* (o que se pede, em que bairro, o que fica sem resposta). Construir hoje é instrumentar demanda inexistente |
-| **Pivô para marketplace** (matching/agregação de demanda, descoberta central) | **Portão de pivô:** moradores chegando com *intenção de demanda* (tráfego direto/orgânico ao catálogo buscando), não só via link de referral |
-| **Tráfego central — SEO de categoria/bairro + (depois) gestão de campanhas como serviço** | Densidade de perfis ricos (o conteúdo dos pros é a superfície de SEO); a venda de "campanhas como serviço" exige antes provar que A Rede converte audiência em contato |
-| **PR D — vitrine de itens no catálogo** (itens no card + selo "a partir de R$") | **≥5 profissionais com ≥1 item** (decisão 2026-06-19) — sem adoção, o sinal aparece sobre catálogo vazio |
-| **Share por item/serviço** ("olha esse serviço") — URL com âncora/parâmetro de item, mensagem contextualizada, `share_item` instrumentado | **≥5 profissionais com ≥1 item** (decisão 2026-06-21) — hoje o share é só do perfil; sem itens adotados, o feature é invisível. Mesmo gatilho do PR D |
-| **Observabilidade & Analytics — fase 2** (mesma engine exposta por profissional) | Após a fase 1 validar o motor com o Leonardo como piloto; decisão de serviço Python só aqui |
-| **Checkout + pagamento no app** | **Decisão estratégica explícita** — conflita com o anti-escopo "gratuito e da comunidade" |
-| OTP de WhatsApp → selo Verificado automático | Sobre a infra de auth atual |
-| Resposta a avaliações pelo profissional | Fast-follow de produto |
-| Expansão por bairro ("A Rede — [bairro]") | Provar densidade no Parque dos Sinos primeiro |
+| Item                                                                                                                                      | Gatilho                                                                                                                                                                                                                                                |
+| ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Orçamento estruturado** (form: serviço, bairro, descrição, foto, urgência → entrega assíncrona ao pro)                                  | **Volume de demanda** que valha capturar/medir. É o **artefato-ponte para o marketplace** — onde A Rede começa a _possuir dados de demanda_ (o que se pede, em que bairro, o que fica sem resposta). Construir hoje é instrumentar demanda inexistente |
+| **Pivô para marketplace** (matching/agregação de demanda, descoberta central)                                                             | **Portão de pivô:** moradores chegando com _intenção de demanda_ (tráfego direto/orgânico ao catálogo buscando), não só via link de referral                                                                                                           |
+| **Tráfego central — SEO de categoria/bairro + (depois) gestão de campanhas como serviço**                                                 | Densidade de perfis ricos (o conteúdo dos pros é a superfície de SEO); a venda de "campanhas como serviço" exige antes provar que A Rede converte audiência em contato                                                                                 |
+| **PR D — vitrine de itens no catálogo** (itens no card + selo "a partir de R$")                                                           | **≥5 profissionais com ≥1 item** (decisão 2026-06-19) — sem adoção, o sinal aparece sobre catálogo vazio                                                                                                                                               |
+| **Share por item/serviço** ("olha esse serviço") — URL com âncora/parâmetro de item, mensagem contextualizada, `share_item` instrumentado | **≥5 profissionais com ≥1 item** (decisão 2026-06-21) — hoje o share é só do perfil; sem itens adotados, o feature é invisível. Mesmo gatilho do PR D                                                                                                  |
+| **Observabilidade & Analytics — fase 2** (mesma engine exposta por profissional)                                                          | Após a fase 1 validar o motor com o Leonardo como piloto; decisão de serviço Python só aqui                                                                                                                                                            |
+| **Checkout + pagamento no app**                                                                                                           | **Decisão estratégica explícita** — conflita com o anti-escopo "gratuito e da comunidade"                                                                                                                                                              |
+| OTP de WhatsApp → selo Verificado automático                                                                                              | Sobre a infra de auth atual                                                                                                                                                                                                                            |
+| Resposta a avaliações pelo profissional                                                                                                   | Fast-follow de produto                                                                                                                                                                                                                                 |
+| Expansão por bairro ("A Rede — [bairro]")                                                                                                 | Provar densidade no Parque dos Sinos primeiro                                                                                                                                                                                                          |
 
 ## Riscos e dependências
 
@@ -113,10 +168,31 @@ compartilhável e convertendo antes de qualquer esforço de tráfego. Tráfego c
   de demanda. **Validar barato antes de construir as features de share** (ver nota no Now).
 - **Otimizar a perna perfil→contato como métrica central é ruído neste estágio** — com tráfego
   negligível, a diferença entre 5% e 20% de conversão são 1–2 cliques. O clique-pra-WhatsApp entra
-  no Now como *trilho de atribuição*, não como otimização de funil.
+  no Now como _trilho de atribuição_, não como otimização de funil.
 - **Checkout (1b)** conflita com a tese comunitária documentada. É pivô de modelo de negócio, não
   feature. Decisão tomada (2026-06-18): não bundlar; estudar separadamente.
 - **Capacidade = 1 pessoa.** Para cada item que entra em "Now", algo sai.
+- **Relógio de densidade no Parque dos Sinos (novo, 2026-09-05).** O Connect+ opera 5 bairros na
+  mesma região e já monetiza. Se chegar ao Parque dos Sinos com catálogo raspado antes de A Rede ter
+  densidade, ocupa o mindshare do bairro com um produto pior. Isso **não** antecipa a expansão por
+  bairro (segue Later) — cria urgência em _profundidade aqui_, não em largura.
+- **Risco de execução (novo, 2026-09-05): fuga da validação para o codável.** O padrão já ocorreu uma
+  vez — 73 dias parados após 10 PRs de uma frente paralela, com o item não-código intocado. A
+  mitigação é a regra do Status geral: nenhuma frente nova no Now antes do resultado do #0.
+
+## Decisões tomadas (2026-09-05)
+
+- [x] **Validação na mão promovida ao Now; Next fica vazio até ela retornar.** O trilho de share está
+      construído há 2 meses — o que falta é o dado, não a feature.
+- [x] **Congelamento de frentes novas** enquanto o #0 não tiver resultado (inclui AI Lab, SEO fase 3 e
+      itens de catálogo). Mitigação explícita do padrão de fuga da validação.
+- [x] **Registrado o concorrente direto Connect+** (`appconnectplus.com.br`) — mesmo formato, mesma
+      cidade, 5 bairros, freemium R$29,90/R$60. Reforça a tese de enablement (eles catalogam lojas
+      raspáveis; A Rede habilita autônomos que não existem em base nenhuma) e cria o **relógio de
+      densidade** no Parque dos Sinos.
+- [x] **Não reagir ao Connect+ puxando itens do Later.** Os gatilhos de adoção continuam válidos.
+- [x] **Roadmap reconciliado com o entregue:** Fundação de SEO fase 2 (#66–#69) e AI Native Lab fases
+      1–5 (#73–#82) estavam em produção sem registro aqui.
 
 ## Decisões tomadas (2026-06-24)
 
